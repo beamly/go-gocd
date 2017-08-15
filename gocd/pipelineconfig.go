@@ -19,7 +19,7 @@ type PipelineConfigRequest struct {
 }
 
 // Update a pipeline configuration
-func (pcs *PipelineConfigsService) Update(ctx context.Context, group string, name string, version string, p *Pipeline) (*Pipeline, *APIResponse, error) {
+func (pcs *PipelineConfigsService) Update(ctx context.Context, group string, name string, p *Pipeline) (*Pipeline, *APIResponse, error) {
 
 	pt := &PipelineConfigRequest{
 		Group:    group,
@@ -31,15 +31,11 @@ func (pcs *PipelineConfigsService) Update(ctx context.Context, group string, nam
 		return nil, nil, err
 	}
 
-	req.HTTP.Header.Set("If-Match", fmt.Sprintf("\"%s\"", version))
+	req.HTTP.Header.Set("If-Match", fmt.Sprintf("\"%s\"", p.Version))
 
 	pc := Pipeline{}
 	resp, err := pcs.client.Do(ctx, req, &pc, responseTypeJSON)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return &pc, resp, nil
+	return &pc, resp, err
 
 }
 
@@ -49,23 +45,22 @@ func (pcs *PipelineConfigsService) Create(ctx context.Context, group string, p *
 		Group:    group,
 		Pipeline: p,
 	}
-
-	req, err := pcs.client.NewRequest("POST", "admin/pipelines", pt, apiV4)
-	if err != nil {
-		return nil, nil, err
-	}
-
 	pc := Pipeline{}
-	resp, err := pcs.client.Do(ctx, req, &pc, responseTypeJSON)
-	if err != nil {
-		return nil, resp, err
-	}
-	pc.Version = strings.Replace(resp.HTTP.Header.Get("Etag"), "\"", "", -1)
 
-	return &pc, resp, nil
+	_, resp, err := pcs.client.postAction(ctx, &APIClientRequest{
+		Path:         "admin/pipelines",
+		APIVersion:   apiV4,
+		RequestBody:  pt,
+		ResponseBody: &pc,
+	})
+	if err == nil {
+		pc.Version = strings.Replace(resp.HTTP.Header.Get("Etag"), "\"", "", -1)
+	}
+
+	return &pc, resp, err
 }
 
 // Delete a pipeline configuration
 func (pcs *PipelineConfigsService) Delete(ctx context.Context, name string) (string, *APIResponse, error) {
-	return pcs.client.deleteAction(ctx, "admin/pipelines/"+name, apiV3)
+	return pcs.client.deleteAction(ctx, "admin/pipelines/"+name, apiV4)
 }

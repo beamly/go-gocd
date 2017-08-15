@@ -15,14 +15,17 @@ type Pipeline struct {
 	EnablePipelineLocking bool       `json:"enable_pipeline_locking,omitempty"`
 	Template              string     `json:"template,omitempty"`
 	Materials             []Material `json:"materials,omitempty"`
+	Label                 string     `json:"label,omitempty"`
 	Stages                []Stage    `json:"stages"`
 	Version               string
 }
 
 // Material describes an artifact dependency for a pipeline object.
 type Material struct {
-	Type       string `json:"type"`
-	Attributes struct {
+	Type        string `json:"type"`
+	Fingerprint string `json:"fingerprint,omitempty"`
+	Description string `json:"description,omitempty"`
+	Attributes  struct {
 		URL             string      `json:"url"`
 		Destination     string      `json:"destination,omitempty"`
 		Filter          interface{} `json:"filter,omitempty"`

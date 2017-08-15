@@ -90,9 +90,5 @@ func (c *Client) httpAction(ctx context.Context, r *APIClientRequest) (interface
 	}
 
 	resp, err := c.Do(ctx, req, &r.ResponseBody, reqType)
-	if err != nil {
-		return false, resp, err
-	}
-
-	return r.ResponseBody, resp, nil
+	return r.ResponseBody, resp, err
 }

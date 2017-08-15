@@ -110,13 +110,15 @@ func UpdatePipelineConfigAction(c *cli.Context) error {
 	} else {
 		pf = []byte(pipeline)
 	}
-	p := &gocd.Pipeline{}
+	p := &gocd.Pipeline{
+		Version: version,
+	}
 	err = json.Unmarshal(pf, &p)
 	if err != nil {
 		return handeErrOutput("CreatePipelineConfig", err)
 	}
 
-	pc, r, err := cliAgent(c).PipelineConfigs.Update(context.Background(), group, name, version, p)
+	pc, r, err := cliAgent(c).PipelineConfigs.Update(context.Background(), group, name, p)
 	if err != nil {
 		return handeErrOutput("CreatePipelineConfig", err)
 	}

@@ -12,11 +12,8 @@ func (c *Client) Login(ctx context.Context) error {
 	req.HTTP.SetBasicAuth(c.Username, c.Password)
 
 	resp, err := c.Do(ctx, req, nil, responseTypeJSON)
-	if err != nil {
-		return err
+	if err == nil {
+		c.cookie = resp.HTTP.Header["Set-Cookie"][0]
 	}
-
-	c.cookie = resp.HTTP.Header["Set-Cookie"][0]
-
-	return nil
+	return err
 }

@@ -14,6 +14,25 @@ func TestPipelineConfig(t *testing.T) {
 	defer teardown()
 	t.Run("Create", testPipelineConfigCreate)
 	t.Run("Update", testPipelineConfigUpdate)
+	t.Run("Delete", testPipelineConfigDelete)
+}
+
+func testPipelineConfigDelete(t *testing.T) {
+
+	mux.HandleFunc("/api/admin/pipelines/test-pipeline", func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, r.Method, "DELETE", "Unexpected HTTP method")
+		assert.Equal(t, r.Header.Get("Accept"), apiV4)
+
+		fmt.Fprint(w, `{
+  "message": "Pipeline 'test-pipeline' was deleted successfully."
+}`)
+	})
+	message, resp, err := client.PipelineConfigs.Delete(context.Background(), "test-pipeline")
+	if err != nil {
+		assert.Error(t, err)
+	}
+	assert.NotNil(t, resp)
+	assert.Equal(t, "Pipeline 'test-pipeline' was deleted successfully.", message)
 }
 
 func testPipelineConfigCreate(t *testing.T) {
@@ -49,15 +68,17 @@ func testPipelineConfigUpdate(t *testing.T) {
 		}
 		assert.Equal(
 			t,
-			"{\n  \"group\": \"test-group\",\n  \"pipeline\": {\n    \"name\": \"\",\n    \"stages\": null,\n    \"Version\": \"\"\n  }\n}\n",
+			"{\n  \"group\": \"test-group\",\n  \"pipeline\": {\n    \"name\": \"\",\n    \"stages\": null,\n    \"Version\": \"test-version\"\n  }\n}\n",
 			string(b))
 		j, _ := ioutil.ReadFile("test/resources/pipelineconfig.0.json")
 		fmt.Fprint(w, string(j))
 	})
 
-	p := Pipeline{}
+	p := Pipeline{
+		Version: "test-version",
+	}
 	pcs, _, err := client.PipelineConfigs.Update(context.Background(),
-		"test-group", "test-name", "test-version", &p)
+		"test-group", "test-name", &p)
 	if err != nil {
 		t.Error(t, err)
 	}

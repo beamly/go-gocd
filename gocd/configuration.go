@@ -223,33 +223,23 @@ type Version struct {
 
 // Get will retrieve all agents, their status, and metadata from the GoCD Server.
 // Get returns a list of pipeline instanves describing the pipeline history.
-func (cd *ConfigurationService) Get(ctx context.Context) (*ConfigXML, *APIResponse, error) {
-	req, err := cd.client.NewRequest("GET", "admin/config.xml", nil, "")
-	if err != nil {
-		return nil, nil, err
-	}
-
+func (cs *ConfigurationService) Get(ctx context.Context) (*ConfigXML, *APIResponse, error) {
 	cx := ConfigXML{}
-	resp, err := cd.client.Do(ctx, req, &cx, responseTypeXML)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return &cx, resp, nil
+	_, resp, err := cs.client.getAction(ctx, &APIClientRequest{
+		Path:         "admin/config.xml",
+		ResponseBody: &cx,
+		ResponseType: responseTypeXML,
+	})
+	return &cx, resp, err
 }
 
 // GetVersion will return version information about the GoCD server.
-func (cd *ConfigurationService) GetVersion(ctx context.Context) (*Version, *APIResponse, error) {
-	req, err := cd.client.NewRequest("GET", "version", nil, apiV1)
-	if err != nil {
-		return nil, nil, err
-	}
-
+func (cs *ConfigurationService) GetVersion(ctx context.Context) (*Version, *APIResponse, error) {
 	v := Version{}
-	resp, err := cd.client.Do(ctx, req, &v, responseTypeJSON)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return &v, resp, nil
+	_, resp, err := cs.client.getAction(ctx, &APIClientRequest{
+		Path:         "version",
+		ResponseBody: &v,
+		APIVersion:   apiV1,
+	})
+	return &v, resp, err
 }
