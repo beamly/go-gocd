@@ -22,7 +22,7 @@ func listScheduledJobsCommand() *cli.Command {
 	return &cli.Command{
 		Name:     ListScheduledJobsCommandName,
 		Usage:    ListScheduledJobsCommandUsage,
-		Action:   actionWrapper(listScheduledJobsAction),
+		Action:   ActionWrapper(listScheduledJobsAction),
 		Category: "Jobs",
 	}
 }

@@ -10,20 +10,59 @@ Usage:
 
 	import "github.com/drewsonne/go-gocd/gocd"
 
-Construct a new GoCD client, then use the various services on the client to
-access different parts of the GoCD Server API. For example:
+Construct a new GoCD client and supply the URL to your GoCD server and if required, username and password. Then use the
+various services on the client to access different parts of the GoCD API.
+For example:
 
-	cfg := &gocd.Configuration{
-		Server:       "https://goserver:8154/go/",
-		Username:     os.GetEnv("GOCD_USERNAME"),
-		Password:     os.GetEnv("GOCD_PASSWORD"),
-		SkipSslCheck: true,
+	package main
+	import (
+		"github.com/drewsonne/go-gocd/gocd"
+		"context"
+		"fmt"
+	)
+
+	func main() {
+		cfg := gocd.Configuration{
+			Server: "https://my_gocd/go/",
+			Username: "ApiUser",
+			Password: "MySecretPassword",
+		}
+
+		c := cfg.Client()
+
+		// list all agents in use by the GoCD Server
+		var a []*gocd.Agent
+		var err error
+		var r *gocd.APIResponse
+		if a, r, err = c.Agents.List(context.Background()); err != nil {
+			if r.HTTP.StatusCode == 404 {
+				fmt.Println("Couldn't find agent")
+			} else {
+				panic(err)
+			}
+		}
+
+		fmt.Println(a)
 	}
 
-	client := cfg.Client()
+If you wish to use your own http client, you can use the following idiom
 
-	// list all agents
-	orgs, _, err := client.Agents.List(context.Background())
+
+	package main
+
+	import (
+		"github.com/drewsonne/go-gocd/gocd"
+		"net/http"
+		"context"
+	)
+
+	func main() {
+		client := gocd.NewClient(
+			&gocd.Configuration{},
+			&http.Client{},
+		)
+		client.Login(context.Background())
+	}
 
 The services of a client divide the API into logical chunks and correspond to
 the structure of the GoCD API documentation at

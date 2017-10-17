@@ -27,7 +27,7 @@ func encryptCommand() *cli.Command {
 	return &cli.Command{
 		Name:     EncryptCommandName,
 		Usage:    EncryptCommandUsage,
-		Action:   actionWrapper(encryptAction),
+		Action:   ActionWrapper(encryptAction),
 		Category: "Encryption",
 		Flags: []cli.Flag{
 			cli.StringFlag{Name: "value"},

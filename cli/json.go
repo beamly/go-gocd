@@ -47,6 +47,6 @@ func generateJSONSchemaCommand() *cli.Command {
 		Name:     GenerateJSONSchemaCommandName,
 		Usage:    GenerateJSONSchemaCommandUsage,
 		Category: "Schema",
-		Action:   actionWrapper(generateJSONSchemaAction),
+		Action:   ActionWrapper(generateJSONSchemaAction),
 	}
 }

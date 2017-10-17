@@ -35,7 +35,7 @@ func getPluginCommand() *cli.Command {
 		Name:     GetPluginCommandName,
 		Usage:    GetPluginCommandUsage,
 		Category: "Plugins",
-		Action:   actionWrapper(getPluginAction),
+		Action:   ActionWrapper(getPluginAction),
 		Flags: []cli.Flag{
 			cli.StringFlag{Name: "name"},
 		},
@@ -48,6 +48,6 @@ func listPluginsCommand() *cli.Command {
 		Name:     ListPluginsCommandName,
 		Usage:    ListPluginsCommandUsage,
 		Category: "Plugins",
-		Action:   actionWrapper(listPluginsAction),
+		Action:   ActionWrapper(listPluginsAction),
 	}
 }

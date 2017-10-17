@@ -91,7 +91,7 @@ func listEnvironmentsCommand() *cli.Command {
 	return &cli.Command{
 		Name:     ListEnvironmentsCommandName,
 		Usage:    ListEnvironmentsCommandUsage,
-		Action:   actionWrapper(listEnvironmentsAction),
+		Action:   ActionWrapper(listEnvironmentsAction),
 		Category: "Environments",
 	}
 }
@@ -101,7 +101,7 @@ func getEnvironmentCommand() *cli.Command {
 	return &cli.Command{
 		Name:     GetEnvironmentCommandName,
 		Usage:    GetEnvironmentCommandUsage,
-		Action:   actionWrapper(getEnvironmentAction),
+		Action:   ActionWrapper(getEnvironmentAction),
 		Category: "Environments",
 		Flags: []cli.Flag{
 			cli.StringFlag{Name: "name"},
@@ -114,7 +114,7 @@ func addPipelinesToEnvironmentCommand() *cli.Command {
 	return &cli.Command{
 		Name:     AddPipelinesToEnvironmentCommandName,
 		Usage:    AddPipelinesToEnvironmentCommandUsage,
-		Action:   actionWrapper(addPipelinesToEnvironmentAction),
+		Action:   ActionWrapper(addPipelinesToEnvironmentAction),
 		Category: "Environments",
 		Flags: []cli.Flag{
 			cli.StringFlag{Name: "environment-name"},
@@ -131,7 +131,7 @@ func removePipelinesFromEnvironmentCommand() *cli.Command {
 	return &cli.Command{
 		Name:     RemovePipelinesFromEnvironmentCommandName,
 		Usage:    RemovePipelinesFromEnvironmentCommandUsage,
-		Action:   actionWrapper(removePipelinesFromEnvironmentAction),
+		Action:   ActionWrapper(removePipelinesFromEnvironmentAction),
 		Category: "Environments",
 		Flags: []cli.Flag{
 			cli.StringFlag{

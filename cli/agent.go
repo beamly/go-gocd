@@ -118,7 +118,7 @@ func listAgentsCommand() *cli.Command {
 	return &cli.Command{
 		Name:     ListAgentsCommandName,
 		Usage:    ListAgentsCommandUsage,
-		Action:   actionWrapper(listAgentsAction),
+		Action:   ActionWrapper(listAgentsAction),
 		Category: agentCategory,
 	}
 }
@@ -128,7 +128,7 @@ func getAgentCommand() *cli.Command {
 	return &cli.Command{
 		Name:     GetAgentCommandName,
 		Usage:    GetAgentCommandUsage,
-		Action:   actionWrapper(getAgentAction),
+		Action:   ActionWrapper(getAgentAction),
 		Category: agentCategory,
 		Flags: []cli.Flag{
 			cli.StringFlag{Name: "uuid, u", Usage: "GoCD Agent UUID"},
@@ -141,7 +141,7 @@ func updateAgentCommand() *cli.Command {
 	return &cli.Command{
 		Name:     UpdateAgentCommandName,
 		Usage:    UpdateAgentCommandUsage,
-		Action:   actionWrapper(updateAgentAction),
+		Action:   ActionWrapper(updateAgentAction),
 		Category: agentCategory,
 		Flags: []cli.Flag{
 			cli.StringFlag{Name: "uuid, u", Usage: "GoCD Agent UUID"},
@@ -155,7 +155,7 @@ func deleteAgentCommand() *cli.Command {
 	return &cli.Command{
 		Name:     DeleteAgentCommandName,
 		Usage:    DeleteAgentCommandUsage,
-		Action:   actionWrapper(deleteAgentAction),
+		Action:   ActionWrapper(deleteAgentAction),
 		Category: agentCategory,
 		Flags: []cli.Flag{
 			cli.StringFlag{Name: "uuid, u", Usage: "GoCD Agent UUID"},
@@ -168,7 +168,7 @@ func updateAgentsCommand() *cli.Command {
 	return &cli.Command{
 		Name:     UpdateAgentsCommandName,
 		Usage:    UpdateAgentsCommandUsage,
-		Action:   actionWrapper(updateAgentsAction),
+		Action:   ActionWrapper(updateAgentsAction),
 		Category: agentCategory,
 		Flags: []cli.Flag{
 			cli.StringSliceFlag{Name: "uuid", Usage: "GoCD Agent UUIDs"},
@@ -183,7 +183,7 @@ func deleteAgentsCommand() *cli.Command {
 	return &cli.Command{
 		Name:     DeleteAgentsCommandName,
 		Usage:    DeleteAgentsCommandUsage,
-		Action:   actionWrapper(deleteAgentsAction),
+		Action:   ActionWrapper(deleteAgentsAction),
 		Category: agentCategory,
 		Flags: []cli.Flag{
 			cli.StringSliceFlag{Name: "uuid", Usage: "GoCD Agent UUIDs"},

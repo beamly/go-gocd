@@ -29,7 +29,7 @@ func getConfigurationCommand() *cli.Command {
 	return &cli.Command{
 		Name:     GetConfigurationCommandName,
 		Usage:    GetConfigurationCommandUsage,
-		Action:   actionWrapper(getConfigurationAction),
+		Action:   ActionWrapper(getConfigurationAction),
 		Category: "Configuration",
 	}
 }
@@ -39,7 +39,7 @@ func getVersionCommand() *cli.Command {
 	return &cli.Command{
 		Name:     GetVersionCommandName,
 		Usage:    GetVersionCommandUsage,
-		Action:   actionWrapper(getVersionAction),
+		Action:   ActionWrapper(getVersionAction),
 		Category: "Configuration",
 	}
 }

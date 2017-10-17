@@ -151,7 +151,7 @@ func listPipelineTemplatesCommand() *cli.Command {
 	return &cli.Command{
 		Name:     ListPipelineTemplatesCommandName,
 		Usage:    ListPipelineTemplatesCommandUsage,
-		Action:   actionWrapper(listPipelineTemplatesAction),
+		Action:   ActionWrapper(listPipelineTemplatesAction),
 		Category: "Pipeline Templates",
 	}
 }
@@ -162,7 +162,7 @@ func getPipelineTemplateCommand() *cli.Command {
 	return &cli.Command{
 		Name:     GetPipelineTemplateCommandName,
 		Usage:    GetPipelineTemplateCommandUsage,
-		Action:   actionWrapper(getPipelineTemplateAction),
+		Action:   ActionWrapper(getPipelineTemplateAction),
 		Category: "Pipeline Templates",
 		Flags: []cli.Flag{
 			cli.StringFlag{Name: "template-name", Usage: "Name of the Pipeline Template configuration."},
@@ -176,7 +176,7 @@ func createPipelineTemplateCommand() *cli.Command {
 	return &cli.Command{
 		Name:     CreatePipelineTemplateCommandName,
 		Usage:    CreatePipelineTemplateCommandUsage,
-		Action:   actionWrapper(createPipelineTemplateAction),
+		Action:   ActionWrapper(createPipelineTemplateAction),
 		Category: "Pipeline Templates",
 		Flags: []cli.Flag{
 			cli.StringFlag{Name: "template-name", Usage: "Pipeline Template name."},
@@ -191,7 +191,7 @@ func updatePipelineTemplateCommand() *cli.Command {
 	return &cli.Command{
 		Name:     UpdatePipelineTemplateCommandName,
 		Usage:    UpdatePipelineTemplateCommandUsage,
-		Action:   actionWrapper(updatePipelineTemplateAction),
+		Action:   ActionWrapper(updatePipelineTemplateAction),
 		Category: "Pipeline Templates",
 		Flags: []cli.Flag{
 			cli.StringFlag{Name: "template-version", Usage: "Pipeline template version."},
