@@ -2,8 +2,6 @@ package gocd
 
 import (
 	"context"
-	"strconv"
-	"strings"
 )
 
 var cachedServerVersion *ServerVersion
@@ -38,28 +36,7 @@ func (svs *ServerVersionService) Get(ctx context.Context) (v *ServerVersion, res
 		APIVersion:   apiV1,
 	})
 
-	if err == nil {
-		var major, minor, patch int
-		versionParts := strings.Split(v.Version, ".")
-
-		if major, err = strconv.Atoi(versionParts[0]); err != nil {
-			return
-		}
-
-		if minor, err = strconv.Atoi(versionParts[1]); err != nil {
-			return
-		}
-
-		if patch, err = strconv.Atoi(versionParts[2]); err != nil {
-			return
-		}
-
-		v.VersionParts = &ServerVersionParts{
-			Major: major,
-			Minor: minor,
-			Patch: patch,
-		}
-	}
+	err = v.parseVersion()
 
 	cachedServerVersion = v
 

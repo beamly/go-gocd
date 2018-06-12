@@ -13,6 +13,7 @@ func TestServerVersion(t *testing.T) {
 	t.Run("ServerVersion", testServerVersion)
 	t.Run("BadServerVersion", testBadServerVersion)
 	t.Run("ServerVersionCaching", testServerVersionCaching)
+	t.Run("Resource", testServerVersionResource)
 }
 
 func testServerVersion(t *testing.T) {
