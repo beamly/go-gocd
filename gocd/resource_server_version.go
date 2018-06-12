@@ -6,6 +6,7 @@ import (
 	"strconv"
 )
 
+// GetApiVersion for a given endpoint and method
 func (sv *ServerVersion) GetApiVersion(endpoint string, method string) (apiVersion string, err error) {
 	var hasEndpoint, hasMethod bool
 	var methods map[string]string
@@ -22,9 +23,9 @@ func (sv *ServerVersion) GetApiVersion(endpoint string, method string) (apiVersi
 	return "", fmt.Errorf("could not find API version tag for '%s %s'", method, endpoint)
 }
 
-func (v *ServerVersion) parseVersion() (err error) {
+func (sv *ServerVersion) parseVersion() (err error) {
 	var major, minor, patch int
-	versionParts := strings.Split(v.Version, ".")
+	versionParts := strings.Split(sv.Version, ".")
 
 	if major, err = strconv.Atoi(versionParts[0]); err != nil {
 		return
@@ -38,7 +39,7 @@ func (v *ServerVersion) parseVersion() (err error) {
 		return
 	}
 
-	v.VersionParts = &ServerVersionParts{
+	sv.VersionParts = &ServerVersionParts{
 		Major: major,
 		Minor: minor,
 		Patch: patch,
@@ -47,12 +48,12 @@ func (v *ServerVersion) parseVersion() (err error) {
 }
 
 // Equal if the two versions are identical
-func (sc *ServerVersion) Equal(v *ServerVersion) bool {
-	return sc.Version == v.Version
+func (sv *ServerVersion) Equal(v *ServerVersion) bool {
+	return sv.Version == v.Version
 }
 
-func (sc *ServerVersion) LessThan(v *ServerVersion) bool {
-	return sc.VersionParts.Major <= v.VersionParts.Major &&
-		sc.VersionParts.Minor <= v.VersionParts.Minor &&
-		sc.VersionParts.Patch < v.VersionParts.Patch
+func (sv *ServerVersion) LessThan(v *ServerVersion) bool {
+	return sv.VersionParts.Major <= v.VersionParts.Major &&
+		sv.VersionParts.Minor <= v.VersionParts.Minor &&
+		sv.VersionParts.Patch < v.VersionParts.Patch
 }
