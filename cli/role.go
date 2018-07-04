@@ -137,7 +137,7 @@ func createRoleCommand() *cli.Command {
 	return &cli.Command{
 		Name:     CreateRoleCommandName,
 		Usage:    CreateRoleCommandUsage,
-		Category: "Role",
+		Category: "Roles",
 		Action:   ActionWrapper(createRoleAction),
 		Flags: []cli.Flag{
 			cli.StringFlag{Name: "name"},
