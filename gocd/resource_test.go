@@ -45,6 +45,7 @@ func testResourceHALContainers(t *testing.T) {
 	hals := map[string]HALContainer{
 		"Agent":    &Agent{Links: l},
 		"Pipeline": &Pipeline{Links: l},
+		"Role":     &Role{Links: l},
 		"EnvironmentResponse": &EnvironmentsResponse{
 			Links: l,
 			Embedded: &EmbeddedEnvironments{
