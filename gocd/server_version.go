@@ -2,6 +2,7 @@ package gocd
 
 import (
 	"context"
+	"github.com/hashicorp/go-version"
 )
 
 // ServerVersionService exposes calls for interacting with ServerVersion objects in the GoCD API.
@@ -9,17 +10,10 @@ type ServerVersionService service
 
 var cachedServerVersion *ServerVersion
 
-// ServerVersionParts is composed of the semantic version parts of the server version
-type ServerVersionParts struct {
-	Major int
-	Minor int
-	Patch int
-}
-
 // ServerVersion of the GoCD installation
 type ServerVersion struct {
 	Version      string `json:"version"`
-	VersionParts *ServerVersionParts
+	VersionParts *version.Version
 	BuildNumber  string `json:"build_number"`
 	GitSha       string `json:"git_sha"`
 	FullVersion  string `json:"full_version"`

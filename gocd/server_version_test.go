@@ -2,6 +2,7 @@ package gocd
 
 import (
 	"context"
+	"github.com/hashicorp/go-version"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -22,17 +23,16 @@ func testServerVersion(t *testing.T) {
 
 		assert.NoError(t, err)
 
+		ver, err := version.NewVersion("16.6.0")
+		assert.NoError(t, err)
+
 		assert.Equal(t, &ServerVersion{
-			Version:     "16.6.0",
-			BuildNumber: "3348",
-			GitSha:      "a7a5717cbd60c30006314fb8dd529796c93adaf0",
-			FullVersion: "16.6.0 (3348-a7a5717cbd60c30006314fb8dd529796c93adaf0)",
-			CommitURL:   "https://github.com/gocd/gocd/commits/a7a5717cbd60c30006314fb8dd529796c93adaf0",
-			VersionParts: &ServerVersionParts{
-				Major: 16,
-				Minor: 6,
-				Patch: 0,
-			},
+			Version:      "16.6.0",
+			BuildNumber:  "3348",
+			GitSha:       "a7a5717cbd60c30006314fb8dd529796c93adaf0",
+			FullVersion:  "16.6.0 (3348-a7a5717cbd60c30006314fb8dd529796c93adaf0)",
+			CommitURL:    "https://github.com/gocd/gocd/commits/a7a5717cbd60c30006314fb8dd529796c93adaf0",
+			VersionParts: ver,
 		}, v)
 
 		// Verify that the server version is cached
@@ -63,18 +63,16 @@ func testBadServerVersionMajor(t *testing.T, i int, errString string) {
 }
 
 func testServerVersionCaching(t *testing.T) {
+	ver, err := version.NewVersion("18.7.0")
+	assert.NoError(t, err)
 
 	cachedServerVersion = &ServerVersion{
-		Version:     "18.7.0",
-		BuildNumber: "7121",
-		GitSha:      "75d1247f58ab8bcde3c5b43392a87347979f82c5",
-		FullVersion: "18.7.0 (7121-75d1247f58ab8bcde3c5b43392a87347979f82c5)",
-		CommitURL:   "https://github.com/gocd/gocd/commits/75d1247f58ab8bcde3c5b43392a87347979f82c5",
-		VersionParts: &ServerVersionParts{
-			Major: 18,
-			Minor: 7,
-			Patch: 0,
-		},
+		Version:      "18.7.0",
+		BuildNumber:  "7121",
+		GitSha:       "75d1247f58ab8bcde3c5b43392a87347979f82c5",
+		FullVersion:  "18.7.0 (7121-75d1247f58ab8bcde3c5b43392a87347979f82c5)",
+		CommitURL:    "https://github.com/gocd/gocd/commits/75d1247f58ab8bcde3c5b43392a87347979f82c5",
+		VersionParts: ver,
 	}
 	v, b, err := client.ServerVersion.Get(context.Background())
 
@@ -82,15 +80,11 @@ func testServerVersionCaching(t *testing.T) {
 	assert.Nil(t, b)
 
 	assert.Equal(t, &ServerVersion{
-		Version:     "18.7.0",
-		BuildNumber: "7121",
-		GitSha:      "75d1247f58ab8bcde3c5b43392a87347979f82c5",
-		FullVersion: "18.7.0 (7121-75d1247f58ab8bcde3c5b43392a87347979f82c5)",
-		CommitURL:   "https://github.com/gocd/gocd/commits/75d1247f58ab8bcde3c5b43392a87347979f82c5",
-		VersionParts: &ServerVersionParts{
-			Major: 18,
-			Minor: 7,
-			Patch: 0,
-		},
+		Version:      "18.7.0",
+		BuildNumber:  "7121",
+		GitSha:       "75d1247f58ab8bcde3c5b43392a87347979f82c5",
+		FullVersion:  "18.7.0 (7121-75d1247f58ab8bcde3c5b43392a87347979f82c5)",
+		CommitURL:    "https://github.com/gocd/gocd/commits/75d1247f58ab8bcde3c5b43392a87347979f82c5",
+		VersionParts: ver,
 	}, v)
 }

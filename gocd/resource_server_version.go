@@ -2,19 +2,22 @@ package gocd
 
 import (
 	"fmt"
-	"strconv"
-	"strings"
+	"github.com/hashicorp/go-version"
 )
 
 // GetAPIVersion for a given endpoint and method
 func (sv *ServerVersion) GetAPIVersion(endpoint string, method string) (apiVersion string, err error) {
 	var hasEndpoint, hasMethod bool
 	var methods map[string]string
-	serverVersionLookup := map[string]interface{}{}
+	serverVersionLookup := map[string]interface{}{
+		"/api/version": map[string]string{
+			"GET": apiV1,
+		},
+	}
 
 	if methods, hasEndpoint = serverVersionLookup[endpoint].(map[string]string); hasEndpoint {
 		if apiVersion, hasMethod = methods[method]; hasMethod {
-			return
+			return apiVersion, nil
 		}
 	}
 
@@ -22,26 +25,7 @@ func (sv *ServerVersion) GetAPIVersion(endpoint string, method string) (apiVersi
 }
 
 func (sv *ServerVersion) parseVersion() (err error) {
-	var major, minor, patch int
-	versionParts := strings.Split(sv.Version, ".")
-
-	if major, err = strconv.Atoi(versionParts[0]); err != nil {
-		return
-	}
-
-	if minor, err = strconv.Atoi(versionParts[1]); err != nil {
-		return
-	}
-
-	if patch, err = strconv.Atoi(versionParts[2]); err != nil {
-		return
-	}
-
-	sv.VersionParts = &ServerVersionParts{
-		Major: major,
-		Minor: minor,
-		Patch: patch,
-	}
+	sv.VersionParts, err = version.NewVersion(sv.Version)
 	return
 }
 
@@ -52,7 +36,5 @@ func (sv *ServerVersion) Equal(v *ServerVersion) bool {
 
 // LessThan compares this server version and determines if it is older than the provided server version
 func (sv *ServerVersion) LessThan(v *ServerVersion) bool {
-	return sv.VersionParts.Major <= v.VersionParts.Major &&
-		sv.VersionParts.Minor <= v.VersionParts.Minor &&
-		sv.VersionParts.Patch < v.VersionParts.Patch
+	return sv.VersionParts.LessThan(v.VersionParts)
 }

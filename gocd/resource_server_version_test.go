@@ -3,6 +3,7 @@ package gocd
 import (
 	"testing"
 
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 )
@@ -39,11 +40,15 @@ func testServerVersionLessThan(t *testing.T) {
 		{v1: &ServerVersion{Version: "2.0.0"}, v2: &ServerVersion{Version: "2.0.1"}, want: true},
 		{v1: &ServerVersion{Version: "2.0.0"}, v2: &ServerVersion{Version: "1.0.0"}, want: false},
 	} {
-		test.v1.parseVersion()
-		test.v2.parseVersion()
+		name := fmt.Sprintf("%s < %s = %t", test.v1.Version, test.v2.Version, test.want)
+		t.Run(name, func(t *testing.T) {
 
-		assert.Equal(t, test.want, test.v1.LessThan(test.v2))
-		assert.Equal(t, !test.want, test.v2.LessThan(test.v1))
+			test.v1.parseVersion()
+			test.v2.parseVersion()
+
+			assert.Equal(t, test.want, test.v1.LessThan(test.v2))
+			assert.Equal(t, !test.want, test.v2.LessThan(test.v1))
+		})
 	}
 }
 
@@ -77,7 +82,7 @@ func testServerVersionGetAPIVersionFail(t *testing.T) {
 		{
 			endpoint: "/api/foobar",
 			method:   http.MethodGet,
-			want:     apiV1,
+			want:     "could not find API version tag for 'GET /api/foobar'",
 		},
 	} {
 		apiV, err := test.v.GetAPIVersion(test.endpoint, test.method)
