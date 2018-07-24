@@ -4,16 +4,19 @@ import (
 	"context"
 )
 
-var cachedServerVersion *ServerVersion
-
+// ServerVersionService exposes calls for interacting with ServerVersion objects in the GoCD API.
 type ServerVersionService service
 
+var cachedServerVersion *ServerVersion
+
+// ServerVersionParts is composed of the semantic version parts of the server version
 type ServerVersionParts struct {
 	Major int
 	Minor int
 	Patch int
 }
 
+// ServerVersion of the GoCD installation
 type ServerVersion struct {
 	Version      string `json:"version"`
 	VersionParts *ServerVersionParts

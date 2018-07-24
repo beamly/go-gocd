@@ -10,8 +10,8 @@ import (
 func testServerVersionResource(t *testing.T) {
 	t.Run("LessThan", testServerVersionLessThan)
 	t.Run("Equal", testServerVersionEqual)
-	t.Run("GetApiVersion", testServerVersionGetApiVersion)
-	t.Run("GetApiVersionFail", testServerVersionGetApiVersionFail)
+	t.Run("GetAPIVersion", testServerVersionGetAPIVersion)
+	t.Run("GetAPIVersionFail", testServerVersionGetAPIVersionFail)
 }
 
 func testServerVersionEqual(t *testing.T) {
@@ -47,7 +47,7 @@ func testServerVersionLessThan(t *testing.T) {
 	}
 }
 
-func testServerVersionGetApiVersion(t *testing.T) {
+func testServerVersionGetAPIVersion(t *testing.T) {
 	for _, test := range []struct {
 		v        *ServerVersion
 		endpoint string
@@ -60,14 +60,14 @@ func testServerVersionGetApiVersion(t *testing.T) {
 			want:     apiV1,
 		},
 	} {
-		apiV, err := test.v.GetApiVersion(test.endpoint, test.method)
+		apiV, err := test.v.GetAPIVersion(test.endpoint, test.method)
 
 		assert.NoError(t, err)
 		assert.Equal(t, apiV, test.want)
 	}
 }
 
-func testServerVersionGetApiVersionFail(t *testing.T) {
+func testServerVersionGetAPIVersionFail(t *testing.T) {
 	for _, test := range []struct {
 		v        *ServerVersion
 		endpoint string
@@ -80,7 +80,7 @@ func testServerVersionGetApiVersionFail(t *testing.T) {
 			want:     apiV1,
 		},
 	} {
-		apiV, err := test.v.GetApiVersion(test.endpoint, test.method)
+		apiV, err := test.v.GetAPIVersion(test.endpoint, test.method)
 
 		assert.EqualError(t, err, test.want)
 		assert.Empty(t, apiV)

@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-// GetApiVersion for a given endpoint and method
-func (sv *ServerVersion) GetApiVersion(endpoint string, method string) (apiVersion string, err error) {
+// GetAPIVersion for a given endpoint and method
+func (sv *ServerVersion) GetAPIVersion(endpoint string, method string) (apiVersion string, err error) {
 	var hasEndpoint, hasMethod bool
 	var methods map[string]string
 	serverVersionLookup := map[string]interface{}{}
@@ -50,6 +50,7 @@ func (sv *ServerVersion) Equal(v *ServerVersion) bool {
 	return sv.Version == v.Version
 }
 
+// LessThan compares this server version and determines if it is older than the provided server version
 func (sv *ServerVersion) LessThan(v *ServerVersion) bool {
 	return sv.VersionParts.Major <= v.VersionParts.Major &&
 		sv.VersionParts.Minor <= v.VersionParts.Minor &&
