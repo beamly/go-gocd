@@ -2,17 +2,15 @@ package gocd
 
 import (
 	"fmt"
-	"strings"
 	"strconv"
+	"strings"
 )
 
 // GetApiVersion for a given endpoint and method
 func (sv *ServerVersion) GetApiVersion(endpoint string, method string) (apiVersion string, err error) {
 	var hasEndpoint, hasMethod bool
 	var methods map[string]string
-	serverVersionLookup := map[string]interface{}{
-
-	}
+	serverVersionLookup := map[string]interface{}{}
 
 	if methods, hasEndpoint = serverVersionLookup[endpoint].(map[string]string); hasEndpoint {
 		if apiVersion, hasMethod = methods[method]; hasMethod {
