@@ -10,9 +10,7 @@ func (sv *ServerVersion) GetAPIVersion(endpoint string, method string) (apiVersi
 	var hasEndpoint, hasMethod bool
 	var methods map[string]string
 	serverVersionLookup := map[string]interface{}{
-		"/api/version": map[string]string{
-			"GET": apiV1,
-		},
+		"/api/version": map[string]string{"GET": apiV1},
 	}
 
 	if methods, hasEndpoint = serverVersionLookup[endpoint].(map[string]string); hasEndpoint {
