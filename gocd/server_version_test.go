@@ -2,12 +2,12 @@ package gocd
 
 import (
 	"context"
+	"fmt"
 	"github.com/hashicorp/go-version"
 	"github.com/stretchr/testify/assert"
-	"testing"
-	"net/http"
 	"io/ioutil"
-	"fmt"
+	"net/http"
+	"testing"
 )
 
 func TestServerVersion(t *testing.T) {
@@ -45,7 +45,7 @@ func testServerVersion(t *testing.T) {
 		VersionParts: ver,
 	}, v)
 
-	// Verify that the server version is cached	
+	// Verify that the server version is cached
 	assert.Equal(t, cachedServerVersion, v)
 
 }
