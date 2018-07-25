@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/hashicorp/go-version"
+	"github.com/stretchr/testify/assert"
 )
 
 func testServerVersionResource(t *testing.T) {
