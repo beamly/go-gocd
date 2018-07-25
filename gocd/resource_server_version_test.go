@@ -1,11 +1,12 @@
 package gocd
 
 import (
+	"fmt"
+	"net/http"
 	"testing"
 
-	"fmt"
 	"github.com/stretchr/testify/assert"
-	"net/http"
+	"github.com/hashicorp/go-version"
 )
 
 func testServerVersionResource(t *testing.T) {
@@ -63,8 +64,10 @@ func testServerVersionGetAPIVersion(t *testing.T) {
 			endpoint: "/api/version",
 			method:   http.MethodGet,
 			want:     apiV1,
+			v:        &ServerVersion{Version: "1.0.0"},
 		},
 	} {
+		test.v.parseVersion()
 		apiV, err := test.v.GetAPIVersion(test.endpoint, test.method)
 
 		assert.NoError(t, err)
@@ -89,5 +92,37 @@ func testServerVersionGetAPIVersionFail(t *testing.T) {
 
 		assert.EqualError(t, err, test.want)
 		assert.Empty(t, apiV)
+	}
+}
+
+func TestNewServerApiVersionMapping(t *testing.T) {
+
+	mockVersion, err := version.NewVersion("1.0.0")
+	assert.NoError(t, err)
+	type args struct {
+		serverVersion string
+		apiVersion    string
+	}
+	tests := []struct {
+		name        string
+		args        args
+		wantMapping *ServerApiVersionMapping
+	}{
+		{
+			name: "base",
+			args: args{serverVersion: "1.0.0", apiVersion: apiV1},
+			wantMapping: &ServerApiVersionMapping{
+				Api:    apiV1,
+				Server: mockVersion,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t,
+				tt.wantMapping,
+				NewServerApiVersionMapping(tt.args.serverVersion, tt.args.apiVersion),
+			)
+		})
 	}
 }

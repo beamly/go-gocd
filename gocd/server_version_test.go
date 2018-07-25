@@ -15,6 +15,7 @@ func TestServerVersion(t *testing.T) {
 }
 
 func testServerVersion(t *testing.T) {
+	intSetup()
 
 	if runIntegrationTest() {
 
@@ -56,6 +57,7 @@ func testBadServerVersion(t *testing.T) {
 }
 
 func testBadServerVersionMajor(t *testing.T, i int, errString string) {
+	intSetup()
 	if runIntegrationTest() {
 		_, _, err := client.ServerVersion.Get(context.Background())
 		assert.EqualError(t, err, errString)
@@ -63,28 +65,31 @@ func testBadServerVersionMajor(t *testing.T, i int, errString string) {
 }
 
 func testServerVersionCaching(t *testing.T) {
-	ver, err := version.NewVersion("18.7.0")
-	assert.NoError(t, err)
+	intSetup()
+	if runIntegrationTest() {
+		ver, err := version.NewVersion("18.7.0")
+		assert.NoError(t, err)
 
-	cachedServerVersion = &ServerVersion{
-		Version:      "18.7.0",
-		BuildNumber:  "7121",
-		GitSha:       "75d1247f58ab8bcde3c5b43392a87347979f82c5",
-		FullVersion:  "18.7.0 (7121-75d1247f58ab8bcde3c5b43392a87347979f82c5)",
-		CommitURL:    "https://github.com/gocd/gocd/commits/75d1247f58ab8bcde3c5b43392a87347979f82c5",
-		VersionParts: ver,
+		cachedServerVersion = &ServerVersion{
+			Version:      "18.7.0",
+			BuildNumber:  "7121",
+			GitSha:       "75d1247f58ab8bcde3c5b43392a87347979f82c5",
+			FullVersion:  "18.7.0 (7121-75d1247f58ab8bcde3c5b43392a87347979f82c5)",
+			CommitURL:    "https://github.com/gocd/gocd/commits/75d1247f58ab8bcde3c5b43392a87347979f82c5",
+			VersionParts: ver,
+		}
+		v, b, err := client.ServerVersion.Get(context.Background())
+
+		assert.NoError(t, err)
+		assert.Nil(t, b)
+
+		assert.Equal(t, &ServerVersion{
+			Version:      "18.7.0",
+			BuildNumber:  "7121",
+			GitSha:       "75d1247f58ab8bcde3c5b43392a87347979f82c5",
+			FullVersion:  "18.7.0 (7121-75d1247f58ab8bcde3c5b43392a87347979f82c5)",
+			CommitURL:    "https://github.com/gocd/gocd/commits/75d1247f58ab8bcde3c5b43392a87347979f82c5",
+			VersionParts: ver,
+		}, v)
 	}
-	v, b, err := client.ServerVersion.Get(context.Background())
-
-	assert.NoError(t, err)
-	assert.Nil(t, b)
-
-	assert.Equal(t, &ServerVersion{
-		Version:      "18.7.0",
-		BuildNumber:  "7121",
-		GitSha:       "75d1247f58ab8bcde3c5b43392a87347979f82c5",
-		FullVersion:  "18.7.0 (7121-75d1247f58ab8bcde3c5b43392a87347979f82c5)",
-		CommitURL:    "https://github.com/gocd/gocd/commits/75d1247f58ab8bcde3c5b43392a87347979f82c5",
-		VersionParts: ver,
-	}, v)
 }
