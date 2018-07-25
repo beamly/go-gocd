@@ -97,7 +97,7 @@ func (c *ServerApiVersionMappingCollection) Len() int {
 }
 
 func (c *ServerApiVersionMappingCollection) Less(i, j int) bool {
-	return c.mappings[i].Server.LessThan(c.mappings[i].Server)
+	return c.mappings[i].Server.LessThan(c.mappings[j].Server)
 }
 
 func (c *ServerApiVersionMappingCollection) Swap(i, j int) {

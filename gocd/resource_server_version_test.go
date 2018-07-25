@@ -126,3 +126,41 @@ func TestNewServerApiVersionMapping(t *testing.T) {
 		})
 	}
 }
+
+func TestServerApiVersionMappingCollection_Sort(t *testing.T) {
+	type fields struct {
+		mappings []*ServerApiVersionMapping
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   []*ServerApiVersionMapping
+	}{
+		{
+			name: "base",
+			fields: fields{
+				mappings: NewServerApiVersionMappingSlice(
+					NewServerApiVersionMapping("2.0.0", apiV2),
+					NewServerApiVersionMapping("1.0.0", apiV1),
+					NewServerApiVersionMapping("4.0.0", apiV4),
+					NewServerApiVersionMapping("3.0.0", apiV3),
+				),
+			},
+			want: NewServerApiVersionMappingSlice(
+				NewServerApiVersionMapping("1.0.0", apiV1),
+				NewServerApiVersionMapping("2.0.0", apiV2),
+				NewServerApiVersionMapping("3.0.0", apiV3),
+				NewServerApiVersionMapping("4.0.0", apiV4),
+			),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := &ServerApiVersionMappingCollection{
+				mappings: tt.fields.mappings,
+			}
+			c.Sort()
+			assert.Equal(t, tt.want, c.mappings)
+		})
+	}
+}
