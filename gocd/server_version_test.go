@@ -5,11 +5,49 @@ import (
 	"github.com/hashicorp/go-version"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"net/http"
+	"io/ioutil"
+	"fmt"
 )
 
 func TestServerVersion(t *testing.T) {
 	t.Run("ServerVersionCaching", testServerVersionCaching)
+	t.Run("ServerVersion", testServerVersion)
 	t.Run("Resource", testServerVersionResource)
+}
+
+func testServerVersion(t *testing.T) {
+	setup()
+	defer teardown()
+	ver, err := version.NewVersion("16.6.0")
+	assert.NoError(t, err)
+
+	mux.HandleFunc("/api/version", func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, r.Method, "GET", "Unexpected HTTP method")
+		assert.Equal(t, apiV1, r.Header.Get("Accept"))
+
+		j, _ := ioutil.ReadFile("test/resources/server-version.v1.1.json")
+
+		fmt.Fprint(w, string(j))
+	})
+
+	cachedServerVersion = nil
+	v, _, err := client.ServerVersion.Get(context.Background())
+
+	assert.NoError(t, err)
+
+	assert.Equal(t, &ServerVersion{
+		Version:      "16.6.0",
+		BuildNumber:  "3348",
+		GitSha:       "a7a5717cbd60c30006314fb8dd529796c93adaf0",
+		FullVersion:  "16.6.0 (3348-a7a5717cbd60c30006314fb8dd529796c93adaf0)",
+		CommitURL:    "https://github.com/gocd/gocd/commits/a7a5717cbd60c30006314fb8dd529796c93adaf0",
+		VersionParts: ver,
+	}, v)
+
+	// Verify that the server version is cached	
+	assert.Equal(t, cachedServerVersion, v)
+
 }
 
 func testServerVersionCaching(t *testing.T) {
