@@ -6,18 +6,18 @@ import (
 	"sort"
 )
 
-type ServerApiVersionMapping struct {
-	Api    string
+type serverAPIVersionMapping struct {
+	API    string
 	Server *version.Version
 }
 
-func NewServerApiVersionMappingSlice(mappings ...*ServerApiVersionMapping) []*ServerApiVersionMapping {
+func newServerAPIVersionMappingSlice(mappings ...*serverAPIVersionMapping) []*serverAPIVersionMapping {
 	return mappings
 }
 
-func NewServerApiVersionMapping(serverVersion, apiVersion string) (mapping *ServerApiVersionMapping) {
-	mapping = &ServerApiVersionMapping{
-		Api: apiVersion,
+func newServerAPIVersionMapping(serverVersion, apiVersion string) (mapping *serverAPIVersionMapping) {
+	mapping = &serverAPIVersionMapping{
+		API: apiVersion,
 	}
 
 	var err error
@@ -27,95 +27,94 @@ func NewServerApiVersionMapping(serverVersion, apiVersion string) (mapping *Serv
 	return
 }
 
-func NewServerVersionCollection() *ServerVersionCollection {
-	return &ServerVersionCollection{
-		mapping: make(map[string]*ServerVersionMethodEndpointMapping),
+func newServerVersionCollection() *serverVersionCollection {
+	return &serverVersionCollection{
+		mapping: make(map[string]*serverVersionMethodEndpointMapping),
 	}
 }
 
-func (svc *ServerVersionCollection) WithEndpoint(endpoint string, mapping *ServerVersionMethodEndpointMapping) *ServerVersionCollection {
+type serverVersionCollection struct {
+	mapping map[string]*serverVersionMethodEndpointMapping
+}
+
+func (svc *serverVersionCollection) WithEndpoint(endpoint string, mapping *serverVersionMethodEndpointMapping) *serverVersionCollection {
 	svc.mapping[endpoint] = mapping
 	return svc
 }
-
-type ServerVersionCollection struct {
-	mapping map[string]*ServerVersionMethodEndpointMapping
-}
-
-func (c *ServerVersionCollection) GetEndpointOk(endpoint string) (endpointMapping *ServerVersionMethodEndpointMapping, hasEndpoint bool) {
-	endpointMapping, hasEndpoint = c.mapping[endpoint]
+func (svc *serverVersionCollection) GetEndpointOk(endpoint string) (endpointMapping *serverVersionMethodEndpointMapping, hasEndpoint bool) {
+	endpointMapping, hasEndpoint = svc.mapping[endpoint]
 	return
 }
 
-func NewServerVersionMethodEndpointMapping() *ServerVersionMethodEndpointMapping {
-	return &ServerVersionMethodEndpointMapping{
-		methods: make(map[string][]*ServerApiVersionMapping),
+func newServerVersionMethodEndpointMapping() *serverVersionMethodEndpointMapping {
+	return &serverVersionMethodEndpointMapping{
+		methods: make(map[string][]*serverAPIVersionMapping),
 	}
 }
 
-func (svmep *ServerVersionMethodEndpointMapping) WithMethod(method string, mappings []*ServerApiVersionMapping) *ServerVersionMethodEndpointMapping {
+type serverVersionMethodEndpointMapping struct {
+	methods map[string][]*serverAPIVersionMapping
+}
+
+func (svmep *serverVersionMethodEndpointMapping) WithMethod(method string, mappings []*serverAPIVersionMapping) *serverVersionMethodEndpointMapping {
 	svmep.methods[method] = mappings
 	return svmep
 }
 
-type ServerVersionMethodEndpointMapping struct {
-	methods map[string][]*ServerApiVersionMapping
-}
-
-func (m *ServerVersionMethodEndpointMapping) GetMappingOk(method string) (mappings *ServerApiVersionMappingCollection, hasMethod bool) {
-	var mapping []*ServerApiVersionMapping
-	mapping, hasMethod = m.methods[method]
-	mappings = &ServerApiVersionMappingCollection{mappings: mapping}
+func (svmep *serverVersionMethodEndpointMapping) GetMappingOk(method string) (mappings *serverAPIVersionMappingCollection, hasMethod bool) {
+	var mapping []*serverAPIVersionMapping
+	mapping, hasMethod = svmep.methods[method]
+	mappings = &serverAPIVersionMappingCollection{mappings: mapping}
 
 	return
 }
 
-type ServerApiVersionMappingCollection struct {
-	mappings []*ServerApiVersionMapping
+type serverAPIVersionMappingCollection struct {
+	mappings []*serverAPIVersionMapping
 }
 
-// GetApiVersion for the highest common version
-func (c *ServerApiVersionMappingCollection) GetApiVersion(versionParts *version.Version) (apiVersion string, err error) {
+// GetAPIVersion for the highest common version
+func (c *serverAPIVersionMappingCollection) GetAPIVersion(versionParts *version.Version) (apiVersion string, err error) {
 	c.Sort()
 
 	lastMapping := c.mappings[0]
 	for _, mapping := range c.mappings {
 		if mapping.Server.GreaterThan(versionParts) || mapping.Server.Equal(versionParts) {
-			return lastMapping.Api, nil
+			return lastMapping.API, nil
 		}
 		lastMapping = mapping
 	}
 	return "", fmt.Errorf("could not find api version")
 }
 
-func (c *ServerApiVersionMappingCollection) Sort() {
+func (c *serverAPIVersionMappingCollection) Sort() {
 	sort.Sort(c)
 }
 
-func (c *ServerApiVersionMappingCollection) Len() int {
+func (c *serverAPIVersionMappingCollection) Len() int {
 	return len(c.mappings)
 }
 
-func (c *ServerApiVersionMappingCollection) Less(i, j int) bool {
+func (c *serverAPIVersionMappingCollection) Less(i, j int) bool {
 	return c.mappings[i].Server.LessThan(c.mappings[j].Server)
 }
 
-func (c *ServerApiVersionMappingCollection) Swap(i, j int) {
+func (c *serverAPIVersionMappingCollection) Swap(i, j int) {
 	c.mappings[i], c.mappings[j] = c.mappings[j], c.mappings[i]
 }
 
 // GetAPIVersion for a given endpoint and method
 func (sv *ServerVersion) GetAPIVersion(endpoint string, method string) (apiVersion string, err error) {
 
-	serverVersionLookup := NewServerVersionCollection().WithEndpoint(
-		"/api/version", NewServerVersionMethodEndpointMapping().WithMethod(
-			"GET", NewServerApiVersionMappingSlice(
-				NewServerApiVersionMapping("1.0.0", apiV1),
+	serverVersionLookup := newServerVersionCollection().WithEndpoint(
+		"/api/version", newServerVersionMethodEndpointMapping().WithMethod(
+			"GET", newServerAPIVersionMappingSlice(
+				newServerAPIVersionMapping("1.0.0", apiV1),
 			)))
 
 	if methods, hasEndpoint := serverVersionLookup.GetEndpointOk(endpoint); hasEndpoint {
 		if versionMapping, hasVersionMapping := methods.GetMappingOk(method); hasVersionMapping {
-			return versionMapping.GetApiVersion(sv.VersionParts)
+			return versionMapping.GetAPIVersion(sv.VersionParts)
 		}
 	}
 

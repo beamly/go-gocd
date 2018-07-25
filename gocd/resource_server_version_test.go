@@ -95,7 +95,7 @@ func testServerVersionGetAPIVersionFail(t *testing.T) {
 	}
 }
 
-func TestNewServerApiVersionMapping(t *testing.T) {
+func TestNewserverAPIVersionMapping(t *testing.T) {
 
 	mockVersion, err := version.NewVersion("1.0.0")
 	assert.NoError(t, err)
@@ -106,13 +106,13 @@ func TestNewServerApiVersionMapping(t *testing.T) {
 	tests := []struct {
 		name        string
 		args        args
-		wantMapping *ServerApiVersionMapping
+		wantMapping *serverAPIVersionMapping
 	}{
 		{
 			name: "base",
 			args: args{serverVersion: "1.0.0", apiVersion: apiV1},
-			wantMapping: &ServerApiVersionMapping{
-				Api:    apiV1,
+			wantMapping: &serverAPIVersionMapping{
+				API:    apiV1,
 				Server: mockVersion,
 			},
 		},
@@ -121,43 +121,38 @@ func TestNewServerApiVersionMapping(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equal(t,
 				tt.wantMapping,
-				NewServerApiVersionMapping(tt.args.serverVersion, tt.args.apiVersion),
+				newServerAPIVersionMapping(tt.args.serverVersion, tt.args.apiVersion),
 			)
 		})
 	}
 }
 
-func TestServerApiVersionMappingCollection_Sort(t *testing.T) {
-	type fields struct {
-		mappings []*ServerApiVersionMapping
-	}
+func TestServerAPIVersionMappingCollection_Sort(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   []*ServerApiVersionMapping
+		name     string
+		mappings []*serverAPIVersionMapping
+		want     []*serverAPIVersionMapping
 	}{
 		{
 			name: "base",
-			fields: fields{
-				mappings: NewServerApiVersionMappingSlice(
-					NewServerApiVersionMapping("2.0.0", apiV2),
-					NewServerApiVersionMapping("1.0.0", apiV1),
-					NewServerApiVersionMapping("4.0.0", apiV4),
-					NewServerApiVersionMapping("3.0.0", apiV3),
-				),
-			},
-			want: NewServerApiVersionMappingSlice(
-				NewServerApiVersionMapping("1.0.0", apiV1),
-				NewServerApiVersionMapping("2.0.0", apiV2),
-				NewServerApiVersionMapping("3.0.0", apiV3),
-				NewServerApiVersionMapping("4.0.0", apiV4),
+			mappings: newServerAPIVersionMappingSlice(
+				newServerAPIVersionMapping("2.0.0", apiV2),
+				newServerAPIVersionMapping("1.0.0", apiV1),
+				newServerAPIVersionMapping("4.0.0", apiV4),
+				newServerAPIVersionMapping("3.0.0", apiV3),
+			),
+			want: newServerAPIVersionMappingSlice(
+				newServerAPIVersionMapping("1.0.0", apiV1),
+				newServerAPIVersionMapping("2.0.0", apiV2),
+				newServerAPIVersionMapping("3.0.0", apiV3),
+				newServerAPIVersionMapping("4.0.0", apiV4),
 			),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := &ServerApiVersionMappingCollection{
-				mappings: tt.fields.mappings,
+			c := &serverAPIVersionMappingCollection{
+				mappings: tt.mappings,
 			}
 			c.Sort()
 			assert.Equal(t, tt.want, c.mappings)
