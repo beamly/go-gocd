@@ -106,12 +106,12 @@ func TestNewserverAPIVersionMapping(t *testing.T) {
 	tests := []struct {
 		name        string
 		args        args
-		wantMapping *serverAPIVersionMapping
+		wantMapping *serverVersionToAcceptMapping
 	}{
 		{
 			name: "base",
 			args: args{serverVersion: "1.0.0", apiVersion: apiV1},
-			wantMapping: &serverAPIVersionMapping{
+			wantMapping: &serverVersionToAcceptMapping{
 				API:    apiV1,
 				Server: mockVersion,
 			},
@@ -121,7 +121,7 @@ func TestNewserverAPIVersionMapping(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equal(t,
 				tt.wantMapping,
-				newServerAPIVersionMapping(tt.args.serverVersion, tt.args.apiVersion),
+				newServerAPI(tt.args.serverVersion, tt.args.apiVersion),
 			)
 		})
 	}
@@ -130,22 +130,22 @@ func TestNewserverAPIVersionMapping(t *testing.T) {
 func TestServerAPIVersionMappingCollection_Sort(t *testing.T) {
 	tests := []struct {
 		name     string
-		mappings []*serverAPIVersionMapping
-		want     []*serverAPIVersionMapping
+		mappings []*serverVersionToAcceptMapping
+		want     []*serverVersionToAcceptMapping
 	}{
 		{
 			name: "base",
-			mappings: newServerAPIVersionMappingSlice(
-				newServerAPIVersionMapping("2.0.0", apiV2),
-				newServerAPIVersionMapping("1.0.0", apiV1),
-				newServerAPIVersionMapping("4.0.0", apiV4),
-				newServerAPIVersionMapping("3.0.0", apiV3),
+			mappings: newServerAPISlice(
+				newServerAPI("2.0.0", apiV2),
+				newServerAPI("1.0.0", apiV1),
+				newServerAPI("4.0.0", apiV4),
+				newServerAPI("3.0.0", apiV3),
 			),
-			want: newServerAPIVersionMappingSlice(
-				newServerAPIVersionMapping("1.0.0", apiV1),
-				newServerAPIVersionMapping("2.0.0", apiV2),
-				newServerAPIVersionMapping("3.0.0", apiV3),
-				newServerAPIVersionMapping("4.0.0", apiV4),
+			want: newServerAPISlice(
+				newServerAPI("1.0.0", apiV1),
+				newServerAPI("2.0.0", apiV2),
+				newServerAPI("3.0.0", apiV3),
+				newServerAPI("4.0.0", apiV4),
 			),
 		},
 	}
