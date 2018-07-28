@@ -12,8 +12,20 @@ func init() {
 	serverVersionLookup = newServerVersionLookup().WithEndpoint(
 		"/api/version", newMethodToVersionsMapping().WithMethod(
 			"GET", newServerAPISlice(
-				newServerAPI("1.0.0", apiV1),
-			)))
+				newServerAPI("16.6.0", apiV1),
+			))).WithEndpoint(
+		"/go/api/admin/pipelines/:pipeline_name", newMethodToVersionsMapping().WithMethod(
+			"GET", newServerAPISlice(
+				newServerAPI("18.7.0", apiV6),
+				newServerAPI("17.12.0", apiV5),
+			)).WithMethod(
+			"PUT", newServerAPISlice(
+				newServerAPI("18.7.0", apiV6),
+				newServerAPI("17.12.0", apiV5),
+				newServerAPI("17.4.0", apiV4),
+			),
+		),
+	)
 }
 
 // GetAPIVersion for a given endpoint and method

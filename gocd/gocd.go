@@ -32,6 +32,10 @@ const (
 	apiV3 = "application/vnd.go.cd.v3+json"
 	// Version 4 of the GoCD API.
 	apiV4 = "application/vnd.go.cd.v4+json"
+	// Version 5 of the GoCD API.
+	apiV5 = "application/vnd.go.cd.v5+json"
+	// Version 6 of the GoCD API.
+	apiV6 = "application/vnd.go.cd.v6+json"
 )
 
 //Body Response Types
