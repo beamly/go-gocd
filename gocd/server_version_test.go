@@ -51,7 +51,7 @@ func testServerVersion(t *testing.T) {
 }
 
 func testServerVersionCaching(t *testing.T) {
-	if runIntegrationTest() {
+	if runIntegrationTest(t) {
 		ver, err := version.NewVersion("18.7.0")
 		assert.NoError(t, err)
 

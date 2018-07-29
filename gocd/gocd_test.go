@@ -72,7 +72,15 @@ func teardown() {
 	server.Close()
 }
 
-func runIntegrationTest() bool {
+func runIntegrationTest(t *testing.T) bool {
+	run := isIntegrationTest()
+	if !run {
+		skipIntegrationtest(t)
+	}
+	return run
+}
+
+func isIntegrationTest() bool {
 	return os.Getenv("GOCD_ACC") == "1"
 }
 
@@ -253,7 +261,7 @@ func testClientDo(t *testing.T) {
 }
 
 func init() {
-	if runIntegrationTest() {
+	if isIntegrationTest() {
 		intSetup()
 	}
 }

@@ -13,7 +13,7 @@ func TestRole(t *testing.T) {
 
 func testRoleGoCD(t *testing.T) {
 
-	if runIntegrationTest() {
+	if runIntegrationTest(t) {
 
 		ctx := context.Background()
 

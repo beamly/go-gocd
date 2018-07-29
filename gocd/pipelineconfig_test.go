@@ -8,7 +8,7 @@ import (
 )
 
 func TestPipelineConfig(t *testing.T) {
-	if runIntegrationTest() {
+	if runIntegrationTest(t) {
 		input := &Pipeline{
 			Name: "new_pipeline",
 			Materials: []Material{{
