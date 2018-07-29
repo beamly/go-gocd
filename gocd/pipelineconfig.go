@@ -39,6 +39,8 @@ func (pcs *PipelineConfigsService) Update(ctx context.Context, name string, p *P
 		ResponseBody: pr,
 	})
 
+	pr.Group = p.Group
+
 	return
 }
 
@@ -55,6 +57,8 @@ func (pcs *PipelineConfigsService) Create(ctx context.Context, group string, p *
 		},
 		ResponseBody: pr,
 	})
+
+	pr.Group = group
 
 	return
 }

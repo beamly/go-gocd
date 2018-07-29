@@ -19,7 +19,6 @@ func init() {
 				newServerAPI("17.4.0", apiV4)),
 		},
 	}
-	fmt.Print(serverVersionLookup)
 }
 
 // GetAPIVersion for a given endpoint and method
