@@ -129,33 +129,34 @@ func TestNewserverAPIVersionMapping(t *testing.T) {
 
 func TestServerAPIVersionMappingCollection_Sort(t *testing.T) {
 	tests := []struct {
-		name     string
-		mappings []*serverVersionToAcceptMapping
-		want     []*serverVersionToAcceptMapping
+		name string
+		have *serverAPIVersionMappingCollection
+		want *serverAPIVersionMappingCollection
 	}{
 		{
 			name: "base",
-			mappings: newServerAPISlice(
-				newServerAPI("2.0.0", apiV2),
-				newServerAPI("1.0.0", apiV1),
-				newServerAPI("4.0.0", apiV4),
-				newServerAPI("3.0.0", apiV3),
-			),
-			want: newServerAPISlice(
-				newServerAPI("1.0.0", apiV1),
-				newServerAPI("2.0.0", apiV2),
-				newServerAPI("3.0.0", apiV3),
-				newServerAPI("4.0.0", apiV4),
-			),
+			have: &serverAPIVersionMappingCollection{
+				mappings: []*serverVersionToAcceptMapping{
+					newServerAPI("2.0.0", apiV2),
+					newServerAPI("1.0.0", apiV1),
+					newServerAPI("4.0.0", apiV4),
+					newServerAPI("3.0.0", apiV3),
+				},
+			},
+			want: &serverAPIVersionMappingCollection{
+				mappings: []*serverVersionToAcceptMapping{
+					newServerAPI("1.0.0", apiV1),
+					newServerAPI("2.0.0", apiV2),
+					newServerAPI("3.0.0", apiV3),
+					newServerAPI("4.0.0", apiV4),
+				},
+			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := &serverAPIVersionMappingCollection{
-				mappings: tt.mappings,
-			}
-			c.Sort()
-			assert.Equal(t, tt.want, c.mappings)
+			tt.have.Sort()
+			assert.Equal(t, tt.want, tt.have)
 		})
 	}
 }

@@ -9,32 +9,24 @@ import (
 var serverVersionLookup *serverVersionCollection
 
 func init() {
-	serverVersionLookup = newServerVersionLookup().WithEndpoint(
-		"/api/version", newMethodToVersionsMapping().WithMethod(
-			"GET", newServerAPISlice(
-				newServerAPI("16.6.0", apiV1),
-			))).WithEndpoint(
-		"/go/api/admin/pipelines/:pipeline_name", newMethodToVersionsMapping().WithMethod(
-			"GET", newServerAPISlice(
+	serverVersionLookup = &serverVersionCollection{
+		mapping: map[endpointS]*serverAPIVersionMappingCollection{
+			"/api/version": newVersionCollection(
+				newServerAPI("16.6.0", apiV1)),
+			"/go/api/admin/pipelines/:pipeline_name": newVersionCollection(
 				newServerAPI("18.7.0", apiV6),
 				newServerAPI("17.12.0", apiV5),
-			)).WithMethod(
-			"PUT", newServerAPISlice(
-				newServerAPI("18.7.0", apiV6),
-				newServerAPI("17.12.0", apiV5),
-				newServerAPI("17.4.0", apiV4),
-			),
-		),
-	)
+				newServerAPI("17.4.0", apiV4)),
+		},
+	}
+	fmt.Print(serverVersionLookup)
 }
 
 // GetAPIVersion for a given endpoint and method
 func (sv *ServerVersion) GetAPIVersion(endpoint string, method string) (apiVersion string, err error) {
 
-	if methods, hasEndpoint := serverVersionLookup.GetEndpointOk(endpoint); hasEndpoint {
-		if versionMapping, hasVersionMapping := methods.GetMappingOk(method); hasVersionMapping {
-			return versionMapping.GetAPIVersion(sv.VersionParts)
-		}
+	if versions, hasEndpoint := serverVersionLookup.GetEndpointOk(endpoint); hasEndpoint {
+		return versions.GetAPIVersion(sv.VersionParts)
 	}
 
 	return "", fmt.Errorf("could not find API version tag for '%s %s'", method, endpoint)
@@ -69,12 +61,8 @@ type serverVersionToAcceptMapping struct {
 	Server *version.Version
 }
 
-type serverVersionMethodEndpointMapping struct {
-	methods map[methodS][]*serverVersionToAcceptMapping
-}
-
 type serverVersionCollection struct {
-	mapping map[endpointS]*serverVersionMethodEndpointMapping
+	mapping map[endpointS]*serverAPIVersionMappingCollection
 }
 
 type serverAPIVersionMappingCollection struct {
@@ -83,8 +71,10 @@ type serverAPIVersionMappingCollection struct {
 
 // newServerAPISlice provides some syntactic sugar to make the chaining resources a bit easier
 // to read.
-func newServerAPISlice(mappings ...*serverVersionToAcceptMapping) []*serverVersionToAcceptMapping {
-	return mappings
+func newVersionCollection(mappings ...*serverVersionToAcceptMapping) *serverAPIVersionMappingCollection {
+	return &serverAPIVersionMappingCollection{
+		mappings: mappings,
+	}
 }
 
 // newServerAPI creates a new server/api version mapping and panics on any errors. These
@@ -101,38 +91,8 @@ func newServerAPI(serverVersion, apiVersion string) (mapping *serverVersionToAcc
 	return
 }
 
-func newServerVersionLookup() *serverVersionCollection {
-	return &serverVersionCollection{
-		mapping: make(map[endpointS]*serverVersionMethodEndpointMapping),
-	}
-}
-
-func (svc *serverVersionCollection) WithEndpoint(endpoint string, mapping *serverVersionMethodEndpointMapping) *serverVersionCollection {
-	svc.mapping[endpointS(endpoint)] = mapping
-	return svc
-}
-
-func (svc *serverVersionCollection) GetEndpointOk(endpoint string) (endpointMapping *serverVersionMethodEndpointMapping, hasEndpoint bool) {
+func (svc *serverVersionCollection) GetEndpointOk(endpoint string) (endpointMapping *serverAPIVersionMappingCollection, hasEndpoint bool) {
 	endpointMapping, hasEndpoint = svc.mapping[endpointS(endpoint)]
-	return
-}
-
-func newMethodToVersionsMapping() *serverVersionMethodEndpointMapping {
-	return &serverVersionMethodEndpointMapping{
-		methods: make(map[methodS][]*serverVersionToAcceptMapping),
-	}
-}
-
-func (svmep *serverVersionMethodEndpointMapping) WithMethod(method string, mappings []*serverVersionToAcceptMapping) *serverVersionMethodEndpointMapping {
-	svmep.methods[methodS(method)] = mappings
-	return svmep
-}
-
-func (svmep *serverVersionMethodEndpointMapping) GetMappingOk(method string) (mappings *serverAPIVersionMappingCollection, hasMethod bool) {
-	var mapping []*serverVersionToAcceptMapping
-	mapping, hasMethod = svmep.methods[methodS(method)]
-	mappings = &serverAPIVersionMappingCollection{mappings: mapping}
-
 	return
 }
 
