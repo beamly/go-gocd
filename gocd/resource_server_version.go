@@ -48,12 +48,11 @@ func (sv *ServerVersion) LessThan(v *ServerVersion) bool {
 }
 
 //
-// Structures for storing, creating, and parsing the method/endpoint/server-version/api-version mapping
+// Structures for storing, creating, and parsing the endpoint/server-version/api-version mapping
 //
 
 // following type definitions makes the map[...]... below a bit easier to understand.
 type endpointS string
-type methodS string
 
 // serverVersionToAcceptMapping links an Accept header value and a Server version
 type serverVersionToAcceptMapping struct {
