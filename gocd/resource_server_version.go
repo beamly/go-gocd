@@ -13,7 +13,7 @@ func init() {
 		mapping: map[endpointS]*serverAPIVersionMappingCollection{
 			"/api/version": newVersionCollection(
 				newServerAPI("16.6.0", apiV1)),
-			"/go/api/admin/pipelines/:pipeline_name": newVersionCollection(
+			"/api/admin/pipelines/:pipeline_name": newVersionCollection(
 				newServerAPI("18.7.0", apiV6),
 				newServerAPI("17.12.0", apiV5),
 				newServerAPI("17.4.0", apiV4)),
@@ -23,13 +23,13 @@ func init() {
 }
 
 // GetAPIVersion for a given endpoint and method
-func (sv *ServerVersion) GetAPIVersion(endpoint string, method string) (apiVersion string, err error) {
+func (sv *ServerVersion) GetAPIVersion(endpoint string) (apiVersion string, err error) {
 
 	if versions, hasEndpoint := serverVersionLookup.GetEndpointOk(endpoint); hasEndpoint {
 		return versions.GetAPIVersion(sv.VersionParts)
 	}
 
-	return "", fmt.Errorf("could not find API version tag for '%s %s'", method, endpoint)
+	return "", fmt.Errorf("could not find API version tag for '%s'", endpoint)
 }
 
 func (sv *ServerVersion) parseVersion() (err error) {
@@ -107,7 +107,7 @@ func (c *serverAPIVersionMappingCollection) GetAPIVersion(versionParts *version.
 		}
 		lastMapping = mapping
 	}
-	return "", fmt.Errorf("could not find api version")
+	return "", fmt.Errorf("could not find api version for server version '%s'", versionParts.String())
 }
 
 // Sort the version collections

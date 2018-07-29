@@ -2,7 +2,6 @@ package gocd
 
 import (
 	"fmt"
-	"net/http"
 	"testing"
 
 	"github.com/hashicorp/go-version"
@@ -57,21 +56,24 @@ func testServerVersionGetAPIVersion(t *testing.T) {
 	for _, test := range []struct {
 		v        *ServerVersion
 		endpoint string
-		method   string
 		want     string
 	}{
 		{
 			endpoint: "/api/version",
-			method:   http.MethodGet,
 			want:     apiV1,
 			v:        &ServerVersion{Version: "1.0.0"},
 		},
+		{
+			endpoint: "/api/admin/pipelines/:pipeline_name",
+			want:     apiV5,
+			v:        &ServerVersion{Version: "17.13.0"},
+		},
 	} {
 		test.v.parseVersion()
-		apiV, err := test.v.GetAPIVersion(test.endpoint, test.method)
+		apiV, err := test.v.GetAPIVersion(test.endpoint)
 
 		assert.NoError(t, err)
-		assert.Equal(t, apiV, test.want)
+		assert.Equal(t, test.want, apiV)
 	}
 }
 
@@ -79,16 +81,21 @@ func testServerVersionGetAPIVersionFail(t *testing.T) {
 	for _, test := range []struct {
 		v        *ServerVersion
 		endpoint string
-		method   string
 		want     string
 	}{
 		{
 			endpoint: "/api/foobar",
-			method:   http.MethodGet,
-			want:     "could not find API version tag for 'GET /api/foobar'",
+			want:     "could not find API version tag for '/api/foobar'",
+			v:        &ServerVersion{Version: "1.0.0"},
+		},
+		{
+			endpoint: "/api/admin/pipelines/:pipeline_name",
+			want:     "could not find api version for server version '100.0.0'",
+			v:        &ServerVersion{Version: "100.0.0"},
 		},
 	} {
-		apiV, err := test.v.GetAPIVersion(test.endpoint, test.method)
+		test.v.parseVersion()
+		apiV, err := test.v.GetAPIVersion(test.endpoint)
 
 		assert.EqualError(t, err, test.want)
 		assert.Empty(t, apiV)
