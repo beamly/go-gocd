@@ -9,7 +9,7 @@ services:
 
 env:
  - GOCD_VERSION=v17.10.0 CODECLIMATE_API_HOST=https://codebeat.co/webhooks/code_coverage
- - GOCD_VERSION=v18.6.0 CODECLIMATE_API_HOST=https://codebeat.co/webhooks/code_coverage
+ - GOCD_VERSION=v18.7.0 CODECLIMATE_API_HOST=https://codebeat.co/webhooks/code_coverage
 
 addons:
   apt:
@@ -19,7 +19,7 @@ addons:
 matrix:
   fast_finish: true
   allow_failures:
-   - env: GOCD_VERSION=v18.6.0 CODECLIMATE_API_HOST=https://codebeat.co/webhooks/code_coverage
+   - env: GOCD_VERSION=v18.7.0 CODECLIMATE_API_HOST=https://codebeat.co/webhooks/code_coverage
 
 before_install:
   - make before_install
