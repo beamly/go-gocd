@@ -24,6 +24,8 @@ const (
 	libraryVersion = "1"
 	// UserAgent to be used when calling the GoCD agent.
 	userAgent = "go-gocd/" + libraryVersion
+	// For the unversionned API
+	apiV0 = ""
 	// Version 1 of the GoCD API.
 	apiV1 = "application/vnd.go.cd.v1+json"
 	// Version 2 of the GoCD API.
