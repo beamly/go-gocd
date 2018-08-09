@@ -19,13 +19,13 @@ func init() {
 				newServerAPI("17.12.0", apiV5),
 				newServerAPI("17.4.0", apiV4)),
 			"/api/pipelines/:pipeline_name/pause": newVersionCollection(
-				newServerAPI("14.3.0", ""),
+				newServerAPI("14.3.0", apiV0),
 				newServerAPI("18.2.0", apiV1)),
 			"/api/pipelines/:pipeline_name/unpause": newVersionCollection(
-				newServerAPI("14.3.0", ""),
+				newServerAPI("14.3.0", apiV0),
 				newServerAPI("18.2.0", apiV1)),
 			"/api/pipelines/:pipeline_name/releaseLock": newVersionCollection(
-				newServerAPI("14.3.0", ""),
+				newServerAPI("14.3.0", apiV0),
 				newServerAPI("18.2.0", apiV1)),
 		},
 	}

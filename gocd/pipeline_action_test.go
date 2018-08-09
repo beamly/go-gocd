@@ -17,6 +17,7 @@ func testPipelineServicePause(t *testing.T) {
 		{
 			v:             &ServerVersion{Version: "14.3.0"},
 			confirmHeader: "Confirm",
+			acceptHeader:  apiV0,
 		},
 		{
 			v:             &ServerVersion{Version: "18.3.0"},
@@ -56,6 +57,7 @@ func testPipelineServiceUnpause(t *testing.T) {
 		{
 			v:             &ServerVersion{Version: "14.3.0"},
 			confirmHeader: "Confirm",
+			acceptHeader:  apiV0,
 		},
 		{
 			v:             &ServerVersion{Version: "18.3.0"},
@@ -95,6 +97,7 @@ func testPipelineServiceReleaseLock(t *testing.T) {
 		{
 			v:             &ServerVersion{Version: "14.3.0"},
 			confirmHeader: "Confirm",
+			acceptHeader:  apiV0,
 		},
 		{
 			v:             &ServerVersion{Version: "18.3.0"},

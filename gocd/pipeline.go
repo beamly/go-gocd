@@ -171,7 +171,7 @@ func (pgs *PipelinesService) pipelineAction(ctx context.Context, name string, ac
 	}
 
 	headers := map[string]string{"X-GoCD-Confirm": "true"}
-	if apiVersion == "" {
+	if apiVersion == apiV0 {
 		headers = map[string]string{"Confirm": "true"}
 	}
 
