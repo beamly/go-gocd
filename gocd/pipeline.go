@@ -170,6 +170,7 @@ func (pgs *PipelinesService) pipelineAction(ctx context.Context, name string, ac
 		return false, nil, err
 	}
 
+	responseBody := map[string]interface{}{}
 	request := &APIClientRequest{
 		Path:       fmt.Sprintf("pipelines/%s/%s", name, action),
 		APIVersion: apiVersion,
@@ -179,6 +180,7 @@ func (pgs *PipelinesService) pipelineAction(ctx context.Context, name string, ac
 		request.Headers = map[string]string{"Confirm": "true"}
 	} else {
 		request.ResponseType = responseTypeJSON
+		request.ResponseBody = &responseBody
 	}
 
 	_, resp, err := pgs.client.postAction(ctx, request)

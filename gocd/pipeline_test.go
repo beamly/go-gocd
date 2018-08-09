@@ -18,9 +18,8 @@ func TestPipelineService(t *testing.T) {
 	t.Run("Create", testPipelineServiceCreate)
 	t.Run("GetHistory", testPipelineServiceGetHistory)
 	t.Run("GetStatus", testPipelineServiceGetStatus)
-	t.Run("Pause", testPipelineServicePause)
-	t.Run("Unpause", testPipelineServiceUnpause)
-	t.Run("ReleaseLock", testPipelineServiceReleaseLock)
+	t.Run("Un/Pause", testPipelineServiceUnPause)
+	//t.Run("ReleaseLock", testPipelineServiceReleaseLock)
 	t.Run("PaginationStub", testPipelineServicePaginationStub)
 	t.Run("StageContainer", testPipelineStageContainer)
 }

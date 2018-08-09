@@ -185,6 +185,18 @@ func buildMockPipelineStages() []*Stage {
 					Command: "ls",
 				},
 			}},
+			Tabs:                 make([]*Tab, 0),
+			Artifacts:            make([]*Artifact, 0),
+			EnvironmentVariables: make([]*EnvironmentVariable, 0),
+			Resources:            []string{},
 		}},
+		Approval: &Approval{
+			Type: "success",
+			Authorization: &Authorization{
+				Users: make([]string, 0),
+				Roles: make([]string, 0),
+			},
+		},
+		EnvironmentVariables: make([]*EnvironmentVariable, 0),
 	}}
 }
