@@ -94,7 +94,7 @@ func (c *Client) httpAction(ctx context.Context, r *APIClientRequest) (responseB
 		return false, nil, err
 	}
 	if r.RequestBody != nil {
-		c.Log.WithField("RequestBody", r.RequestBody).Debug("Sending Request Body")
+		c.Log.WithField("RequestBody", req.Body).Debug("Sending Request Body")
 	}
 
 	if len(r.Headers) > 0 {

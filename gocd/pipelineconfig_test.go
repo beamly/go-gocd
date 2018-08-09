@@ -19,19 +19,7 @@ func TestPipelineConfig(t *testing.T) {
 					Branch:      "master",
 				},
 			}},
-			Stages: []*Stage{{
-				Name: "defaultStage",
-				Jobs: []*Job{{
-					Name: "defaultJob",
-					Tasks: []*Task{{
-						Type: "exec",
-						Attributes: TaskAttributes{
-							RunIf:   []string{"passed"},
-							Command: "ls",
-						},
-					}},
-				}},
-			}},
+			Stages: buildMockPipelineStages(),
 		}
 
 		ctx := context.Background()
@@ -183,4 +171,20 @@ func TestPipelineConfig(t *testing.T) {
 		assert.Equal(t, "The pipeline 'new_pipeline' was deleted successfully.", message)
 
 	}
+}
+
+func buildMockPipelineStages() []*Stage {
+	return []*Stage{{
+		Name: "defaultStage",
+		Jobs: []*Job{{
+			Name: "defaultJob",
+			Tasks: []*Task{{
+				Type: "exec",
+				Attributes: TaskAttributes{
+					RunIf:   []string{"passed"},
+					Command: "ls",
+				},
+			}},
+		}},
+	}}
 }
