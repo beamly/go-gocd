@@ -165,11 +165,20 @@ func (pgs *PipelinesService) GetHistory(ctx context.Context, name string, offset
 
 func (pgs *PipelinesService) pipelineAction(ctx context.Context, name string, action string) (bool, *APIResponse, error) {
 
+	apiVersion, err := pgs.client.getAPIVersion(ctx, fmt.Sprintf("pipelines/:pipeline_name/%s", action))
+	if err != nil {
+		return false, nil, err
+	}
+
+	headers := map[string]string{"X-GoCD-Confirm": "true"}
+	if apiVersion == apiV0 {
+		headers = map[string]string{"Confirm": "true"}
+	}
+
 	_, resp, err := pgs.client.postAction(ctx, &APIClientRequest{
-		Path: fmt.Sprintf("pipelines/%s/%s", name, action),
-		Headers: map[string]string{
-			"Confirm": "true",
-		},
+		Path:       fmt.Sprintf("pipelines/%s/%s", name, action),
+		APIVersion: apiVersion,
+		Headers:    headers,
 	})
 
 	return resp.HTTP.StatusCode == 200, resp, err

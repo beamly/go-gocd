@@ -24,6 +24,8 @@ const (
 	libraryVersion = "1"
 	// UserAgent to be used when calling the GoCD agent.
 	userAgent = "go-gocd/" + libraryVersion
+	// For the unversionned API
+	apiV0 = ""
 	// Version 1 of the GoCD API.
 	apiV1 = "application/vnd.go.cd.v1+json"
 	// Version 2 of the GoCD API.
@@ -286,6 +288,16 @@ func (c *Client) Do(ctx context.Context, req *APIRequest, v interface{}, respons
 	}
 
 	return r, err
+}
+
+// getAPIVersion is a wrapper around ServerVersion.GetAPIVersion that starts by making sure ServerVersionService.Get has
+// been called. Note that it also adds the /api/ in front of the provided endpoint
+func (c *Client) getAPIVersion(ctx context.Context, endpoint string) (apiVersion string, err error) {
+	v, _, err := c.ServerVersion.Get(ctx)
+	if err != nil {
+		return "", err
+	}
+	return v.GetAPIVersion(fmt.Sprintf("/api/%s", endpoint))
 }
 
 func readDoResponseBody(v interface{}, bodyReader *io.ReadCloser, responseType string) (body string, err error) {

@@ -9,6 +9,7 @@ import (
 var serverVersionLookup *serverVersionCollection
 
 func init() {
+	// This structure lists the minimum version of GoCD in which the corresponding API version is available for a given endpoint
 	serverVersionLookup = &serverVersionCollection{
 		mapping: map[endpointS]*serverAPIVersionMappingCollection{
 			"/api/version": newVersionCollection(
@@ -17,6 +18,15 @@ func init() {
 				newServerAPI("18.7.0", apiV6),
 				newServerAPI("17.12.0", apiV5),
 				newServerAPI("17.4.0", apiV4)),
+			"/api/pipelines/:pipeline_name/pause": newVersionCollection(
+				newServerAPI("14.3.0", apiV0),
+				newServerAPI("18.2.0", apiV1)),
+			"/api/pipelines/:pipeline_name/unpause": newVersionCollection(
+				newServerAPI("14.3.0", apiV0),
+				newServerAPI("18.2.0", apiV1)),
+			"/api/pipelines/:pipeline_name/releaseLock": newVersionCollection(
+				newServerAPI("14.3.0", apiV0),
+				newServerAPI("18.2.0", apiV1)),
 		},
 	}
 }
@@ -99,13 +109,19 @@ func (c *serverAPIVersionMappingCollection) GetAPIVersion(versionParts *version.
 	c.Sort()
 
 	lastMapping := c.mappings[0]
+	// If the minimum version specified is too high or absent, no use to go further
+	if lastMapping == nil || lastMapping.Server.GreaterThan(versionParts) {
+		fmt.Printf("lastMapping.Server: %v -- versionParts: %v\n", lastMapping.Server, versionParts)
+		return "", fmt.Errorf("could not find api version for server version '%s'", versionParts.String())
+	}
 	for _, mapping := range c.mappings {
-		if mapping.Server.GreaterThan(versionParts) || mapping.Server.Equal(versionParts) {
-			return lastMapping.API, nil
+		fmt.Printf("lastMapping.Server: %v -- versionParts: %v\n", lastMapping.Server, versionParts)
+		if mapping.Server.GreaterThan(versionParts) {
+			break
 		}
 		lastMapping = mapping
 	}
-	return "", fmt.Errorf("could not find api version for server version '%s'", versionParts.String())
+	return lastMapping.API, nil
 }
 
 // Sort the version collections

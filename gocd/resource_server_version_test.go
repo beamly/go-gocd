@@ -61,12 +61,22 @@ func testServerVersionGetAPIVersion(t *testing.T) {
 		{
 			endpoint: "/api/version",
 			want:     apiV1,
-			v:        &ServerVersion{Version: "1.0.0"},
+			v:        &ServerVersion{Version: "16.7.0"},
 		},
 		{
 			endpoint: "/api/admin/pipelines/:pipeline_name",
 			want:     apiV5,
 			v:        &ServerVersion{Version: "17.13.0"},
+		},
+		{
+			endpoint: "/api/admin/pipelines/:pipeline_name",
+			want:     apiV6,
+			v:        &ServerVersion{Version: "18.7.0"},
+		},
+		{
+			endpoint: "/api/admin/pipelines/:pipeline_name",
+			want:     apiV6,
+			v:        &ServerVersion{Version: "18.8.0"},
 		},
 	} {
 		test.v.parseVersion()
@@ -84,14 +94,19 @@ func testServerVersionGetAPIVersionFail(t *testing.T) {
 		want     string
 	}{
 		{
+			endpoint: "/api/version",
+			want:     "could not find api version for server version '1.0.0'",
+			v:        &ServerVersion{Version: "1.0.0"},
+		},
+		{
 			endpoint: "/api/foobar",
 			want:     "could not find API version tag for '/api/foobar'",
 			v:        &ServerVersion{Version: "1.0.0"},
 		},
 		{
 			endpoint: "/api/admin/pipelines/:pipeline_name",
-			want:     "could not find api version for server version '100.0.0'",
-			v:        &ServerVersion{Version: "100.0.0"},
+			want:     "could not find api version for server version '0.1.0'",
+			v:        &ServerVersion{Version: "0.1.0"},
 		},
 	} {
 		test.v.parseVersion()
