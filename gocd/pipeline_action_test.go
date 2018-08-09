@@ -31,6 +31,7 @@ func testPipelineServicePause(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			if runIntegrationTest(t) {
 
+				ctx := context.Background()
 				pipelineName := fmt.Sprintf("test-pipeline-un-pause%d", n)
 
 				err := test.v.parseVersion()
@@ -38,13 +39,11 @@ func testPipelineServicePause(t *testing.T) {
 
 				cachedServerVersion = test.v
 
-				ctx := context.Background()
-
 				pausePipeline, _, err := intClient.PipelineConfigs.Create(ctx, mockTestingGroup, &Pipeline{
 					Name: pipelineName,
 				})
 
-				pp, _, err := intClient.Pipelines.Pause(context.Background(), pausePipeline.Name)
+				pp, _, err := intClient.Pipelines.Pause(ctx, pausePipeline.Name)
 				assert.NoError(t, err)
 				assert.True(t, pp)
 
