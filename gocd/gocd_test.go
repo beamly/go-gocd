@@ -16,7 +16,7 @@ import (
 
 const (
 	mockAuthorization = "Basic bW9ja1VzZXJuYW1lOm1vY2tQYXNzd29yZA=="
-	mockTestingGroup = "gocd-unittests"
+	mockTestingGroup  = "gocd-unittests"
 )
 
 type mockReadCloserFail struct {
