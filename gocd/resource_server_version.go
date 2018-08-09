@@ -9,7 +9,7 @@ import (
 var serverVersionLookup *serverVersionCollection
 
 func init() {
-	// This structure lists the version of GoCD in which the corresponding API version is available for a given endpoint
+	// This structure lists the minimum version of GoCD in which the corresponding API version is available for a given endpoint
 	serverVersionLookup = &serverVersionCollection{
 		mapping: map[endpointS]*serverAPIVersionMappingCollection{
 			"/api/version": newVersionCollection(
