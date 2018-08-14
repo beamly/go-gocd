@@ -22,6 +22,7 @@ func TestPipelineService(t *testing.T) {
 	//t.Run("ReleaseLock", testPipelineServiceReleaseLock)
 	t.Run("PaginationStub", testPipelineServicePaginationStub)
 	t.Run("StageContainer", testPipelineStageContainer)
+	t.Run("ConfirmHeader", testChoosePipelineConfirmHeader)
 }
 
 func testPipelineStageContainer(t *testing.T) {
@@ -210,4 +211,72 @@ func testPipelineServiceGetHistory(t *testing.T) {
 	h2s := h2.Stages[0]
 	assert.Equal(t, h2s.Name, "stage1")
 
+}
+
+func testChoosePipelineConfirmHeader(t *testing.T) {
+	for _, tt := range []struct {
+		name             string
+		apiVersion       string
+		wantHeaders      map[string]string
+		wantResponseType string
+		wantResponseBody interface{}
+	}{
+		{
+			name:             "confirm",
+			apiVersion:       "",
+			wantHeaders:      map[string]string{"Confirm": "true"},
+			wantResponseType: "",
+			wantResponseBody: nil,
+		},
+		{
+			name:             "x-confirm-v1",
+			apiVersion:       "application/vnd.go.cd.v1+json",
+			wantHeaders:      map[string]string{"X-GoCD-Confirm": "true"},
+			wantResponseType: "json",
+			wantResponseBody: &map[string]interface{}{},
+		},
+		{
+			name:             "x-confirm-v2",
+			apiVersion:       "application/vnd.go.cd.v2+json",
+			wantHeaders:      map[string]string{"X-GoCD-Confirm": "true"},
+			wantResponseType: "json",
+			wantResponseBody: &map[string]interface{}{},
+		},
+		{
+			name:             "x-confirm-v3",
+			apiVersion:       "application/vnd.go.cd.v3+json",
+			wantHeaders:      map[string]string{"X-GoCD-Confirm": "true"},
+			wantResponseType: "json",
+			wantResponseBody: &map[string]interface{}{},
+		},
+		{
+			name:             "x-confirm-v4",
+			apiVersion:       "application/vnd.go.cd.v4+json",
+			wantHeaders:      map[string]string{"X-GoCD-Confirm": "true"},
+			wantResponseType: "json",
+			wantResponseBody: &map[string]interface{}{},
+		},
+		{
+			name:             "x-confirm-v5",
+			apiVersion:       "application/vnd.go.cd.v5+json",
+			wantHeaders:      map[string]string{"X-GoCD-Confirm": "true"},
+			wantResponseType: "json",
+			wantResponseBody: &map[string]interface{}{},
+		},
+		{
+			name:             "x-confirm-v6",
+			apiVersion:       "application/vnd.go.cd.v6+json",
+			wantHeaders:      map[string]string{"X-GoCD-Confirm": "true"},
+			wantResponseType: "json",
+			wantResponseBody: &map[string]interface{}{},
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			request := &APIClientRequest{}
+			choosePipelineConfirmHeader(request, tt.apiVersion)
+			assert.Equal(t, tt.wantHeaders, request.Headers)
+			assert.Equal(t, tt.wantResponseBody, request.ResponseBody)
+			assert.Equal(t, tt.wantResponseType, request.ResponseType)
+		})
+	}
 }

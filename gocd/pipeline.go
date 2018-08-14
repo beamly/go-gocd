@@ -174,13 +174,7 @@ func (pgs *PipelinesService) pipelineAction(ctx context.Context, name string, ac
 		Path:       fmt.Sprintf("pipelines/%s/%s", name, action),
 		APIVersion: apiVersion,
 	}
-	request.Headers = map[string]string{"X-GoCD-Confirm": "true"}
-	if apiVersion == apiV0 {
-		request.Headers = map[string]string{"Confirm": "true"}
-	} else {
-		request.ResponseType = responseTypeJSON
-		request.ResponseBody = &map[string]interface{}{}
-	}
+	choosePipelineConfirmHeader(request, apiVersion)
 
 	_, resp, err := pgs.client.postAction(ctx, request)
 
@@ -193,4 +187,15 @@ func (pgs *PipelinesService) buildPaginatedStub(format string, name string, offs
 		stub = fmt.Sprintf("%s/%d", stub, offset)
 	}
 	return
+}
+
+func choosePipelineConfirmHeader(request *APIClientRequest, apiVersion string) {
+	request.Headers = map[string]string{"X-GoCD-Confirm": "true"}
+	if apiVersion == apiV0 {
+		request.Headers = map[string]string{"Confirm": "true"}
+	} else {
+		request.ResponseType = responseTypeJSON
+		request.ResponseBody = &map[string]interface{}{}
+	}
+
 }
