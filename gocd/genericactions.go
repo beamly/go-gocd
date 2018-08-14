@@ -73,10 +73,9 @@ func (c *Client) deleteAction(ctx context.Context, path string, apiversion strin
 func (c *Client) httpAction(ctx context.Context, r *APIClientRequest) (responseBody interface{}, resp *APIResponse, err error) {
 
 	var req *APIRequest
-	var requestBodyProvided, hasHeaders, hasEmptyResponseType, hasJSONResponseType bool
+	var requestBodyProvided, hasEmptyResponseType, hasJSONResponseType bool
 
 	requestBodyProvided = r.RequestBody != nil
-	hasHeaders = len(r.Headers) > 0
 	hasEmptyResponseType = r.ResponseType == ""
 	if !hasEmptyResponseType {
 		hasJSONResponseType = r.ResponseType == responseTypeJSON
@@ -92,7 +91,7 @@ func (c *Client) httpAction(ctx context.Context, r *APIClientRequest) (responseB
 	}
 
 	versionAction(r.RequestBody, func(ver Versioned) {
-		if !hasHeaders {
+		if r.Headers == nil {
 			r.Headers = map[string]string{}
 		}
 		r.Headers["If-Match"] = fmt.Sprintf(`"%s"`, ver.GetVersion())
@@ -106,7 +105,7 @@ func (c *Client) httpAction(ctx context.Context, r *APIClientRequest) (responseB
 		c.Log.WithField("RequestBody", req.Body).Debug("Sending Request Body")
 	}
 
-	if hasHeaders {
+	if len(r.Headers) > 0 {
 		for key, value := range r.Headers {
 			req.HTTP.Header.Set(key, value)
 		}
