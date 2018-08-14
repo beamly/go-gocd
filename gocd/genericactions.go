@@ -72,32 +72,41 @@ func (c *Client) deleteAction(ctx context.Context, path string, apiversion strin
 
 func (c *Client) httpAction(ctx context.Context, r *APIClientRequest) (responseBody interface{}, resp *APIResponse, err error) {
 
+	var req *APIRequest
+	var requestBodyProvided, hasHeaders, hasResponseType, hasJSONResponseType bool
+
+	requestBodyProvided = r.ResponseBody != nil
+	hasHeaders = len(r.Headers) > 0
+	hasResponseType = r.ResponseType != ""
+	if hasResponseType {
+		hasJSONResponseType = r.ResponseType == responseTypeJSON
+	}
+
 	c.Log.WithFields(logrus.Fields{
 		"Method": r.Method,
 		"Path":   r.Path,
 	}).Debug("Requesting Endpoint")
 
-	if r.ResponseType == "" {
+	if !hasResponseType {
 		r.ResponseType = responseTypeJSON
 	}
 
 	versionAction(r.RequestBody, func(ver Versioned) {
-		if r.Headers == nil {
+		if !hasHeaders {
 			r.Headers = map[string]string{}
 		}
 		r.Headers["If-Match"] = fmt.Sprintf(`"%s"`, ver.GetVersion())
 	})
 
 	// Build the request
-	var req *APIRequest
 	if req, err = c.NewRequest(r.Method, r.Path, r.RequestBody, r.APIVersion); err != nil {
 		return false, nil, err
 	}
-	if r.RequestBody != nil {
+	if requestBodyProvided {
 		c.Log.WithField("RequestBody", req.Body).Debug("Sending Request Body")
 	}
 
-	if len(r.Headers) > 0 {
+	if hasHeaders {
 		for key, value := range r.Headers {
 			req.HTTP.Header.Set(key, value)
 		}
@@ -113,7 +122,7 @@ func (c *Client) httpAction(ctx context.Context, r *APIClientRequest) (responseB
 		parseVersions(resp.HTTP, ver)
 	})
 
-	if r.ResponseType == responseTypeJSON {
+	if hasJSONResponseType {
 		b, _ := json.Marshal(r.ResponseBody)
 		c.Log.WithFields(headerLogFields(resp.HTTP.Header)).Debug("Response Headers")
 		c.Log.WithFields(logrus.Fields{
