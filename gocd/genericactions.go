@@ -73,12 +73,12 @@ func (c *Client) deleteAction(ctx context.Context, path string, apiversion strin
 func (c *Client) httpAction(ctx context.Context, r *APIClientRequest) (responseBody interface{}, resp *APIResponse, err error) {
 
 	var req *APIRequest
-	var requestBodyProvided, hasHeaders, hasResponseType, hasJSONResponseType bool
+	var requestBodyProvided, hasHeaders, hasEmptyResponseType, hasJSONResponseType bool
 
-	requestBodyProvided = r.ResponseBody != nil
+	requestBodyProvided = r.RequestBody != nil
 	hasHeaders = len(r.Headers) > 0
-	hasResponseType = r.ResponseType != ""
-	if hasResponseType {
+	hasEmptyResponseType = r.ResponseType == ""
+	if !hasEmptyResponseType {
 		hasJSONResponseType = r.ResponseType == responseTypeJSON
 	}
 
@@ -87,7 +87,7 @@ func (c *Client) httpAction(ctx context.Context, r *APIClientRequest) (responseB
 		"Path":   r.Path,
 	}).Debug("Requesting Endpoint")
 
-	if !hasResponseType {
+	if hasEmptyResponseType {
 		r.ResponseType = responseTypeJSON
 	}
 
