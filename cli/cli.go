@@ -47,6 +47,11 @@ func GetCliCommands() []cli.Command {
 		*removePipelinesFromEnvironmentCommand(),
 		*listPropertiesCommand(),
 		*createPropertyCommand(),
+		*createRoleCommand(),
+		*listRoleCommand(),
+		*getRoleCommand(),
+		*updateRoleCommand(),
+		*deleteRoleCommand(),
 	}
 }
 

@@ -2,6 +2,7 @@ package gocd
 
 import (
 	"context"
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"regexp"
 	"testing"
@@ -60,6 +61,7 @@ func testRoleGoCD(t *testing.T) {
 
 			assert.Regexp(t, regexp.MustCompile("^[a-f0-9]{32}--gzip$"), roleResponse.Version)
 			role.Version = roleResponse.Version
+			role.Links = roleResponse.Links
 
 			assert.Equal(t, role, roleResponse)
 		}
@@ -72,6 +74,7 @@ func testRoleGoCD(t *testing.T) {
 			assert.Regexp(t, regexp.MustCompile("^[a-f0-9]{32}--gzip$"), roles[i].Version)
 			roleResponse.Version = roles[i].Version
 
+			roles[i].Links = roleResponse.Links
 			assert.Equal(t, roles[i], roleResponse)
 		}
 
@@ -83,12 +86,13 @@ func testRoleGoCD(t *testing.T) {
 		assert.NoError(t, err)
 		assert.Regexp(t, regexp.MustCompile("^[a-f0-9]{32}--gzip$"), updatedRole.Version)
 		roles[0].Version = updatedRole.Version
+		roles[0].Links = updatedRole.Links
 		assert.Equal(t, updatedRole, roles[0])
 
 		// Test role delete
 		for _, role := range roles {
 			result, _, err := intClient.Roles.Delete(ctx, role.Name)
-			assert.True(t, result)
+			assert.Equal(t, fmt.Sprintf("The role '%s' was deleted successfully.", role.Name), result)
 			assert.NoError(t, err)
 		}
 		roleResponse, _, err := intClient.Roles.List(ctx)

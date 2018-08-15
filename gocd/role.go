@@ -14,12 +14,13 @@ type Role struct {
 	Type       string              `json:"type"`
 	Attributes *RoleAttributesGoCD `json:"attributes"`
 	Version    string              `json:"version"`
+	Links      *HALLinks           `json:"_links,omitempty"`
 }
 
 // RoleAttributesGoCD are attributes describing a role, in this cae, which users are present in the role.
 type RoleAttributesGoCD struct {
 	Users        []string                   `json:"users,omitempty"`
-	AuthConfigId *string                    `json:"auth_config_id,omitempty"`
+	AuthConfigID *string                    `json:"auth_config_id,omitempty"`
 	Properties   []*RoleAttributeProperties `json:"properties,omitempty"`
 }
 
@@ -76,18 +77,13 @@ func (rs *RoleService) Get(ctx context.Context, roleName string) (r *Role, resp 
 }
 
 // Delete a role by name
-func (rs *RoleService) Delete(ctx context.Context, roleName string) (result bool, resp *APIResponse, err error) {
-	var msg string
-	msg, resp, err = rs.client.deleteAction(
+func (rs *RoleService) Delete(ctx context.Context, roleName string) (result string, resp *APIResponse, err error) {
+	return rs.client.deleteAction(
 		ctx,
 		fmt.Sprintf("admin/security/roles/%s", roleName),
 		apiV1,
 	)
 
-	expected := fmt.Sprintf("The role '%s' was deleted successfully.", roleName)
-	result = (expected == msg)
-
-	return
 }
 
 // Update a role by name
