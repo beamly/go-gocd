@@ -68,19 +68,6 @@ type EnvironmentVariable struct {
 	Secure         bool   `json:"secure"`
 }
 
-// PluginConfiguration describes how to reference a plugin.
-type PluginConfiguration struct {
-	Key      string                      `json:"key"`
-	Metadata PluginConfigurationMetadata `json:"metadata"`
-}
-
-// PluginConfigurationMetadata describes the schema for a single configuration option for a plugin
-type PluginConfigurationMetadata struct {
-	Secure         bool `json:"secure"`
-	Required       bool `json:"required"`
-	PartOfIdentity bool `json:"part_of_identity"`
-}
-
 // PluginConfigurationKVPair describes a key/value pair of plugin configurations.
 type PluginConfigurationKVPair struct {
 	Key   string `json:"key"`

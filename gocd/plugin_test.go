@@ -18,6 +18,10 @@ func TestPluginApi(t *testing.T) {
 }
 
 func testPluginAPIList(t *testing.T) {
+	cachedServerVersion = &ServerVersion{Version: "17.1.0"}
+	err := cachedServerVersion.parseVersion()
+	assert.NoError(t, err)
+
 	mux.HandleFunc("/api/admin/plugin_info", func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "GET", r.Method, "Unexpected HTTP method")
 		j, _ := ioutil.ReadFile("test/resources/plugin.0.json")
@@ -53,6 +57,10 @@ func testPluginAPIList(t *testing.T) {
 }
 
 func testPluginAPIGet(t *testing.T) {
+	cachedServerVersion = &ServerVersion{Version: "17.1.0"}
+	err := cachedServerVersion.parseVersion()
+	assert.NoError(t, err)
+
 	mux.HandleFunc("/api/admin/plugin_info/test-plugin", func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "GET", r.Method, "Unexpected HTTP method")
 		j, _ := ioutil.ReadFile("test/resources/plugin.1.json")

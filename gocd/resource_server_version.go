@@ -30,6 +30,11 @@ func init() {
 			"/api/pipelines/:pipeline_name/releaseLock": newVersionCollection(
 				newServerAPI("14.3.0", apiV0),
 				newServerAPI("18.2.0", apiV1)),
+			"/api/admin/plugin_info": newVersionCollection(
+				newServerAPI("16.7.0", apiV1),
+				newServerAPI("16.12.0", apiV2),
+				newServerAPI("17.9.0", apiV3),
+				newServerAPI("18.3.0", apiV4)),
 		},
 	}
 }
