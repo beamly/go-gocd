@@ -3,7 +3,7 @@
 [![GoDoc](https://godoc.org/github.com/beamly/go-gocd/gocd?status.svg)](https://godoc.org/github.com/beamly/go-gocd/gocd)
 [![Build Status](https://travis-ci.org/beamly/go-gocd.svg?branch=master)](https://travis-ci.org/beamly/go-gocd)
 [![codecov](https://codecov.io/gh/beamly/go-gocd/branch/master/graph/badge.svg)](https://codecov.io/gh/beamly/go-gocd)
-[![codebeat badge](https://codebeat.co/badges/1ea74899-2337-4ea6-aaeb-2cc8037fe362)](https://codebeat.co/projects/github-com-beamly-go-gocd-master)
+[![codebeat badge](https://codebeat.co/badges/7ac5f505-114f-470f-a9e8-63a3459ac309)](https://codebeat.co/projects/github-com-beamly-go-gocd-master-f9140996-a331-46ca-8faa-8c8d13ca3c01)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fbeamly%2Fgo-gocd.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fbeamly%2Fgo-gocd?ref=badge_shield)
 
 ## CLI
