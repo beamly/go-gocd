@@ -119,11 +119,9 @@ func (c *serverAPIVersionMappingCollection) GetAPIVersion(versionParts *version.
 	lastMapping := c.mappings[0]
 	// If the minimum version specified is too high or absent, no use to go further
 	if lastMapping == nil || lastMapping.Server.GreaterThan(versionParts) {
-		fmt.Printf("lastMapping.Server: %v -- versionParts: %v\n", lastMapping.Server, versionParts)
 		return "", fmt.Errorf("could not find api version for server version '%s'", versionParts.String())
 	}
 	for _, mapping := range c.mappings {
-		fmt.Printf("lastMapping.Server: %v -- versionParts: %v\n", lastMapping.Server, versionParts)
 		if mapping.Server.GreaterThan(versionParts) {
 			break
 		}
