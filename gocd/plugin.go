@@ -30,7 +30,7 @@ type Plugin struct {
 	PluginFileLocation        string                    `json:"plugin_file_location,omitempty"`        // PluginFileLocation is available for the plugin API v3 and v4 (GoCD >= 17.9.0).
 	BundledPlugin             bool                      `json:"bundled_plugin,omitempty"`              // BundledPlugin is available for the plugin API v3 and v4 (GoCD >= 17.9.0).
 	About                     PluginAbout               `json:"about,omitempty"`                       // About is available for the plugin API v3 and v4 (GoCD >= 17.9.0).
-	ExtensionInfo             []*PluginExtensionInfo    `json:"extension_info,omitempty"`              // ExtensionInfo is available for the plugin API v3 only (GoCD >= 17.9.0 to < 18.3.0).
+	ExtensionInfo             *PluginExtensionInfo      `json:"extension_info,omitempty"`              // ExtensionInfo is available for the plugin API v3 only (GoCD >= 17.9.0 to < 18.3.0).
 	Extensions                []*PluginExtension        `json:"extensions,omitempty"`                  //Extensions is available for the plugin API v4 (GoCD >= 18.3.0).
 }
 
