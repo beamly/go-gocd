@@ -41,7 +41,7 @@ type PluginIcon struct {
 	Data        string `json:"data"`
 }
 
-// PluggableInstanceSettings describes plugin configuration. Is available for the plugin API v1 and v2 only (GoCD >= 16.7.0 to < 17.9.0).
+// PluggableInstanceSettings describes plugin configuration.
 type PluggableInstanceSettings struct {
 	Configurations []PluginConfiguration `json:"configurations"`
 	View           PluginView            `json:"view"`
@@ -72,19 +72,19 @@ type PluginVendor struct {
 
 // PluginExtensionInfo describes the extension info for the plugin API v3 only (GoCD >= 17.9.0 to < 18.3.0).
 type PluginExtensionInfo struct {
-	PluginSettings                     PluginConfiguration   `json:"plugin_settings,omitempty"`
-	ProfileSettings                    PluginConfiguration   `json:"profile_settings,omitempty"`
-	Capabilities                       ExtensionCapabilities `json:"capabilities,omitempty"`
-	AuthConfigSettings                 PluginConfiguration   `json:"auth_config_settings,omitempty"`
-	RoleSettings                       PluginConfiguration   `json:"role_settings,omitempty"`
-	DisplayName                        string                `json:"display_name,omitempty"`
-	ScmSettings                        PluginConfiguration   `json:"scm_settings,omitempty"`
-	TaskSettings                       PluginConfiguration   `json:"task_settings,omitempty"`
-	PackageSettings                    PluginConfiguration   `json:"package_settings,omitempty"`
-	RepositorySettings                 PluginConfiguration   `json:"repository_settings,omitempty"`
-	DisplayImageURL                    string                `json:"display_image_url,omitempty"`
-	SupportPasswordBasedAuthentication bool                  `json:"supports_password_based_authentication"`
-	SupportWebBasedAuthentication      bool                  `json:"supports_web_based_authentication"`
+	PluginSettings                     PluggableInstanceSettings `json:"plugin_settings,omitempty"`
+	ProfileSettings                    PluggableInstanceSettings `json:"profile_settings,omitempty"`
+	Capabilities                       ExtensionCapabilities     `json:"capabilities,omitempty"`
+	AuthConfigSettings                 PluggableInstanceSettings `json:"auth_config_settings,omitempty"`
+	RoleSettings                       PluggableInstanceSettings `json:"role_settings,omitempty"`
+	DisplayName                        string                    `json:"display_name,omitempty"`
+	ScmSettings                        PluggableInstanceSettings `json:"scm_settings,omitempty"`
+	TaskSettings                       PluggableInstanceSettings `json:"task_settings,omitempty"`
+	PackageSettings                    PluggableInstanceSettings `json:"package_settings,omitempty"`
+	RepositorySettings                 PluggableInstanceSettings `json:"repository_settings,omitempty"`
+	DisplayImageURL                    string                    `json:"display_image_url,omitempty"`
+	SupportPasswordBasedAuthentication bool                      `json:"supports_password_based_authentication"`
+	SupportWebBasedAuthentication      bool                      `json:"supports_web_based_authentication"`
 }
 
 // PluginExtension describes the different extensions available for a plugin. It is used for the plugin API v4 (GoCD >= 18.3.0).
