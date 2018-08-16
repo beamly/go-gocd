@@ -41,11 +41,11 @@ func testPipelineServiceUnPause(t *testing.T) {
 		assert.NoError(t, err)
 		releaseLockErrorMessage := "Received HTTP Status '406 Not Acceptable'"
 		switch apiVersion {
-		case apiV5:
-			fallthrough
 		case apiV6:
-			mockPipeline.LockBehavior = "none"
 			mockPipeline.Origin = &PipelineConfigOrigin{Type: "gocd"}
+			fallthrough
+		case apiV5:
+			mockPipeline.LockBehavior = "none"
 			releaseLockErrorMessage = "Received HTTP Status '404 Not Found': {\n  \"message\": \"The resource you requested was not found!\"\n}"
 		}
 

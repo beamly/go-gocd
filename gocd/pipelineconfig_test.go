@@ -78,11 +78,11 @@ func TestPipelineConfig(t *testing.T) {
 	apiVersion, err := intClient.getAPIVersion(ctx, "admin/pipelines/:pipeline_name")
 	assert.NoError(t, err)
 	switch apiVersion {
-	case apiV5:
-		fallthrough
 	case apiV6:
-		expected.LockBehavior = "none"
 		expected.Origin = &PipelineConfigOrigin{Type: "gocd"}
+		fallthrough
+	case apiV5:
+		expected.LockBehavior = "none"
 	}
 
 	assert.Equal(t, expected, p)
