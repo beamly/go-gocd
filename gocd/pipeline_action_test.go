@@ -35,6 +35,20 @@ func testPipelineServiceUnPause(t *testing.T) {
 		assert.NoError(t, err)
 		pausePipeline.Links = nil
 		pausePipeline.Version = ""
+
+		// Make sure version-specific defaults are properly set
+		apiVersion, err := client.getAPIVersion(ctx, "admin/pipelines/:pipeline_name")
+		assert.NoError(t, err)
+		releaseLockErrorMessage := "Received HTTP Status '406 Not Acceptable'"
+		switch apiVersion {
+		case apiV5:
+			fallthrough
+		case apiV6:
+			mockPipeline.LockBehavior = "none"
+			mockPipeline.Origin = &PipelineConfigOrigin{Type: "gocd"}
+			releaseLockErrorMessage = "Received HTTP Status '404 Not Found': {\n  \"message\": \"The resource you requested was not found!\"\n}"
+		}
+
 		assert.Equal(t, mockPipeline, pausePipeline)
 
 		pp, _, err := intClient.Pipelines.Unpause(ctx, pipelineName)
@@ -45,8 +59,8 @@ func testPipelineServiceUnPause(t *testing.T) {
 		assert.NoError(t, err)
 		assert.True(t, pp)
 
-		pp, _, err = intClient.Pipelines.ReleaseLock(context.Background(), pipelineName)
-		assert.EqualError(t, err, "Received HTTP Status '406 Not Acceptable'")
+		pp, _, err = intClient.Pipelines.ReleaseLock(ctx, pipelineName)
+		assert.EqualError(t, err, releaseLockErrorMessage)
 		assert.False(t, pp)
 
 		deleteResponse, _, err := intClient.PipelineConfigs.Delete(ctx, pipelineName)

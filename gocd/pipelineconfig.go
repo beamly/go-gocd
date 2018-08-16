@@ -16,10 +16,16 @@ type PipelineConfigRequest struct {
 
 // Get a single Pipeline object in the GoCD API.
 func (pcs *PipelineConfigsService) Get(ctx context.Context, name string) (p *Pipeline, resp *APIResponse, err error) {
+
+	apiVersion, err := pcs.client.getAPIVersion(ctx, "admin/pipelines/:pipeline_name")
+	if err != nil {
+		return nil, nil, err
+	}
+
 	p = &Pipeline{}
 	_, resp, err = pcs.client.getAction(ctx, &APIClientRequest{
 		Path:         "admin/pipelines/" + name,
-		APIVersion:   apiV4,
+		APIVersion:   apiVersion,
 		ResponseBody: p,
 	})
 
@@ -28,11 +34,16 @@ func (pcs *PipelineConfigsService) Get(ctx context.Context, name string) (p *Pip
 
 // Update a pipeline configuration
 func (pcs *PipelineConfigsService) Update(ctx context.Context, name string, p *Pipeline) (pr *Pipeline, resp *APIResponse, err error) {
-	pr = &Pipeline{}
 
+	apiVersion, err := pcs.client.getAPIVersion(ctx, "admin/pipelines/:pipeline_name")
+	if err != nil {
+		return nil, nil, err
+	}
+
+	pr = &Pipeline{}
 	_, resp, err = pcs.client.putAction(ctx, &APIClientRequest{
 		Path:       "admin/pipelines/" + name,
-		APIVersion: apiV4,
+		APIVersion: apiVersion,
 		RequestBody: &PipelineConfigRequest{
 			Pipeline: p,
 		},
@@ -47,10 +58,15 @@ func (pcs *PipelineConfigsService) Update(ctx context.Context, name string, p *P
 // Create a pipeline configuration
 func (pcs *PipelineConfigsService) Create(ctx context.Context, group string, p *Pipeline) (pr *Pipeline, resp *APIResponse, err error) {
 
+	apiVersion, err := pcs.client.getAPIVersion(ctx, "admin/pipelines/:pipeline_name")
+	if err != nil {
+		return nil, nil, err
+	}
+
 	pr = &Pipeline{}
 	_, resp, err = pcs.client.postAction(ctx, &APIClientRequest{
 		Path:       "admin/pipelines",
-		APIVersion: apiV4,
+		APIVersion: apiVersion,
 		RequestBody: &PipelineConfigRequest{
 			Group:    group,
 			Pipeline: p,
@@ -65,5 +81,10 @@ func (pcs *PipelineConfigsService) Create(ctx context.Context, group string, p *
 
 // Delete a pipeline configuration
 func (pcs *PipelineConfigsService) Delete(ctx context.Context, name string) (string, *APIResponse, error) {
-	return pcs.client.deleteAction(ctx, "admin/pipelines/"+name, apiV4)
+	apiVersion, err := pcs.client.getAPIVersion(ctx, "admin/pipelines/:pipeline_name")
+	if err != nil {
+		return "", nil, err
+	}
+
+	return pcs.client.deleteAction(ctx, "admin/pipelines/"+name, apiVersion)
 }

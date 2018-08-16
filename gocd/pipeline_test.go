@@ -15,7 +15,7 @@ func TestPipelineService(t *testing.T) {
 	defer teardown()
 
 	t.Run("Get", testPipelineServiceGet)
-	t.Run("Create", testPipelineServiceCreate)
+	t.Run("Create/Delete", testPipelineServiceCreateDelete)
 	t.Run("GetHistory", testPipelineServiceGetHistory)
 	t.Run("GetStatus", testPipelineServiceGetStatus)
 	t.Run("Un/Pause", testPipelineServiceUnPause)
@@ -79,22 +79,15 @@ func testPipelineServiceGetStatus(t *testing.T) {
 	assert.False(t, ps.Schedulable)
 }
 
-func testPipelineServiceCreate(t *testing.T) {
-	mux.HandleFunc("/api/admin/pipelines", func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(t, r.Method, "POST", "Unexpected HTTP method")
-		// @TODO Renable and fix diff
-		//expectedBody, _ := ioutil.ReadFile("test/request/pipeline.0.json")
-		//actual, _ := ioutil.ReadAll(r.Body)
-		//assert.Equal(t, string(expectedBody), string(actual))
-
-		j, _ := ioutil.ReadFile("test/resources/pipeline.0.json")
-		fmt.Fprint(w, string(j))
-	})
+func testPipelineServiceCreateDelete(t *testing.T) {
+	if !runIntegrationTest(t) {
+		t.Skip("Skipping acceptance tests as GOCD_ACC not set to 1")
+	}
 
 	p := Pipeline{
 		LabelTemplate:         "${COUNT}",
 		EnablePipelineLocking: true,
-		Name: "new_pipeline",
+		Name: "testPipelineServiceCreateDelete",
 		Materials: []Material{
 			{
 				Type: "git",
@@ -137,18 +130,21 @@ func testPipelineServiceCreate(t *testing.T) {
 		},
 		Version: "mock-version",
 	}
-	pr, _, err := client.PipelineConfigs.Create(context.Background(), "first", &p)
-	if err != nil {
-		t.Error(err)
-	}
 
+	ctx := context.Background()
+	pr, _, err := intClient.PipelineConfigs.Create(ctx, "test-group", &p)
+	assert.NoError(t, err)
 	assert.NotNil(t, pr)
-	assert.Equal(t, "test-pipeline", pr.Name)
+	assert.Equal(t, "testPipelineServiceCreateDelete", pr.Name)
 
 	assert.Len(t, pr.Stages, 1)
 
 	stage := pr.Stages[0]
-	assert.Equal(t, "stage1", stage.Name)
+	assert.Equal(t, "defaultStage", stage.Name)
+
+	msg, _, err := intClient.PipelineConfigs.Delete(ctx, p.Name)
+	assert.NoError(t, err)
+	assert.Equal(t, "The pipeline 'testPipelineServiceCreateDelete' was deleted successfully.", msg)
 }
 
 func testPipelineServiceGet(t *testing.T) {

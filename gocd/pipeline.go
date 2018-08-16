@@ -16,21 +16,43 @@ type PipelineRequest struct {
 
 // Pipeline describes a pipeline object
 type Pipeline struct {
-	Group                 string                 `json:"group,omitempty"`
 	Links                 *HALLinks              `json:"_links,omitempty"`
-	Name                  string                 `json:"name"`
-	LabelTemplate         string                 `json:"label_template,omitempty"`
-	EnablePipelineLocking bool                   `json:"enable_pipeline_locking,omitempty"`
-	Template              string                 `json:"template,omitempty"`
-	Origin                *PipelineConfigOrigin  `json:"origin,omitempty"`
-	Parameters            []*Parameter           `json:"parameters,omitempty"`
-	EnvironmentVariables  []*EnvironmentVariable `json:"environment_variables,omitempty"`
-	Materials             []Material             `json:"materials,omitempty"`
-	Label                 string                 `json:"label,omitempty"`
-	Stages                []*Stage               `json:"stages,omitempty"`
-	Version               string                 `json:"version,omitempty"`
-	//TrackingTool          string                 `json:"tracking_tool"`
-	//Timer                 string                 `json:"timer"`
+	Group                 string                 `json:"group,omitempty"`                   // Group is only used/set when creating or editing a pipeline config
+	LabelTemplate         string                 `json:"label_template,omitempty"`          // LabelTemplate is available for the pipeline config API since v1 (GoCD >= 15.3.0).
+	EnablePipelineLocking bool                   `json:"enable_pipeline_locking,omitempty"` // EnablePipelineLocking is available for the pipeline config API since v1 (GoCD >= 15.3.0).
+	Name                  string                 `json:"name"`                              // Name is available for the pipeline config API since v1 (GoCD >= 15.3.0).
+	LockBehavior          string                 `json:"lock_behavior,omitempty"`           // LockBehavior is available for the pipeline config API v5 and v6 only (GoCD >= 17.12.0).
+	Template              string                 `json:"template,omitempty"`                // Template is available for the pipeline config API since v1 (GoCD >= 15.3.0).
+	Origin                *PipelineConfigOrigin  `json:"origin,omitempty"`                  // Origin is available for the pipeline config API since v3 (GoCD >= 17.4.0).
+	Parameters            []*Parameter           `json:"parameters,omitempty"`              // Parameters is available for the pipeline config API since v1 (GoCD >= 15.3.0).
+	EnvironmentVariables  []*EnvironmentVariable `json:"environment_variables,omitempty"`   // EnvironmentVariables is available for the pipeline config API since v1 (GoCD >= 15.3.0).
+	Materials             []Material             `json:"materials,omitempty"`               // Materials is available for the pipeline config API since v1 (GoCD >= 15.3.0).
+	Label                 string                 `json:"label,omitempty"`                   // Label is only available for the pipeline instance
+	Stages                []*Stage               `json:"stages,omitempty"`                  // Stages is available for the pipeline config API since v1 (GoCD >= 15.3.0).
+	TrackingTool          *TrackingTool          `json:"tracking_tool"`                     // TrackingTool is available for the pipeline config API since v1 (GoCD >= 15.3.0).
+	Timer                 *Timer                 `json:"timer"`                             // Timer is available for the pipeline config API since v1 (GoCD >= 15.3.0).
+	Version               string                 `json:"version,omitempty"`                 // Version corresponds to the ETag header used when updating a pipeline config
+}
+
+// Timer describes the cron-like schedule to build a pipeline
+type Timer struct {
+	Spec          string `json:"spec,omitempty"`
+	OnlyOnChanges bool   `json:"only_on_changes,omitempty"`
+}
+
+// TrackingTool describes the type of a tracking tool and its attributes
+type TrackingTool struct {
+	Type       string                 `json:"type,omitempty"`
+	Attributes TrackingToolAttributes `json:"attributes,omitempty"`
+}
+
+// TrackingToolAttributes describes the attributes of a tracking tool
+type TrackingToolAttributes struct {
+	URLPattern            string `json:"url_pattern,omitempty"`
+	Regex                 string `json:"regex,omitempty"`
+	BaseURL               string `json:"base_url,omitempty"`
+	ProjectIdentifier     string `json:"project_identifier,omitempty"`
+	MqlGroupingConditions string `json:"mql_grouping_conditions,omitempty"`
 }
 
 // Parameter represents a key/value
