@@ -102,6 +102,7 @@ func TestPipelineConfig(t *testing.T) {
 	// updatedP.Version = p.Version
 
 	// updatedP.RemoveLinks()
+	// expected.LabelTemplate = "Updated_${COUNT}"
 	// expected.EnvironmentVariables = []*EnvironmentVariable{{Name: "FOO", Value: "bar"}}
 	// expected.Group = "test-group"
 	// assert.Equal(t, expected, updatedP)
