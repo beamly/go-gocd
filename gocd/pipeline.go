@@ -19,7 +19,7 @@ type Pipeline struct {
 	Links                 *HALLinks              `json:"_links,omitempty"`
 	Group                 string                 `json:"group,omitempty"`                   // Group is only used/set when creating or editing a pipeline config
 	LabelTemplate         string                 `json:"label_template,omitempty"`          // LabelTemplate is available for the pipeline config API since v1 (GoCD >= 15.3.0).
-	EnablePipelineLocking bool                   `json:"enable_pipeline_locking,omitempty"` // EnablePipelineLocking is available for the pipeline config API since v1 (GoCD >= 15.3.0).
+	EnablePipelineLocking bool                   `json:"enable_pipeline_locking,omitempty"` // EnablePipelineLocking is available for the pipeline config API v1 to v4 (GoCD >= 15.3.0 to GoCD < 17.12.0). Use LockBehavior after that.
 	Name                  string                 `json:"name"`                              // Name is available for the pipeline config API since v1 (GoCD >= 15.3.0).
 	LockBehavior          string                 `json:"lock_behavior,omitempty"`           // LockBehavior is available for the pipeline config API v5 and v6 only (GoCD >= 17.12.0).
 	Template              string                 `json:"template,omitempty"`                // Template is available for the pipeline config API since v1 (GoCD >= 15.3.0).
