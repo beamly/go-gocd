@@ -42,11 +42,9 @@ func (pcs *PipelineConfigsService) Update(ctx context.Context, name string, p *P
 
 	pr = &Pipeline{}
 	_, resp, err = pcs.client.putAction(ctx, &APIClientRequest{
-		Path:       "admin/pipelines/" + name,
-		APIVersion: apiVersion,
-		RequestBody: &PipelineConfigRequest{
-			Pipeline: p,
-		},
+		Path:         "admin/pipelines/" + name,
+		APIVersion:   apiVersion,
+		RequestBody:  p,
 		ResponseBody: pr,
 	})
 

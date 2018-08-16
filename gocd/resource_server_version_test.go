@@ -72,12 +72,11 @@ func testServerVersionGetAPIVersion(t *testing.T) {
 			endpoint: "/api/admin/pipelines/:pipeline_name",
 			want:     apiV5,
 			v:        &ServerVersion{Version: "18.6.0"},
-			// We keep apiV5 until https://github.com/gocd/gocd/issues/5030 is resolved
-			// },
-			// {
-			// 	endpoint: "/api/admin/pipelines/:pipeline_name",
-			// 	want:     apiV6,
-			// 	v:        &ServerVersion{Version: "18.8.0"},
+		},
+		{
+			endpoint: "/api/admin/pipelines/:pipeline_name",
+			want:     apiV6,
+			v:        &ServerVersion{Version: "18.8.0"},
 		},
 	} {
 		test.v.parseVersion()

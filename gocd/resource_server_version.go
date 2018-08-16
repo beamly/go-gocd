@@ -15,7 +15,7 @@ func init() {
 			"/api/version": newVersionCollection(
 				newServerAPI("16.6.0", apiV1)),
 			"/api/admin/pipelines/:pipeline_name": newVersionCollection(
-				// newServerAPI("18.7.0", apiV6), // Use apiV5 until https://github.com/gocd/gocd/issues/5030 is resolved.
+				newServerAPI("18.7.0", apiV6),
 				newServerAPI("17.12.0", apiV5),
 				newServerAPI("17.4.0", apiV4),
 				newServerAPI("16.10.0", apiV3),
