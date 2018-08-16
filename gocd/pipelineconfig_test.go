@@ -94,18 +94,18 @@ func TestPipelineConfig(t *testing.T) {
 	assert.Equal(t, expected, getP)
 
 	// The tests on the update have been commented as it seems there's a problem on 18.7.0 about it
-	// p.LabelTemplate = "Updated_${COUNT}"
-	// p.EnvironmentVariables = []*EnvironmentVariable{{Name: "FOO", Value: "bar"}}
-	// updatedP, _, err := intClient.PipelineConfigs.Update(ctx, p.Name, p)
-	// assert.NoError(t, err)
-	// assert.NotEqual(t, p.Version, updatedP.Version)
-	// updatedP.Version = p.Version
+	p.LabelTemplate = "Updated_${COUNT}"
+	p.EnvironmentVariables = []*EnvironmentVariable{{Name: "FOO", Value: "bar"}}
+	updatedP, _, err := intClient.PipelineConfigs.Update(ctx, p.Name, p)
+	assert.NoError(t, err)
+	assert.NotEqual(t, p.Version, updatedP.Version)
+	updatedP.Version = p.Version
 
-	// updatedP.RemoveLinks()
-	// expected.LabelTemplate = "Updated_${COUNT}"
-	// expected.EnvironmentVariables = []*EnvironmentVariable{{Name: "FOO", Value: "bar"}}
-	// expected.Group = "test-group"
-	// assert.Equal(t, expected, updatedP)
+	updatedP.RemoveLinks()
+	expected.LabelTemplate = "Updated_${COUNT}"
+	expected.EnvironmentVariables = []*EnvironmentVariable{{Name: "FOO", Value: "bar"}}
+	expected.Group = "test-group"
+	assert.Equal(t, expected, updatedP)
 
 	message, _, err := intClient.PipelineConfigs.Delete(ctx, input.Name)
 	assert.Equal(t, "The pipeline 'test_pipeline_config' was deleted successfully.", message)
