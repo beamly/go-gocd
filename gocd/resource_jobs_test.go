@@ -1,9 +1,9 @@
 package gocd
 
 import (
+	"encoding/json"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"encoding/json"
 )
 
 func TestResourceJobsJSONMarshal(t *testing.T) {
