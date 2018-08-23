@@ -36,7 +36,7 @@ func (tf *TimeoutField) UnmarshalJSON(b []byte) (err error) {
 
 	value := string(b)
 
-	if value == `"never"` || value == `"null"` {
+	if value == `"never"` || value == `"null"` || value == "never" || value == "null" {
 		valInt = 0
 	} else {
 		valInt, err = strconv.Atoi(value)
