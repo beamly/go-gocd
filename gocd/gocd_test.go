@@ -89,6 +89,25 @@ func skipIntegrationtest(t *testing.T) {
 	t.Skip("'GOCD_ACC=1' must be set to run integration tests")
 }
 
+func runOnlyForServerVersionRange(t *testing.T, versionRange *ServerVersionRange) bool {
+	run := isIntegrationTest()
+	if !run {
+		t.Skip("could not run test as integration tests are not enabled")
+	}
+
+	version, _, err := intClient.ServerVersion.Get(context.Background())
+	if err != nil {
+		t.Error(err)
+		t.Skip(" an error occured while retrieving the server version")
+	}
+	if versionRange.Contains(version) {
+		return true
+	}
+	t.Skipf("could not run test as '%s' is not in the range '%s' ", version.String(), versionRange.String())
+
+	return false
+}
+
 func TestClient(t *testing.T) {
 	setup()
 	defer teardown()

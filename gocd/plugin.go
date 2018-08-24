@@ -126,6 +126,7 @@ type PluginConfiguration struct {
 	Metadata PluginConfigurationMetadata `json:"metadata"`
 }
 
+// PluginConfigurationMetadata describes the configuration for a plugin
 type PluginConfigurationMetadata struct {
 	Secure         bool   `json:"secure"`
 	Required       bool   `json:"required"`

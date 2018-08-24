@@ -25,19 +25,6 @@ const (
 	// UserAgent to be used when calling the GoCD agent.
 	userAgent = "go-gocd/" + libraryVersion
 	// For the unversionned API
-	apiV0 = ""
-	// Version 1 of the GoCD API.
-	apiV1 = "application/vnd.go.cd.v1+json"
-	// Version 2 of the GoCD API.
-	apiV2 = "application/vnd.go.cd.v2+json"
-	// Version 3 of the GoCD API.
-	apiV3 = "application/vnd.go.cd.v3+json"
-	// Version 4 of the GoCD API.
-	apiV4 = "application/vnd.go.cd.v4+json"
-	// Version 5 of the GoCD API.
-	apiV5 = "application/vnd.go.cd.v5+json"
-	// Version 6 of the GoCD API.
-	apiV6 = "application/vnd.go.cd.v6+json"
 )
 
 //Body Response Types
