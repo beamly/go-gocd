@@ -29,17 +29,20 @@ func (j *Job) Validate() (err error) {
 
 // UnmarshalJSON and handle "never", "null", and integers.
 func (tf *TimeoutField) UnmarshalJSON(b []byte) (err error) {
-	value := string(b)
-	var valInt int
+	// The target `valint` value has -1 so that we have a value which does not match
+	// the expected value (probably) and we can ensure the methods is working and not just putting
+	// the default in (which is `0`).
+	valInt := -1
 
-	if value == `"never"` || value == `"null"` || value == "null" {
+	value := string(b)
+
+	if value == `"never"` || value == `"null"` || value == "never" || value == "null" {
 		valInt = 0
 	} else {
 		valInt, err = strconv.Atoi(value)
 
 	}
-	valTf := TimeoutField(valInt)
-	tf = &valTf
+	*tf = TimeoutField(valInt)
 
 	return
 }
