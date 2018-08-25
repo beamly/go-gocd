@@ -10,6 +10,7 @@ import (
 type PropertiesService service
 
 // PropertyRequest describes the parameters to be submitted when calling/creating properties.
+// codebeat:disable[TOO_MANY_IVARS]
 type PropertyRequest struct {
 	Pipeline        string
 	PipelineCounter int
@@ -20,6 +21,8 @@ type PropertyRequest struct {
 	Limit           int
 	Single          bool
 }
+
+// codebeat:enable[TOO_MANY_IVARS]
 
 // PropertyCreateResponse handles the parsing of the response when creating a property
 type PropertyCreateResponse struct {

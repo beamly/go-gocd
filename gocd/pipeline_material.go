@@ -27,6 +27,7 @@ type MaterialAttributesGit struct {
 // codebeat:enable[TOO_MANY_IVARS]
 
 // MaterialAttributesSvn describes a material type
+// codebeat:disable[TOO_MANY_IVARS]
 type MaterialAttributesSvn struct {
 	Name              string `json:"name,omitempty"`
 	URL               string `json:"url,omitempty"`
@@ -41,6 +42,8 @@ type MaterialAttributesSvn struct {
 	InvertFilter bool            `json:"invert_filter"`
 	AutoUpdate   bool            `json:"auto_update,omitempty"`
 }
+
+// codebeat:enable[TOO_MANY_IVARS]
 
 // MaterialAttributesHg describes a Mercurial material type
 type MaterialAttributesHg struct {

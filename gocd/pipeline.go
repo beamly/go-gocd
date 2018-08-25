@@ -89,6 +89,7 @@ type PipelineHistory struct {
 }
 
 // PipelineInstance describes a single pipeline run
+// codebeat:disable[TOO_MANY_IVARS]
 type PipelineInstance struct {
 	BuildCause          BuildCause `json:"build_cause"`
 	Label               string     `json:"label"`
@@ -100,6 +101,8 @@ type PipelineInstance struct {
 	Comment             string     `json:"comment"`
 	Stages              []*Stage   `json:"stages"`
 }
+
+// codebeat:enable[TOO_MANY_IVARS]
 
 // BuildCause describes the triggers which caused the build to start.
 type BuildCause struct {

@@ -4,6 +4,7 @@ package gocd
 type StagesService service
 
 // Stage represents a GoCD Stage object.
+// codebeat:disable[TOO_MANY_IVARS]
 type Stage struct {
 	Name                  string                 `json:"name"`
 	FetchMaterials        bool                   `json:"fetch_materials"`
@@ -14,3 +15,5 @@ type Stage struct {
 	Resources             []string               `json:"resource,omitempty"`
 	Jobs                  []*Job                 `json:"jobs,omitempty"`
 }
+
+// codebeat:enable[TOO_MANY_IVARS]

@@ -91,7 +91,10 @@ type PluginExtensionInfo struct {
 	SupportWebBasedAuthentication      bool                      `json:"supports_web_based_authentication"`
 }
 
+// codebeat:enable[TOO_MANY_IVARS]
+
 // PluginExtension describes the different extensions available for a plugin. It is used for the plugin API v4 (GoCD >= 18.3.0).
+// codebeat:disable[TOO_MANY_IVARS]
 type PluginExtension struct {
 	Type               string                `json:"type,omitempty"`
 	PluginSettings     ExtensionSettings     `json:"plugin_settings,omitempty"`
@@ -106,7 +109,10 @@ type PluginExtension struct {
 	RepositorySettings ExtensionSettings     `json:"repository_settings,omitempty"`
 }
 
+// codebeat:enable[TOO_MANY_IVARS]
+
 // ExtensionCapabilities describes the enhancements that the plugin provides.
+// codebeat:disable[TOO_MANY_IVARS]
 type ExtensionCapabilities struct {
 	SupportStatusReport      bool   `json:"supports_status_report,omitempty"`
 	SupportAgentStatusReport bool   `json:"supports_agent_status_report,omitempty"`
