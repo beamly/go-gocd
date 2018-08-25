@@ -208,6 +208,7 @@ func attachServices(c *Client) {
 	c.Roles = (*RoleService)(&c.common)
 	c.ServerVersion = (*ServerVersionService)(&c.common)
 }
+
 // codebeat:enable[ABC]
 
 func (c *Client) BaseURL() *url.URL {

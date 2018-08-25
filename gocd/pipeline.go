@@ -15,6 +15,7 @@ type PipelineRequest struct {
 }
 
 // Pipeline describes a pipeline object
+// codebeat:disable[TOO_MANY_IVARS]
 type Pipeline struct {
 	Links                 *HALLinks              `json:"_links,omitempty"`
 	Group                 string                 `json:"group,omitempty"`                   // Group is only used/set when creating or editing a pipeline config
@@ -33,6 +34,8 @@ type Pipeline struct {
 	Timer                 *Timer                 `json:"timer"`                             // Timer is available for the pipeline config API since v1 (GoCD >= 15.3.0).
 	Version               string                 `json:"version,omitempty"`                 // Version corresponds to the ETag header used when updating a pipeline config
 }
+
+// codebeat:enable[TOO_MANY_IVARS]
 
 // Timer describes the cron-like schedule to build a pipeline
 type Timer struct {

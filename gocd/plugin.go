@@ -17,6 +17,7 @@ type PluginsResponse struct {
 }
 
 // Plugin describes a single plugin resource.
+// codebeat:disable[TOO_MANY_IVARS]
 type Plugin struct {
 	Links                     *HALLinks                 `json:"_links"`
 	ID                        string                    `json:"id"`
@@ -33,6 +34,8 @@ type Plugin struct {
 	ExtensionInfo             *PluginExtensionInfo      `json:"extension_info,omitempty"`              // ExtensionInfo is available for the plugin API v3 only (GoCD >= 17.9.0 to < 18.3.0).
 	Extensions                []*PluginExtension        `json:"extensions,omitempty"`                  //Extensions is available for the plugin API v4 (GoCD >= 18.3.0).
 }
+
+// codebeat:enable[TOO_MANY_IVARS]
 
 // PluginIcon describes the content type of the plugin icon and the base-64 encoded byte array of the byte-sequence that
 // composes the image. It is used for the plugin API v2 only (GoCD >= 16.12.0 to < 17.9.0).
@@ -114,6 +117,7 @@ type ExtensionCapabilities struct {
 	Title                    string `json:"title,omitempty"`
 	Type                     string `json:"type,omitempty"`
 }
+
 // codebeat:enable[TOO_MANY_IVARS]
 
 // ExtensionSettings describes the html view for the plugin and the list of properties required to be configured on a plugin.

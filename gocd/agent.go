@@ -17,6 +17,7 @@ type AgentsResponse struct {
 }
 
 // Agent represents agent in GoCD
+// codebeat:disable[TOO_MANY_IVARS]
 type Agent struct {
 	UUID             string        `json:"uuid,omitempty"`
 	Hostname         string        `json:"hostname,omitempty"`
@@ -35,6 +36,8 @@ type Agent struct {
 	Links            *HALLinks     `json:"_links,omitempty,omitempty"`
 	client           *Client
 }
+
+// codebeat:enable[TOO_MANY_IVARS]
 
 // AgentBulkUpdate describes the structure for the PUT payload when updating multiple agents
 type AgentBulkUpdate struct {

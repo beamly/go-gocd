@@ -150,6 +150,7 @@ type ConfigServer struct {
 	CommandRepositoryLocation string         `xml:"commandRepositoryLocation,attr"`
 	ServerID                  string         `xml:"serverId,attr"`
 }
+
 // codebeat:enable[TOO_MANY_IVARS]
 
 // MailHost part of cruise-control.xml. @TODO better documentation
