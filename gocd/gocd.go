@@ -150,14 +150,8 @@ func (c *Configuration) Client() *Client {
 // NewClient creates a new client based on the provided configuration payload, and optionally a custom httpClient to
 // allow overriding of http client structures.
 func NewClient(cfg *Configuration, httpClient *http.Client) *Client {
-	if httpClient == nil {
-		httpClient = http.DefaultClient
-		if strings.HasPrefix(cfg.Server, "https") && cfg.SkipSslCheck {
-			httpClient.Transport = &http.Transport{
-				TLSClientConfig: &tls.Config{InsecureSkipVerify: cfg.SkipSslCheck},
-			}
-		}
-	}
+
+	httpClient = generateHttpClient(cfg, httpClient)
 
 	baseURL, _ := url.Parse(cfg.Server)
 
@@ -175,6 +169,28 @@ func NewClient(cfg *Configuration, httpClient *http.Client) *Client {
 	c.common.client = c
 	c.common.log = c.Log
 
+	c.attachServices()
+
+	SetupLogging(c.Log)
+
+	return c
+}
+
+// generateHttpClient taking into account ssl, and existing httpClient
+func generateHttpClient(cfg *Configuration, httpClient *http.Client) *http.Client {
+	if httpClient == nil {
+		httpClient = http.DefaultClient
+		if strings.HasPrefix(cfg.Server, "https") && cfg.SkipSslCheck {
+			httpClient.Transport = &http.Transport{
+				TLSClientConfig: &tls.Config{InsecureSkipVerify: cfg.SkipSslCheck},
+			}
+		}
+	}
+	return httpClient
+}
+
+// attachServices to the client to give access to the difference API resources.
+func (c *Client) attachServices() {
 	c.Agents = (*AgentsService)(&c.common)
 	c.PipelineGroups = (*PipelineGroupsService)(&c.common)
 	c.Stages = (*StagesService)(&c.common)
@@ -190,10 +206,6 @@ func NewClient(cfg *Configuration, httpClient *http.Client) *Client {
 	c.Properties = (*PropertiesService)(&c.common)
 	c.Roles = (*RoleService)(&c.common)
 	c.ServerVersion = (*ServerVersionService)(&c.common)
-
-	SetupLogging(c.Log)
-
-	return c
 }
 
 func (c *Client) BaseURL() *url.URL {
