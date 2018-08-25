@@ -12,7 +12,7 @@ func (c *Client) Login(ctx context.Context) (err error) {
 	if err != nil {
 		return
 	}
-	req.HTTP.SetBasicAuth(c.Username, c.Password)
+	req.HTTP.SetBasicAuth(c.params.Username, c.params.Password)
 
 	resp, err = c.Do(ctx, req, nil, responseTypeJSON)
 	if err == nil {

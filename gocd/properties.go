@@ -74,7 +74,7 @@ func (ps *PropertiesService) Create(ctx context.Context, name string, value stri
 
 // ListHistorical properties for a given pipeline, stage, job.
 func (ps *PropertiesService) ListHistorical(ctx context.Context, pr *PropertyRequest) (*Properties, *APIResponse, error) {
-	u := ps.client.BaseURL
+	u := ps.client.BaseURL()
 	q := u.Query()
 	q.Set("pipelineName", pr.Pipeline)
 	q.Set("stageName", pr.Stage)
