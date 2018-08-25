@@ -169,7 +169,7 @@ func NewClient(cfg *Configuration, httpClient *http.Client) *Client {
 	c.common.client = c
 	c.common.log = c.Log
 
-	c.attachServices()
+	attachServices(c)
 
 	SetupLogging(c.Log)
 
@@ -190,7 +190,7 @@ func generateHttpClient(cfg *Configuration, httpClient *http.Client) *http.Clien
 }
 
 // attachServices to the client to give access to the difference API resources.
-func (c *Client) attachServices() {
+func attachServices(c *Client) {
 	c.Agents = (*AgentsService)(&c.common)
 	c.PipelineGroups = (*PipelineGroupsService)(&c.common)
 	c.Stages = (*StagesService)(&c.common)
