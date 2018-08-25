@@ -68,6 +68,7 @@ type MaterialAttributesP4 struct {
 }
 
 // MaterialAttributesTfs describes a Team Foundation Server material
+// codebeat:disable[TOO_MANY_IVARS]
 type MaterialAttributesTfs struct {
 	Name string `json:"name,omitempty"`
 
@@ -84,6 +85,7 @@ type MaterialAttributesTfs struct {
 	InvertFilter bool            `json:"invert_filter"`
 	AutoUpdate   bool            `json:"auto_update,omitempty"`
 }
+// codebeat:enable[TOO_MANY_IVARS]
 
 // MaterialAttributesDependency describes a Pipeline dependency material
 type MaterialAttributesDependency struct {

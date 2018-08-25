@@ -15,6 +15,7 @@ const (
 type JobsService service
 
 // Job describes a job which can be performed in GoCD
+// codebeat:disable[TOO_MANY_IVARS]
 type Job struct {
 	AgentUUID            string                 `json:"agent_uuid,omitempty"`
 	Name                 string                 `json:"name"`
@@ -39,6 +40,7 @@ type Job struct {
 	Artifacts            []*Artifact            `json:"artifacts,omitempty"`
 	ElasticProfileID     string                 `json:"elastic_profile_id,omitempty"`
 }
+// codebeat:enable[TOO_MANY_IVARS]
 
 // Artifact describes the result of a job
 type Artifact struct {

@@ -134,6 +134,7 @@ type ConfigPluginConfiguration struct {
 }
 
 // ConfigServer part of cruise-control.xml. @TODO better documentation
+// codebeat:disable[TOO_MANY_IVARS]
 type ConfigServer struct {
 	MailHost                  MailHost       `xml:"mailhost"`
 	Security                  ConfigSecurity `xml:"security"`
@@ -149,6 +150,7 @@ type ConfigServer struct {
 	CommandRepositoryLocation string         `xml:"commandRepositoryLocation,attr"`
 	ServerID                  string         `xml:"serverId,attr"`
 }
+// codebeat:enable[TOO_MANY_IVARS]
 
 // MailHost part of cruise-control.xml. @TODO better documentation
 type MailHost struct {

@@ -71,6 +71,7 @@ type PluginVendor struct {
 }
 
 // PluginExtensionInfo describes the extension info for the plugin API v3 only (GoCD >= 17.9.0 to < 18.3.0).
+// codebeat:disable[TOO_MANY_IVARS]
 type PluginExtensionInfo struct {
 	PluginSettings                     PluggableInstanceSettings `json:"plugin_settings,omitempty"`
 	ProfileSettings                    PluggableInstanceSettings `json:"profile_settings,omitempty"`
@@ -113,6 +114,7 @@ type ExtensionCapabilities struct {
 	Title                    string `json:"title,omitempty"`
 	Type                     string `json:"type,omitempty"`
 }
+// codebeat:enable[TOO_MANY_IVARS]
 
 // ExtensionSettings describes the html view for the plugin and the list of properties required to be configured on a plugin.
 type ExtensionSettings struct {

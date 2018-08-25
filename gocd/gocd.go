@@ -190,6 +190,7 @@ func generateHttpClient(cfg *Configuration, httpClient *http.Client) *http.Clien
 }
 
 // attachServices to the client to give access to the difference API resources.
+// codebeat:disable[ABC]
 func attachServices(c *Client) {
 	c.Agents = (*AgentsService)(&c.common)
 	c.PipelineGroups = (*PipelineGroupsService)(&c.common)
@@ -207,6 +208,7 @@ func attachServices(c *Client) {
 	c.Roles = (*RoleService)(&c.common)
 	c.ServerVersion = (*ServerVersionService)(&c.common)
 }
+// codebeat:enable[ABC]
 
 func (c *Client) BaseURL() *url.URL {
 	return c.params.BaseURL
