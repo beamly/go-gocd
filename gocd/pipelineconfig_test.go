@@ -2,6 +2,7 @@ package gocd
 
 import (
 	"context"
+	"github.com/hashicorp/go-version"
 	"github.com/stretchr/testify/assert"
 	"regexp"
 	"testing"
@@ -54,6 +55,35 @@ func TestPipelineConfig(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Regexp(t, regexp.MustCompile("^[a-f0-9]{32}--gzip$"), p.Version)
 
+	v, _, err := client.ServerVersion.Get(ctx)
+
+	var ta TaskAttributes
+
+	artifactOriginAdded, _ := version.NewVersion("18.7.0")
+
+	if v.VersionParts.LessThan(artifactOriginAdded) {
+		ta = TaskAttributes{
+			RunIf:         []string{"passed"},
+			Pipeline:      "upstream",
+			Stage:         "upstream_stage",
+			Job:           "upstream_job",
+			IsSourceAFile: false,
+			Source:        "result",
+			Destination:   "test",
+		}
+	} else {
+		ta = TaskAttributes{
+			ArtifactOrigin: "gocd",
+			RunIf:          []string{"passed"},
+			Pipeline:       "upstream",
+			Stage:          "upstream_stage",
+			Job:            "upstream_job",
+			IsSourceAFile:  false,
+			Source:         "result",
+			Destination:    "test",
+		}
+	}
+
 	p.RemoveLinks()
 	expected := &Pipeline{
 		Group:                "test-group",
@@ -92,17 +122,8 @@ func TestPipelineConfig(t *testing.T) {
 				EnvironmentVariables: []*EnvironmentVariable{},
 				Resources:            []string{},
 				Tasks: []*Task{{
-					Type: "fetch",
-					Attributes: TaskAttributes{
-						ArtifactOrigin: "gocd",
-						RunIf:          []string{"passed"},
-						Pipeline:       "upstream",
-						Stage:          "upstream_stage",
-						Job:            "upstream_job",
-						IsSourceAFile:  false,
-						Source:         "result",
-						Destination:    "test",
-					},
+					Type:       "fetch",
+					Attributes: ta,
 				}, {
 					Type: "exec",
 					Attributes: TaskAttributes{
