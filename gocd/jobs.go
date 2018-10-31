@@ -97,6 +97,7 @@ type TaskAttributes struct {
 	Destination         string                      `json:"destination,omitempty"`
 	PluginConfiguration *TaskPluginConfiguration    `json:"plugin_configuration,omitempty"`
 	Configuration       []PluginConfigurationKVPair `json:"configuration,omitempty"`
+	ArtifactOrigin      string                      `json:"artifact_origin,omitempty"`
 }
 
 // TaskPluginConfiguration is for specifying options for pluggable task
