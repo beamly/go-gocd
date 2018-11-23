@@ -35,6 +35,10 @@ func init() {
 				newServerAPI("16.12.0", apiV2),
 				newServerAPI("17.9.0", apiV3),
 				newServerAPI("18.3.0", apiV4)),
+			"/api/admin/scms/": newVersionCollection(
+				newServerAPI("16.7.0", apiV1)),
+			"/api/admin/scms/:material_name": newVersionCollection(
+				newServerAPI("16.7.0", apiV1)),
 		},
 	}
 }

@@ -4,6 +4,8 @@ curl https://download.gocd.org/gocd.repo -o /etc/yum.repos.d/gocd.repo
 yum update -y
 yum install -y java-1.8.0-openjdk go-server git
 
+wget -c -P /var/lib/go-server/plugins/external/ https://github.com/ashwanthkumar/gocd-build-github-pull-requests/releases/download/v1.3.5/github-pr-poller-1.3.5.jar
+
 systemctl enable go-server
 systemctl start go-server
 SCRIPT

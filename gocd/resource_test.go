@@ -22,6 +22,7 @@ func testResourceVersioned(t *testing.T) {
 		"PipelineConfigRequest":   &PipelineConfigRequest{Pipeline: &Pipeline{Version: "mock-version1"}},
 		"PipelineTemplateRequest": &PipelineTemplateRequest{Version: "mock-version1"},
 		"Role": &Role{Version: "mock-version1"},
+		"SCM":  &SCM{Version: "mock-version1"},
 	}
 	for key, ver := range vers {
 		t.Run(key, func(t *testing.T) {
@@ -63,6 +64,7 @@ func testResourceHALContainers(t *testing.T) {
 				Links: l,
 			}},
 		},
+		"SCM": &SCM{Links: l},
 	}
 	for key, hal := range hals {
 		t.Run(key, func(t *testing.T) {
