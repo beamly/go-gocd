@@ -2,6 +2,7 @@ package gocd
 
 import (
 	"context"
+	"github.com/hashicorp/go-version"
 	"github.com/stretchr/testify/assert"
 	"regexp"
 	"testing"
@@ -11,6 +12,25 @@ func TestPipelineConfig(t *testing.T) {
 	if !runIntegrationTest(t) {
 		t.Skip("Skipping acceptance tests as GOCD_ACC not set to 1")
 	}
+
+	ctx := context.Background()
+
+	upstream := &Pipeline{
+		Name: "upstream",
+		Materials: []Material{{
+			Type: "git",
+			Attributes: MaterialAttributesGit{
+				URL:         "git@github.com:sample_repo/example.git",
+				Destination: "dest",
+				Branch:      "master",
+			},
+		}},
+		Stages: buildUpstreamPipelineStages(),
+	}
+
+	_, _, err := intClient.PipelineConfigs.Create(ctx, "test-group", upstream)
+	assert.NoError(t, err)
+
 	input := &Pipeline{
 		Name: "test_pipeline_config",
 		Materials: []Material{{
@@ -20,15 +40,49 @@ func TestPipelineConfig(t *testing.T) {
 				Destination: "dest",
 				Branch:      "master",
 			},
+		}, {
+			Type: "dependency",
+			Attributes: MaterialAttributesDependency{
+				Name:     "upstream",
+				Pipeline: "upstream",
+				Stage:    "upstream_stage",
+			},
 		}},
-		Stages: buildMockPipelineStages(),
+		Stages: buildMockPipelineStagesWithFetch(),
 	}
-
-	ctx := context.Background()
 
 	p, _, err := intClient.PipelineConfigs.Create(ctx, "test-group", input)
 	assert.NoError(t, err)
 	assert.Regexp(t, regexp.MustCompile("^[a-f0-9]{32}--gzip$"), p.Version)
+
+	v, _, err := client.ServerVersion.Get(ctx)
+
+	var ta TaskAttributes
+
+	artifactOriginAdded, _ := version.NewVersion("18.7.0")
+
+	if v.VersionParts.LessThan(artifactOriginAdded) {
+		ta = TaskAttributes{
+			RunIf:         []string{"passed"},
+			Pipeline:      "upstream",
+			Stage:         "upstream_stage",
+			Job:           "upstream_job",
+			IsSourceAFile: false,
+			Source:        "result",
+			Destination:   "test",
+		}
+	} else {
+		ta = TaskAttributes{
+			ArtifactOrigin: "gocd",
+			RunIf:          []string{"passed"},
+			Pipeline:       "upstream",
+			Stage:          "upstream_stage",
+			Job:            "upstream_job",
+			IsSourceAFile:  false,
+			Source:         "result",
+			Destination:    "test",
+		}
+	}
 
 	p.RemoveLinks()
 	expected := &Pipeline{
@@ -45,6 +99,14 @@ func TestPipelineConfig(t *testing.T) {
 				Branch:      "master",
 				AutoUpdate:  true,
 			},
+		}, {
+			Type: "dependency",
+			Attributes: &MaterialAttributesDependency{
+				Name:       "upstream",
+				Pipeline:   "upstream",
+				Stage:      "upstream_stage",
+				AutoUpdate: true,
+			},
 		}},
 		Stages: []*Stage{{
 			Name: "defaultStage",
@@ -60,6 +122,9 @@ func TestPipelineConfig(t *testing.T) {
 				EnvironmentVariables: []*EnvironmentVariable{},
 				Resources:            []string{},
 				Tasks: []*Task{{
+					Type:       "fetch",
+					Attributes: ta,
+				}, {
 					Type: "exec",
 					Attributes: TaskAttributes{
 						RunIf:   []string{"passed"},
@@ -112,12 +177,78 @@ func TestPipelineConfig(t *testing.T) {
 
 }
 
+func buildUpstreamPipelineStages() []*Stage {
+	return []*Stage{{
+		Name: "upstream_stage",
+		Jobs: []*Job{{
+			Name: "upstream_job",
+			Tasks: []*Task{{
+				Type: "exec",
+				Attributes: TaskAttributes{
+					RunIf:   []string{"passed"},
+					Command: "ls",
+				},
+			}},
+			Tabs:                 make([]*Tab, 0),
+			Artifacts:            make([]*Artifact, 0),
+			EnvironmentVariables: make([]*EnvironmentVariable, 0),
+			Resources:            []string{},
+		}},
+		Approval: &Approval{
+			Type: "success",
+			Authorization: &Authorization{
+				Users: make([]string, 0),
+				Roles: make([]string, 0),
+			},
+		},
+		EnvironmentVariables: make([]*EnvironmentVariable, 0),
+	}}
+}
 func buildMockPipelineStages() []*Stage {
 	return []*Stage{{
 		Name: "defaultStage",
 		Jobs: []*Job{{
 			Name: "defaultJob",
 			Tasks: []*Task{{
+				Type: "exec",
+				Attributes: TaskAttributes{
+					RunIf:   []string{"passed"},
+					Command: "ls",
+				},
+			}},
+			Tabs:                 make([]*Tab, 0),
+			Artifacts:            make([]*Artifact, 0),
+			EnvironmentVariables: make([]*EnvironmentVariable, 0),
+			Resources:            []string{},
+		}},
+		Approval: &Approval{
+			Type: "success",
+			Authorization: &Authorization{
+				Users: make([]string, 0),
+				Roles: make([]string, 0),
+			},
+		},
+		EnvironmentVariables: make([]*EnvironmentVariable, 0),
+	}}
+}
+func buildMockPipelineStagesWithFetch() []*Stage {
+	return []*Stage{{
+		Name: "defaultStage",
+		Jobs: []*Job{{
+			Name: "defaultJob",
+			Tasks: []*Task{{
+				Type: "fetch",
+				Attributes: TaskAttributes{
+					ArtifactOrigin: "gocd",
+					RunIf:          []string{"passed"},
+					Pipeline:       "upstream",
+					Stage:          "upstream_stage",
+					Job:            "upstream_job",
+					IsSourceAFile:  false,
+					Source:         "result",
+					Destination:    "test",
+				},
+			}, {
 				Type: "exec",
 				Attributes: TaskAttributes{
 					RunIf:   []string{"passed"},
