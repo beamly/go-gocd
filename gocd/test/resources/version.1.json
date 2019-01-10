@@ -1,0 +1,15 @@
+{
+  "_links": {
+    "self": {
+      "href": "https://build.go.cd/go/api/version"
+    },
+    "doc": {
+      "href": "https://api.gocd.org/#version"
+    }
+  },
+  "version": "16.10.0",
+  "build_number": "3348",
+  "git_sha": "a7a5717cbd60c30006314fb8dd529796c93adaf0",
+  "full_version": "16.6.0 (3348-a7a5717cbd60c30006314fb8dd529796c93adaf0)",
+  "commit_url": "https://github.com/gocd/gocd/commits/a7a5717cbd60c30006314fb8dd529796c93adaf0"
+}

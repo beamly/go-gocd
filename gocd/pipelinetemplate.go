@@ -48,10 +48,15 @@ type PipelineTemplate struct {
 
 // Get a single PipelineTemplate object in the GoCD API.
 func (pts *PipelineTemplatesService) Get(ctx context.Context, name string) (pt *PipelineTemplate, resp *APIResponse, err error) {
+	apiVersion, err := pts.client.getAPIVersion(ctx, "admin/templates/:template_name")
+	if err != nil {
+		return nil, nil, err
+	}
+
 	pt = &PipelineTemplate{}
 	_, resp, err = pts.client.getAction(ctx, &APIClientRequest{
 		Path:         "admin/templates/" + name,
-		APIVersion:   apiV3,
+		APIVersion:   apiVersion,
 		ResponseBody: pt,
 	})
 
@@ -60,10 +65,15 @@ func (pts *PipelineTemplatesService) Get(ctx context.Context, name string) (pt *
 
 // List all PipelineTemplate objects in the GoCD API.
 func (pts *PipelineTemplatesService) List(ctx context.Context) (pt []*PipelineTemplate, resp *APIResponse, err error) {
+	apiVersion, err := pts.client.getAPIVersion(ctx, "admin/templates")
+	if err != nil {
+		return nil, nil, err
+	}
+
 	ptr := PipelineTemplatesResponse{}
 	_, resp, err = pts.client.getAction(ctx, &APIClientRequest{
 		Path:         "admin/templates",
-		APIVersion:   apiV3,
+		APIVersion:   apiVersion,
 		ResponseBody: &ptr,
 	})
 	pt = ptr.Embedded.Templates
@@ -73,6 +83,10 @@ func (pts *PipelineTemplatesService) List(ctx context.Context) (pt []*PipelineTe
 
 // Create a new PipelineTemplate object in the GoCD API.
 func (pts *PipelineTemplatesService) Create(ctx context.Context, name string, st []*Stage) (ptr *PipelineTemplate, resp *APIResponse, err error) {
+	apiVersion, err := pts.client.getAPIVersion(ctx, "admin/templates")
+	if err != nil {
+		return nil, nil, err
+	}
 
 	pt := PipelineTemplateRequest{
 		Name:   name,
@@ -82,7 +96,7 @@ func (pts *PipelineTemplatesService) Create(ctx context.Context, name string, st
 
 	_, resp, err = pts.client.postAction(ctx, &APIClientRequest{
 		Path:         "admin/templates",
-		APIVersion:   apiV3,
+		APIVersion:   apiVersion,
 		RequestBody:  pt,
 		ResponseBody: ptr,
 	})
@@ -93,10 +107,15 @@ func (pts *PipelineTemplatesService) Create(ctx context.Context, name string, st
 
 // Update an PipelineTemplate object in the GoCD API.
 func (pts *PipelineTemplatesService) Update(ctx context.Context, name string, template *PipelineTemplate) (ptr *PipelineTemplate, resp *APIResponse, err error) {
+	apiVersion, err := pts.client.getAPIVersion(ctx, "admin/templates/:template_name")
+	if err != nil {
+		return nil, nil, err
+	}
+
 	ptr = &PipelineTemplate{}
 	_, resp, err = pts.client.putAction(ctx, &APIClientRequest{
 		Path:       "admin/templates/" + name,
-		APIVersion: apiV3,
+		APIVersion: apiVersion,
 		RequestBody: &PipelineTemplateRequest{
 			Name:    name,
 			Stages:  template.Stages,

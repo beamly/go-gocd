@@ -35,6 +35,16 @@ func init() {
 				newServerAPI("16.12.0", apiV2),
 				newServerAPI("17.9.0", apiV3),
 				newServerAPI("18.3.0", apiV4)),
+			"/api/admin/templates": newVersionCollection(
+				newServerAPI("16.10.0", apiV1),
+				newServerAPI("16.11.0", apiV2),
+				newServerAPI("17.1.0", apiV3),
+				newServerAPI("18.7.0", apiV4)),
+			"/api/admin/templates/:template_name": newVersionCollection(
+				newServerAPI("16.10.0", apiV1),
+				newServerAPI("16.11.0", apiV2),
+				newServerAPI("17.1.0", apiV3),
+				newServerAPI("18.7.0", apiV4)),
 		},
 	}
 }
