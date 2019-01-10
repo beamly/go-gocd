@@ -14,6 +14,12 @@ func TestPipelineTemplate(t *testing.T) {
 	setup()
 	defer teardown()
 
+	mux.HandleFunc("/api/version", func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, r.Method, "GET", "Unexpected HTTP method")
+		j, _ := ioutil.ReadFile("test/resources/version.1.json")
+		fmt.Fprint(w, string(j))
+	})
+
 	t.Run("List", testListPipelineTemplates)
 	t.Run("Get", testGetPipelineTemplate)
 	t.Run("Delete", testDeletePipelineTemplate)
@@ -54,7 +60,8 @@ func TestPipelineTemplateCreate(t *testing.T) {
 
 	mux.HandleFunc("/api/admin/templates", func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, r.Method, "POST", "Unexpected HTTP method")
-		assert.Equal(t, apiV3, r.Header.Get("Accept"))
+		apiVersion, _ := client.getAPIVersion(context.Background(), "admin/templates")
+		assert.Equal(t, apiVersion, r.Header.Get("Accept"))
 
 		j, _ := ioutil.ReadFile("test/resources/pipelinetemplate.2.json")
 		w.Header().Set("Etag", "mock-etag")
@@ -153,7 +160,6 @@ func testListPipelineTemplates(t *testing.T) {
 
 	assert.Nil(t, err)
 	assert.Len(t, templates, 1)
-
 	for _, attribute := range []EqualityTest{
 		{templates[0].Name, "template0"},
 		{templates[0].Embedded.Pipelines[0].Name, "up42"},
