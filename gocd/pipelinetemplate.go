@@ -130,5 +130,10 @@ func (pts *PipelineTemplatesService) Update(ctx context.Context, name string, te
 
 // Delete a PipelineTemplate from the GoCD API.
 func (pts *PipelineTemplatesService) Delete(ctx context.Context, name string) (string, *APIResponse, error) {
-	return pts.client.deleteAction(ctx, fmt.Sprintf("admin/templates/%s", name), apiV3)
+	apiVersion, err := pts.client.getAPIVersion(ctx, "admin/templates/:template_name")
+	if err != nil {
+		return "", nil, err
+	}
+
+	return pts.client.deleteAction(ctx, fmt.Sprintf("admin/templates/%s", name), apiVersion)
 }
