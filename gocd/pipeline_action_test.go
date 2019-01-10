@@ -2,6 +2,7 @@ package gocd
 
 import (
 	"context"
+	"github.com/hashicorp/go-version"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -51,11 +52,21 @@ func testPipelineServiceUnPause(t *testing.T) {
 
 		assert.Equal(t, mockPipeline, pausePipeline)
 
-		pp, _, err := intClient.Pipelines.Unpause(ctx, pipelineName)
+		// From 18.8.0 onwards pipelines are no-longer created paused
+		v, _, err := client.ServerVersion.Get(context.Background())
+
+		pausedBeforeVersion, _ := version.NewVersion("18.8.0")
+		if v.VersionParts.LessThan(pausedBeforeVersion) {
+			pp, _, err := intClient.Pipelines.Unpause(ctx, pipelineName)
+			assert.NoError(t, err)
+			assert.True(t, pp)
+		}
+
+		pp, _, err := intClient.Pipelines.Pause(ctx, pipelineName)
 		assert.NoError(t, err)
 		assert.True(t, pp)
 
-		pp, _, err = intClient.Pipelines.Pause(ctx, pipelineName)
+		pp, _, err = intClient.Pipelines.Unpause(ctx, pipelineName)
 		assert.NoError(t, err)
 		assert.True(t, pp)
 

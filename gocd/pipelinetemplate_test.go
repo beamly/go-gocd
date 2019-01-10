@@ -14,11 +14,11 @@ func TestPipelineTemplate(t *testing.T) {
 	setup()
 	defer teardown()
 
-        mux.HandleFunc("/api/version", func(w http.ResponseWriter, r *http.Request) {
-                assert.Equal(t, r.Method, "GET", "Unexpected HTTP method")
-                j, _ := ioutil.ReadFile("test/resources/version.1.json")
-                fmt.Fprint(w, string(j))
-        })
+	mux.HandleFunc("/api/version", func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, r.Method, "GET", "Unexpected HTTP method")
+		j, _ := ioutil.ReadFile("test/resources/version.1.json")
+		fmt.Fprint(w, string(j))
+	})
 
 	t.Run("List", testListPipelineTemplates)
 	t.Run("Get", testGetPipelineTemplate)
@@ -60,7 +60,8 @@ func TestPipelineTemplateCreate(t *testing.T) {
 
 	mux.HandleFunc("/api/admin/templates", func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, r.Method, "POST", "Unexpected HTTP method")
-		assert.Equal(t, apiV1, r.Header.Get("Accept"))
+		apiVersion, _ := client.getAPIVersion(context.Background(), "admin/templates")
+		assert.Equal(t, apiVersion, r.Header.Get("Accept"))
 
 		j, _ := ioutil.ReadFile("test/resources/pipelinetemplate.2.json")
 		w.Header().Set("Etag", "mock-etag")
