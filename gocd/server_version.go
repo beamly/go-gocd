@@ -27,11 +27,13 @@ func (svs *ServerVersionService) Get(ctx context.Context) (v *ServerVersion, res
 	}
 
 	v = &ServerVersion{}
-	_, resp, err = svs.client.getAction(ctx, &APIClientRequest{
+	if _, resp, err = svs.client.getAction(ctx, &APIClientRequest{
 		Path:         "version",
 		ResponseBody: v,
 		APIVersion:   apiV1,
-	})
+	}); err != nil {
+		return
+	}
 
 	err = v.parseVersion()
 
