@@ -19,6 +19,7 @@ func TestTaskValidate(t *testing.T) {
 	t.Run("SuccessAnt", taskValidateSuccessAnt)
 	t.Run("JSONString", testJobJSONString)
 	t.Run("JSONStringFail", testJobJSONStringFail)
+	t.Run("EmptyEnvironmentVariableValue", testEmptyEnvironmentVariableValue)
 }
 
 func testJobJSONStringFail(t *testing.T) {
@@ -37,6 +38,34 @@ func testJobJSONString(t *testing.T) {
 	assert.Equal(
 		t, `{
   "name": "test-job"
+}`, j)
+}
+
+func testEmptyEnvironmentVariableValue(t *testing.T) {
+	jb := Job{
+		Name: "test-job",
+		EnvironmentVariables: []*EnvironmentVariable{
+			{
+				Name:  "test",
+				Value: "",
+			},
+		},
+	}
+
+	j, err := jb.JSONString()
+	if err != nil {
+		assert.Nil(t, err)
+	}
+	assert.Equal(
+		t, `{
+  "name": "test-job",
+  "environment_variables": [
+    {
+      "name": "test",
+      "value": "",
+      "secure": false
+    }
+  ]
 }`, j)
 }
 
