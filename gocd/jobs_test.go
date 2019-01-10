@@ -44,9 +44,9 @@ func testJobJSONString(t *testing.T) {
 func testEmptyEnvironmentVariableValue(t *testing.T) {
 	jb := Job{
 		Name: "test-job",
-                EnvironmentVariables:[]*EnvironmentVariable{
-			&EnvironmentVariable{
-				Name: "test",
+		EnvironmentVariables: []*EnvironmentVariable{
+			{
+				Name:  "test",
 				Value: "",
 			},
 		},
