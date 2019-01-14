@@ -87,7 +87,7 @@ func testPipelineServiceCreateDelete(t *testing.T) {
 	p := Pipeline{
 		LabelTemplate:         "${COUNT}",
 		EnablePipelineLocking: true,
-		Name: "testPipelineServiceCreateDelete",
+		Name:                  "testPipelineServiceCreateDelete",
 		Materials: []Material{
 			{
 				Type: "git",
