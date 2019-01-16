@@ -85,7 +85,7 @@ func ExampleConfigRepoService_Create() {
 
 	name := "my_pipeline_name"
 	repoURL := "git@github.com:example/myrepo.git"
-	repo := gocd.ConfigRepo{ID: name, PluginID: "json.config.plugin", Material: gocd.Material{Type: "git", Attributes: &gocd.MaterialAttributesGit{Name: name, URL: repoURL, Branch: "master", AutoUpdate: true}}}
+	repo := gocd.ConfigRepo{ID: name, PluginID: "json.config.plugin", Material: gocd.Material{Type: "git", Attributes: &gocd.MaterialAttributesGit{URL: repoURL, Branch: "master", AutoUpdate: true}}}
 
 	r, _, err := c.ConfigRepos.Create(context.Background(), &repo)
 	if err != nil {
