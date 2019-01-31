@@ -12,7 +12,7 @@ env:
     - GOCD_LOG_LEVEL=DEBUG
   matrix:
     - GOCD_VERSION=v17.10.0
-    - GOCD_VERSION=v18.12.0
+    - GOCD_VERSION=v19.1.0
 
 addons:
   apt:
@@ -46,10 +46,10 @@ deploy:
     script: make deploy_on_tag
     on:
       tags: true
-      condition: $TRAVIS_GO_VERSION =~ ^1\.10\.([0-9]+|x)?$ && $GOCD_VERSION =~ ^v18\.[0-9]+\.[0-9]+$
+      condition: $TRAVIS_GO_VERSION =~ ^1\.10\.([0-9]+|x)?$ && $GOCD_VERSION =~ ^v19\.[0-9]+\.[0-9]+$
   - provider: script
     skip_cleanup: true
     script: make deploy_on_develop
     on:
       branch: develop
-      condition: $TRAVIS_GO_VERSION =~ ^1\.10\.([0-9]+|x)?$ && $GOCD_VERSION =~ ^v18\.[0-9]+\.[0-9]+$
+      condition: $TRAVIS_GO_VERSION =~ ^1\.10\.([0-9]+|x)?$ && $GOCD_VERSION =~ ^v19\.[0-9]+\.[0-9]+$
