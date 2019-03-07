@@ -16,17 +16,22 @@ func (mas MaterialAttributesSvn) equal(mas2i MaterialAttribute) (isEqual bool, e
 
 // GenerateGeneric form (map[string]interface) of the material filter
 func (mas MaterialAttributesSvn) GenerateGeneric() (ma map[string]interface{}) {
-	ma = map[string]interface{}{
-		"auto_update":        mas.AutoUpdate,
-		"check_externals":    mas.CheckExternals,
-		"destination":        mas.Destination,
-		"encrypted_password": mas.EncryptedPassword,
-		"invert_filter":      mas.InvertFilter,
-		"name":               mas.Name,
-		"password":           mas.Password,
-		"url":                mas.URL,
-		"username":           mas.Username,
-	}
+	ma = genericStringAssignment(
+		[]genericStringPair{
+			{key: "name", value: mas.Name},
+			{key: "url", value: mas.URL},
+			{key: "encrypted_password", value: mas.EncryptedPassword},
+			{key: "username", value: mas.Username},
+			{key: "password", value: mas.Password},
+			{key: "destination", value: mas.Destination},
+		},
+		genericBoolAssignment(
+			[]genericBoolPair{
+				{key: "auto_update", value: mas.AutoUpdate},
+				{key: "check_externals", value: mas.CheckExternals},
+				{key: "invert_filter", value: mas.InvertFilter},
+			},
+			nil))
 
 	if f := mas.Filter.GenerateGeneric(); f != nil {
 		ma["filter"] = f

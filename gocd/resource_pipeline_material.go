@@ -149,3 +149,38 @@ func decodeConfigStringList(lI []interface{}) (ret []string) {
 	}
 	return
 }
+
+type genericStringPair struct {
+	key   string
+	value string
+}
+
+func genericStringAssignment(pairs []genericStringPair, ma map[string]interface{}) map[string]interface{} {
+	if ma == nil {
+		ma = make(map[string]interface{})
+	}
+
+	for _, pair := range pairs {
+		if pair.value != "" {
+			ma[pair.key] = pair.value
+		}
+	}
+	return ma
+}
+
+type genericBoolPair struct {
+	key   string
+	value bool
+}
+
+func genericBoolAssignment(pairs []genericBoolPair, ma map[string]interface{}) map[string]interface{} {
+	if ma == nil {
+		ma = make(map[string]interface{})
+	}
+	for _, pair := range pairs {
+		if pair.value {
+			ma[pair.key] = pair.value
+		}
+	}
+	return ma
+}

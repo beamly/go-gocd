@@ -15,6 +15,9 @@ func (mapk MaterialAttributesPackage) equal(mapk2i MaterialAttribute) (bool, err
 // GenerateGeneric form (map[string]interface) of the material filter
 func (mapk MaterialAttributesPackage) GenerateGeneric() (ma map[string]interface{}) {
 	ma = make(map[string]interface{})
+	if mapk.Ref != "" {
+		ma["ref"] = mapk.Ref
+	}
 	return
 }
 

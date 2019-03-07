@@ -14,6 +14,7 @@ func testResourceMaterial(t *testing.T) {
 	t.Run("HasFilter", testMaterialAttributeFilterable)
 	t.Run("Unmarshall", testMaterialUnmarshall)
 	t.Run("UnmarshallAttributes", testMaterialUnmarshallAttributes)
+	t.Run("DecodeConfigStringList", testDecodeConfigStringList)
 }
 
 func testMaterialAttributeGeneric(t *testing.T) {
@@ -148,24 +149,25 @@ func testMaterialEquality(t *testing.T) {
 }
 
 func testMaterialAttributeEquality(t *testing.T) {
-	for i, test := range []struct {
-		a MaterialAttribute
-		b MaterialAttribute
+	for _, test := range []struct {
+		name string
+		a    MaterialAttribute
+		b    MaterialAttribute
 	}{
-		{a: MaterialAttributesGit{}, b: MaterialAttributesGit{}},
-		{a: MaterialAttributesGit{Branch: ""}, b: MaterialAttributesGit{Branch: "master"}},
-		{a: MaterialAttributesGit{Branch: "master"}, b: MaterialAttributesGit{Branch: ""}},
-		{a: MaterialAttributesGit{Branch: ""}, b: MaterialAttributesGit{Branch: ""}},
-		{a: MaterialAttributesGit{Branch: "master"}, b: MaterialAttributesGit{Branch: "master"}},
-		{a: MaterialAttributesSvn{}, b: MaterialAttributesSvn{}},
-		{a: MaterialAttributesHg{}, b: MaterialAttributesHg{}},
-		{a: MaterialAttributesP4{}, b: MaterialAttributesP4{}},
-		{a: MaterialAttributesTfs{}, b: MaterialAttributesTfs{}},
-		{a: MaterialAttributesDependency{}, b: MaterialAttributesDependency{}},
-		{a: MaterialAttributesPackage{}, b: MaterialAttributesPackage{}},
-		{a: MaterialAttributesPlugin{}, b: MaterialAttributesPlugin{}},
+		{name: "git-empty", a: MaterialAttributesGit{}, b: MaterialAttributesGit{}},
+		{name: "git-default-left", a: MaterialAttributesGit{Branch: ""}, b: MaterialAttributesGit{Branch: "master"}},
+		{name: "git-default-right", a: MaterialAttributesGit{Branch: "master"}, b: MaterialAttributesGit{Branch: ""}},
+		{name: "git-default-empty", a: MaterialAttributesGit{Branch: ""}, b: MaterialAttributesGit{Branch: ""}},
+		{name: "git-master-branch", a: MaterialAttributesGit{Branch: "master"}, b: MaterialAttributesGit{Branch: "master"}},
+		{name: "svn-empty", a: MaterialAttributesSvn{}, b: MaterialAttributesSvn{}},
+		{name: "hg-empty", a: MaterialAttributesHg{}, b: MaterialAttributesHg{}},
+		{name: "p4-empty", a: MaterialAttributesP4{}, b: MaterialAttributesP4{}},
+		{name: "tfs-empty", a: MaterialAttributesTfs{}, b: MaterialAttributesTfs{}},
+		{name: "depen-empty", a: MaterialAttributesDependency{}, b: MaterialAttributesDependency{}},
+		{name: "pkg-empty", a: MaterialAttributesPackage{}, b: MaterialAttributesPackage{}},
+		{name: "plugin-empty", a: MaterialAttributesPlugin{}, b: MaterialAttributesPlugin{}},
 	} {
-		t.Run(strconv.Itoa(i), func(t *testing.T) {
+		t.Run(test.name, func(t *testing.T) {
 			ok, err := test.a.equal(test.b)
 			assert.True(t, ok)
 			assert.Nil(t, err)
@@ -230,11 +232,50 @@ func testMaterialUnmarshall(t *testing.T) {
 
 func testMaterialUnmarshallAttributes(t *testing.T) {
 	t.Run("Dependency", testUnmarshallMaterialAttributesDependency)
+	t.Run("DependencyGeneric", testGenerateGenericMaterialDependency)
 	t.Run("Git", testUnmarshallMaterialAttributesGit)
+	t.Run("GitGeneric", testGenerateGenericGitDependency)
 	t.Run("Hg", testUnmarshallMaterialAttributesHg)
 	t.Run("P4", testUnmarshallMaterialAttributesP4)
+	t.Run("P4Generic", testGenerateGenericP4Dependency)
 	t.Run("Package", testUnmarshallMaterialAttributesPkg)
+	t.Run("PackageGeneric", testGenerateGenericPackageDependency)
 	t.Run("Plugin", testUnmarshallMaterialAttributesPlugin)
+	t.Run("PluginGeneric", testGenerateGenericPluginDependency)
 	t.Run("SVN", testUnmarshallMaterialAttributesSvn)
 	t.Run("TFS", testUnmarshallMaterialAttributesTfs)
+}
+
+func testDecodeConfigStringList(t *testing.T) {
+	type args struct {
+		lI []interface{}
+	}
+	for _, tt := range []struct {
+		name    string
+		args    args
+		wantRet []string
+	}{
+		{
+			name: "basic",
+			args: args{
+				lI: []interface{}{
+					"one",
+				},
+			},
+			wantRet: []string{"one"},
+		},
+		{
+			name: "multi",
+			args: args{
+				lI: []interface{}{
+					"one",
+					"two",
+				},
+			},
+			wantRet: []string{"one", "two"},
+		},
+	} {
+		got := decodeConfigStringList(tt.args.lI)
+		assert.Equal(t, tt.wantRet, got)
+	}
 }

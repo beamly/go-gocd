@@ -23,16 +23,22 @@ func (mag MaterialAttributesGit) equal(a2i MaterialAttribute) (bool, error) {
 
 // GenerateGeneric form (map[string]interface) of the material filter
 func (mag MaterialAttributesGit) GenerateGeneric() (ma map[string]interface{}) {
-	ma = map[string]interface{}{
-		"name":             mag.Name,
-		"url":              mag.URL,
-		"auto_update":      mag.AutoUpdate,
-		"branch":           mag.Branch,
-		"submodule_folder": mag.SubmoduleFolder,
-		"destination":      mag.Destination,
-		"shallow_clone":    mag.ShallowClone,
-		"invert_filter":    mag.InvertFilter,
-	}
+	ma = genericStringAssignment(
+		[]genericStringPair{
+			{key: "name", value: mag.Name},
+			{key: "url", value: mag.URL},
+			{key: "branch", value: mag.Branch},
+			{key: "submodule_folder", value: mag.SubmoduleFolder},
+			{key: "destination", value: mag.Destination},
+		},
+		genericBoolAssignment(
+			[]genericBoolPair{
+				{key: "auto_update", value: mag.AutoUpdate},
+				{key: "shallow_clone", value: mag.ShallowClone},
+				{key: "invert_filter", value: mag.InvertFilter},
+			},
+			nil))
+
 	if f := mag.Filter.GenerateGeneric(); f != nil {
 		ma["filter"] = f
 	}

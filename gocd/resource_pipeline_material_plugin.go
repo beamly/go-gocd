@@ -17,6 +17,23 @@ func (mapp MaterialAttributesPlugin) equal(mapp2i MaterialAttribute) (bool, erro
 // GenerateGeneric form (map[string]interface) of the material filter
 func (mapp MaterialAttributesPlugin) GenerateGeneric() (ma map[string]interface{}) {
 	ma = make(map[string]interface{})
+
+	if mapp.Ref != "" {
+		ma["ref"] = mapp.Ref
+	}
+
+	if mapp.Destination != "" {
+		ma["destination"] = mapp.Destination
+	}
+
+	if f := mapp.Filter.GenerateGeneric(); f != nil {
+		ma["filter"] = f
+	}
+
+	if mapp.InvertFilter {
+		ma["invert_filter"] = mapp.InvertFilter
+	}
+
 	return
 }
 

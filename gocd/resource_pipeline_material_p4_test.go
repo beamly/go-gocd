@@ -43,3 +43,55 @@ func testUnmarshallMaterialAttributesP4(t *testing.T) {
 
 	assert.Equal(t, expected, m)
 }
+
+func testGenerateGenericP4Dependency(t *testing.T) {
+	for _, tt := range []struct {
+		name           string
+		dependency     *MaterialAttributesP4
+		dependencyWant map[string]interface{}
+	}{
+		{
+			name: "basic",
+			dependency: &MaterialAttributesP4{
+				Name:              "mock-name",
+				Port:              "mock-port",
+				UseTickets:        true,
+				View:              "mock-view",
+				Username:          "mock-username",
+				Password:          "mock-password",
+				EncryptedPassword: "mock-encryptedpassword",
+				Destination:       "mock-destination",
+				InvertFilter:      true,
+				AutoUpdate:        true,
+				Filter: &MaterialFilter{
+					Ignore: []string{"one", "two"},
+				},
+			},
+			dependencyWant: map[string]interface{}{
+				"name":               "mock-name",
+				"port":               "mock-port",
+				"use_tickets":        true,
+				"view":               "mock-view",
+				"username":           "mock-username",
+				"password":           "mock-password",
+				"encrypted_password": "mock-encryptedpassword",
+				"destination":        "mock-destination",
+				"invert_filter":      true,
+				"auto_update":        true,
+				"filter": map[string]interface{}{
+					"ignore": []interface{}{"one", "two"},
+				},
+			},
+		},
+		{
+			name:           "null",
+			dependency:     &MaterialAttributesP4{},
+			dependencyWant: map[string]interface{}{},
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.dependency.GenerateGeneric()
+			assert.Equal(t, tt.dependencyWant, got)
+		})
+	}
+}

@@ -10,17 +10,12 @@ func (mtfs MaterialAttributesTfs) equal(mtfs2i MaterialAttribute) (bool, error) 
 	if !ok {
 		return false, errors.New("can only compare with same material type")
 	}
-	namesEqual := mtfs.Name == mtfs2.Name
-	urlsEqual := mtfs.URL == mtfs2.URL
-	projectsEqual := mtfs.ProjectPath == mtfs2.ProjectPath
-	domainsEqual := mtfs.Domain == mtfs2.Domain
-	destEqual := mtfs.Destination == mtfs2.Destination
 
-	return namesEqual &&
-			urlsEqual &&
-			projectsEqual &&
-			domainsEqual &&
-			destEqual,
+	return mtfs.Name == mtfs2.Name &&
+			mtfs.URL == mtfs2.URL &&
+			mtfs.ProjectPath == mtfs2.ProjectPath &&
+			mtfs.Domain == mtfs2.Domain &&
+			mtfs.Destination == mtfs2.Destination,
 		nil
 }
 

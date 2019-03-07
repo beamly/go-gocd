@@ -13,3 +13,31 @@ func testUnmarshallMaterialAttributesPkg(t *testing.T) {
 
 	assert.Equal(t, expected, m)
 }
+
+func testGenerateGenericPackageDependency(t *testing.T) {
+	for _, tt := range []struct {
+		name           string
+		dependency     *MaterialAttributesPackage
+		dependencyWant map[string]interface{}
+	}{
+		{
+			name: "basic",
+			dependency: &MaterialAttributesPackage{
+				Ref: "mock-ref",
+			},
+			dependencyWant: map[string]interface{}{
+				"ref": "mock-ref",
+			},
+		},
+		{
+			name:           "null",
+			dependency:     &MaterialAttributesPackage{},
+			dependencyWant: map[string]interface{}{},
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.dependency.GenerateGeneric()
+			assert.Equal(t, tt.dependencyWant, got)
+		})
+	}
+}
