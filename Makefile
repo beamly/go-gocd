@@ -23,8 +23,7 @@ test: vet lint
 	bash scripts/go-test.sh
 
 before_install:
-	@go get github.com/golang/lint/golint
-	@go install github.com/golang/lint/golint
+	@go get -u github.com/golang/lint/golint
 
 build: deploy_on_develop
 
