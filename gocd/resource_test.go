@@ -21,7 +21,7 @@ func testResourceVersioned(t *testing.T) {
 		"PipelineTemplate":        &PipelineTemplate{Version: "mock-version1"},
 		"PipelineConfigRequest":   &PipelineConfigRequest{Pipeline: &Pipeline{Version: "mock-version1"}},
 		"PipelineTemplateRequest": &PipelineTemplateRequest{Version: "mock-version1"},
-		"Role": &Role{Version: "mock-version1"},
+		"Role":                    &Role{Version: "mock-version1"},
 	}
 	for key, ver := range vers {
 		t.Run(key, func(t *testing.T) {
