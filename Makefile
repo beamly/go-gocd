@@ -16,8 +16,8 @@ lint:
 	golint -set_exit_status .
 
 vet:
-	go tool vet $(GO_TARGETS)
-	go tool vet main.go
+	go vet $(GO_TARGETS)
+	go vet main.go
 
 test: vet lint
 	bash scripts/go-test.sh

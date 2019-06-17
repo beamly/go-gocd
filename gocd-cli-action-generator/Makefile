@@ -6,4 +6,4 @@ format:
 	gofmt -w -s .
 
 test:
-	go tool vet .
+	go vet .
