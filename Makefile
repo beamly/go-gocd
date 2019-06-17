@@ -16,6 +16,7 @@ lint:
 	golint -set_exit_status .
 
 vet:
+	go get ./...
 	go vet ./...
 
 test: vet lint
