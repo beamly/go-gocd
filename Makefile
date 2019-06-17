@@ -13,7 +13,7 @@ format:
 
 lint:
 	diff -u <(echo -n) <(gofmt -d -s main.go $(GO_TARGETS))
-	golint -set_exit_status . $(glide novendor)
+	golint -set_exit_status .
 
 vet:
 	go tool vet $(GO_TARGETS)
@@ -25,8 +25,6 @@ test: vet lint
 before_install:
 	@go get github.com/golang/lint/golint
 	@go install github.com/golang/lint/golint
-	curl https://glide.sh/get | sh
-	glide install
 
 build: deploy_on_develop
 
