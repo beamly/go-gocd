@@ -16,11 +16,10 @@ lint:
 	golint -set_exit_status .
 
 vet:
-	go vet $(GO_TARGETS)
-	go vet main.go
+	go vet ./...
 
 test: vet lint
-	bash scripts/go-test.sh
+	go test -v -coverprofile=coverage.out -covermode=atomic ./...
 
 before_install:
 	@go get -u golang.org/x/lint/golint
