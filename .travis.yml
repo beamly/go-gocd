@@ -1,10 +1,15 @@
 language: go
 go:
-  - 1.11.x
-  - 1.x
+  - "1.11.x"
+  - "1.x"
 
 services:
   - docker
+
+cache:
+  directories:
+    - $HOME/.cache/go-build
+    - $HOME/gopath/pkg/mod
 
 env:
   global:
@@ -29,7 +34,7 @@ before_install:
   - make before_install
 
 script:
-  - go generate -mod=readonly -x ./... && git diff --exit-code; code=$?; git checkout -- .; (exit	$code)
+  - go generate -x . ./gocd/... ./gocd-cli-action-generator/... ./cli/... && git diff --exit-code; code=$?; git checkout -- .; (exit	$code)
   - make testacc
 
 after_success:
