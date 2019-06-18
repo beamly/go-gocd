@@ -27,7 +27,7 @@ build: deploy_on_develop
 
 deploy_on_tag:
 	git clean -df
-	go get
+	go get -mod=readonly
 	goreleaser --debug
 
 deploy_on_develop:
