@@ -19,7 +19,6 @@
 
     git clone https://github.com/beamly/go-gocd.git
     cd go-gocd
-    make before_install
     make test
 
 ## Opening PR's

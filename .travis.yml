@@ -6,11 +6,6 @@ go:
 services:
   - docker
 
-cache:
-  directories:
-    - $HOME/.cache/go-build
-    - $HOME/gopath/pkg/mod
-
 env:
   global:
     - CODECLIMATE_API_HOST=https://codebeat.co/webhooks/code_coverage
@@ -29,9 +24,6 @@ matrix:
   fast_finish: true
   allow_failures:
     - env: GOCD_VERSION=v17.10.0
-
-before_install:
-  - make before_install
 
 script:
   - go generate -mod=readonly -x ./... && git diff --exit-code; code=$?; git checkout -- .; (exit	$code)

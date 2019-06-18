@@ -13,6 +13,7 @@ format:
 
 lint:
 	diff -u <(echo -n) <(gofmt -d -s main.go $(GO_TARGETS))
+	@go get golang.org/x/lint/golint
 	golint -set_exit_status .
 
 vet:
@@ -21,9 +22,6 @@ vet:
 
 test: vet lint
 	go test -mod=readonly -v -coverprofile=coverage.out -covermode=atomic ./...
-
-before_install:
-	@go get -u golang.org/x/lint/golint
 
 build: deploy_on_develop
 
