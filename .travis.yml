@@ -34,7 +34,7 @@ before_install:
   - make before_install
 
 script:
-  - go generate -x . ./gocd/... ./gocd-cli-action-generator/... ./cli/... && git diff --exit-code; code=$?; git checkout -- .; (exit	$code)
+  - go generate -mod=readonly -x ./... && git diff --exit-code; code=$?; git checkout -- .; (exit	$code)
   - make testacc
 
 after_success:
