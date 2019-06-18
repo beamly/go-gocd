@@ -16,11 +16,11 @@ lint:
 	golint -set_exit_status .
 
 vet:
-	go get ./...
+	go get -mod=readonly ./...
 	go vet ./...
 
 test: vet lint
-	go test -v -coverprofile=coverage.out -covermode=atomic ./...
+	go test -mod=readonly -v -coverprofile=coverage.out -covermode=atomic ./...
 
 before_install:
 	@go get -u golang.org/x/lint/golint
@@ -34,7 +34,7 @@ deploy_on_tag:
 
 deploy_on_develop:
 	git clean -df
-	go get
+	go get -mod=readonly
 	goreleaser --debug --rm-dist --snapshot
 
 testacc: provision-test-gocd
