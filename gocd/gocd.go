@@ -109,6 +109,7 @@ type ClientParameters struct {
 	UserAgent string
 }
 
+// BuildPath creates an absolute URL from ClientParameters and a relative URL
 func (cp *ClientParameters) BuildPath(rel *url.URL) *url.URL {
 	u := cp.BaseURL.ResolveReference(rel)
 	if cp.BaseURL.RawQuery != "" {
@@ -151,7 +152,7 @@ func (c *Configuration) Client() *Client {
 // allow overriding of http client structures.
 func NewClient(cfg *Configuration, httpClient *http.Client) *Client {
 
-	httpClient = generateHttpClient(cfg, httpClient)
+	httpClient = generateHTTPClient(cfg, httpClient)
 
 	baseURL, _ := url.Parse(cfg.Server)
 
@@ -176,8 +177,8 @@ func NewClient(cfg *Configuration, httpClient *http.Client) *Client {
 	return c
 }
 
-// generateHttpClient taking into account ssl, and existing httpClient
-func generateHttpClient(cfg *Configuration, httpClient *http.Client) *http.Client {
+// generateHTTPClient taking into account ssl, and existing httpClient
+func generateHTTPClient(cfg *Configuration, httpClient *http.Client) *http.Client {
 	if httpClient == nil {
 		httpClient = http.DefaultClient
 		if strings.HasPrefix(cfg.Server, "https") && cfg.SkipSslCheck {
@@ -211,6 +212,7 @@ func attachServices(c *Client) {
 
 // codebeat:enable[ABC]
 
+// BaseURL creates a URL from the ClientParameters BaseURL
 func (c *Client) BaseURL() *url.URL {
 	return c.params.BaseURL
 }
