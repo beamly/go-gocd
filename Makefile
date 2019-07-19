@@ -3,7 +3,7 @@ SHELL:=/bin/bash
 TEST?=$$(go list ./... |grep -v 'vendor')
 
 GO_TARGETS= ./cli ./gocd ./gocd-*generator
-GOCD_VERSION?= v18.12.0
+GOCD_VERSION?= v19.5.0
 
 format:
 	gofmt -w -s .

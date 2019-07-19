@@ -75,7 +75,7 @@ func testPipelineServiceUnPause(t *testing.T) {
 		assert.False(t, pp)
 
 		deleteResponse, _, err := intClient.PipelineConfigs.Delete(ctx, pipelineName)
-		assert.Equal(t, "The pipeline 'test-pipeline-un-pause' was deleted successfully.", deleteResponse)
+		assert.Contains(t, deleteResponse, "'test-pipeline-un-pause' was deleted successfully")
 	}
 
 }

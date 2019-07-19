@@ -173,7 +173,7 @@ func TestPipelineConfig(t *testing.T) {
 	assert.Equal(t, expected, updatedP)
 
 	message, _, err := intClient.PipelineConfigs.Delete(ctx, input.Name)
-	assert.Equal(t, "The pipeline 'test_pipeline_config' was deleted successfully.", message)
+	assert.Contains(t, message, "'test_pipeline_config' was deleted successfully")
 
 }
 

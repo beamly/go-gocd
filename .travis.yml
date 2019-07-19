@@ -12,7 +12,7 @@ env:
     - GOCD_LOG_LEVEL=DEBUG
   matrix:
     - GOCD_VERSION=v17.10.0
-    - GOCD_VERSION=v19.1.0
+    - GOCD_VERSION=v19.5.0
 
 addons:
   apt:
