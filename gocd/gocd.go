@@ -404,3 +404,8 @@ func createErrorResponseMessage(body string) (resp string) {
 func String(v string) *string {
 	return &v
 }
+
+// Int returns a pointer to the int value passed in. Allows `omitempty` to function in json building
+func Int(v int) *int {
+	return &v
+}
