@@ -144,7 +144,7 @@ func testPipelineServiceCreateDelete(t *testing.T) {
 
 	msg, _, err := intClient.PipelineConfigs.Delete(ctx, p.Name)
 	assert.NoError(t, err)
-	assert.Equal(t, "The pipeline 'testPipelineServiceCreateDelete' was deleted successfully.", msg)
+	assert.Contains(t, msg, "'testPipelineServiceCreateDelete' was deleted successfully")
 }
 
 func testPipelineServiceGet(t *testing.T) {

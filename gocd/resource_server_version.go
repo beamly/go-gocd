@@ -34,7 +34,8 @@ func init() {
 				newServerAPI("16.7.0", apiV1),
 				newServerAPI("16.12.0", apiV2),
 				newServerAPI("17.9.0", apiV3),
-				newServerAPI("18.3.0", apiV4)),
+				newServerAPI("18.3.0", apiV4),
+				newServerAPI("19.3.0", apiV5)),
 			"/api/admin/templates": newVersionCollection(
 				newServerAPI("16.10.0", apiV1),
 				newServerAPI("16.11.0", apiV2),
@@ -45,6 +46,12 @@ func init() {
 				newServerAPI("16.11.0", apiV2),
 				newServerAPI("17.1.0", apiV3),
 				newServerAPI("18.7.0", apiV4)),
+			"/api/admin/security/roles": newVersionCollection(
+				newServerAPI("17.5.0", apiV1),
+				newServerAPI("19.2.0", apiV2)),
+			"/api/admin/security/roles/:role_name": newVersionCollection(
+				newServerAPI("17.5.0", apiV1),
+				newServerAPI("19.2.0", apiV2)),
 		},
 	}
 }

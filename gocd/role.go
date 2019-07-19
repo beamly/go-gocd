@@ -39,9 +39,14 @@ type RoleListWrapper struct {
 
 // Create a role
 func (rs *RoleService) Create(ctx context.Context, role *Role) (r *Role, resp *APIResponse, err error) {
+	apiVersion, err := rs.client.getAPIVersion(ctx, "admin/security/roles")
+	if err != nil {
+		return nil, nil, err
+	}
+
 	r = &Role{}
 	_, resp, err = rs.client.postAction(ctx, &APIClientRequest{
-		APIVersion:   apiV1,
+		APIVersion:   apiVersion,
 		Path:         "admin/security/roles",
 		RequestBody:  role,
 		ResponseBody: r,
@@ -52,11 +57,14 @@ func (rs *RoleService) Create(ctx context.Context, role *Role) (r *Role, resp *A
 
 // List all roles
 func (rs *RoleService) List(ctx context.Context) (r []*Role, resp *APIResponse, err error) {
+	apiVersion, err := rs.client.getAPIVersion(ctx, "admin/security/roles")
+	if err != nil {
+		return nil, nil, err
+	}
 
 	wrapper := RoleListWrapper{}
-
 	_, resp, err = rs.client.getAction(ctx, &APIClientRequest{
-		APIVersion:   apiV1,
+		APIVersion:   apiVersion,
 		Path:         "admin/security/roles",
 		ResponseBody: &wrapper,
 	})
@@ -66,9 +74,13 @@ func (rs *RoleService) List(ctx context.Context) (r []*Role, resp *APIResponse, 
 
 // Get a single role by name
 func (rs *RoleService) Get(ctx context.Context, roleName string) (r *Role, resp *APIResponse, err error) {
+	apiVersion, err := rs.client.getAPIVersion(ctx, "admin/security/roles/:role_name")
+	if err != nil {
+		return nil, nil, err
+	}
 	r = &Role{}
 	_, resp, err = rs.client.getAction(ctx, &APIClientRequest{
-		APIVersion:   apiV1,
+		APIVersion:   apiVersion,
 		Path:         fmt.Sprintf("admin/security/roles/%s", roleName),
 		ResponseBody: r,
 	})
@@ -78,10 +90,14 @@ func (rs *RoleService) Get(ctx context.Context, roleName string) (r *Role, resp 
 
 // Delete a role by name
 func (rs *RoleService) Delete(ctx context.Context, roleName string) (result string, resp *APIResponse, err error) {
+	apiVersion, err := rs.client.getAPIVersion(ctx, "admin/security/roles/:role_name")
+	if err != nil {
+		return "", nil, err
+	}
 	return rs.client.deleteAction(
 		ctx,
 		fmt.Sprintf("admin/security/roles/%s", roleName),
-		apiV1,
+		apiVersion,
 	)
 
 }
@@ -90,9 +106,13 @@ func (rs *RoleService) Delete(ctx context.Context, roleName string) (result stri
 func (rs *RoleService) Update(ctx context.Context, roleName string, role *Role) (
 	r *Role, resp *APIResponse, err error) {
 
+	apiVersion, err := rs.client.getAPIVersion(ctx, "admin/security/roles/:role_name")
+	if err != nil {
+		return nil, nil, err
+	}
 	r = &Role{}
 	_, resp, err = rs.client.putAction(ctx, &APIClientRequest{
-		APIVersion:   apiV1,
+		APIVersion:   apiVersion,
 		Path:         fmt.Sprintf("admin/security/roles/%s", roleName),
 		ResponseBody: r,
 		RequestBody:  role,

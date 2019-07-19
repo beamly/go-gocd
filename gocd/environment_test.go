@@ -187,10 +187,8 @@ func testEnvironmentPatch(t *testing.T) {
 					Value: "https://ci.example.com/go",
 				},
 			},
-			Remove: []*EnvironmentVariable{
-				{
-					Name: "URL",
-				},
+			Remove: []string{
+				"URL",
 			},
 		},
 	}

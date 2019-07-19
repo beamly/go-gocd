@@ -38,7 +38,7 @@ type EnvironmentPatchRequest struct {
 // EnvironmentVariablesAction describes a collection of Environment Variables to add or remove.
 type EnvironmentVariablesAction struct {
 	Add    []*EnvironmentVariable `json:"add"`
-	Remove []*EnvironmentVariable `json:"remove"`
+	Remove []string               `json:"remove"`
 }
 
 // PatchStringAction describes a collection of resources to add or remove.
