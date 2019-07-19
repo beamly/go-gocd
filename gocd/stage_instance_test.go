@@ -41,6 +41,7 @@ func testStageInstanceJSONString(t *testing.T) {
 		ID:                13,
 		OperatePermission: true,
 		Scheduled:         true,
+		RerunOfCounter:    Int(1),
 	}
 	j, err := s.JSONString()
 	if err != nil {
@@ -65,7 +66,8 @@ func testStageInstanceJSONString(t *testing.T) {
   "approved_by": "admin",
   "counter": "1",
   "operate_permission": true,
-  "result": "Failed"
+  "result": "Failed",
+  "rerun_of_counter": 1
 }`, j)
 }
 
