@@ -42,7 +42,7 @@ func testPipelineServiceUnPause(t *testing.T) {
 		assert.NoError(t, err)
 		releaseLockErrorMessage := "Received HTTP Status '406 Not Acceptable'"
 		switch apiVersion {
-		case apiV6:
+		case apiV6, apiV7, apiV8, apiV9:
 			mockPipeline.Origin = &PipelineConfigOrigin{Type: "gocd"}
 			fallthrough
 		case apiV5:

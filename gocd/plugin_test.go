@@ -30,7 +30,6 @@ func testPluginAPIList(t *testing.T) {
 
 		assert.NotNil(t, plugins.Embedded)
 		assert.NotNil(t, plugins.Embedded.PluginInfo)
-		assert.Len(t, plugins.Embedded.PluginInfo, 5)
 
 		for _, pInfo := range plugins.Embedded.PluginInfo {
 			if pInfo.ID == "yum" {
@@ -46,6 +45,7 @@ func testPluginAPIList(t *testing.T) {
 
 		switch apiVersion {
 		case apiV3:
+			assert.Len(t, plugins.Embedded.PluginInfo, 5)
 			assert.Equal(t, "https://api.gocd.org/#plugin-info", plugins.Links.Get("Doc").URL.String())
 			assert.Equal(t, "package-repository", pi.Type)
 			assert.Equal(t, "active", pi.Status.State)
@@ -54,6 +54,7 @@ func testPluginAPIList(t *testing.T) {
 			assert.Equal(t, "Package Spec", pi.ExtensionInfo.PackageSettings.Configurations[0].Metadata.DisplayName)
 			assert.Equal(t, true, pi.ExtensionInfo.PackageSettings.Configurations[0].Metadata.Required)
 		case apiV4:
+			assert.Len(t, plugins.Embedded.PluginInfo, 5)
 			assert.Equal(t, "https://api.gocd.org/#plugin-info", plugins.Links.Get("Doc").URL.String())
 			assert.Equal(t, "active", pi.Status.State)
 			assert.Equal(t, "Yum Plugin", pi.About.Name)
@@ -64,6 +65,18 @@ func testPluginAPIList(t *testing.T) {
 		case apiV5:
 			v, _, err := intClient.ServerVersion.Get(ctx)
 			assert.NoError(t, err)
+			assert.Len(t, plugins.Embedded.PluginInfo, 5)
+			assert.Equal(t, fmt.Sprintf("https://api.gocd.org/%s/#plugin-info", v.Version), plugins.Links.Get("Doc").URL.String())
+			assert.Equal(t, "active", pi.Status.State)
+			assert.Equal(t, "Yum Plugin", pi.About.Name)
+			assert.Equal(t, "package-repository", pi.Extensions[0].Type)
+			assert.Equal(t, "PACKAGE_SPEC", pi.Extensions[0].PackageSettings.Configurations[0].Key)
+			assert.Equal(t, "Package Spec", pi.Extensions[0].PackageSettings.Configurations[0].Metadata.DisplayName)
+			assert.Equal(t, true, pi.Extensions[0].PackageSettings.Configurations[0].Metadata.Required)
+		case apiV6:
+			v, _, err := intClient.ServerVersion.Get(ctx)
+			assert.NoError(t, err)
+			assert.Len(t, plugins.Embedded.PluginInfo, 6)
 			assert.Equal(t, fmt.Sprintf("https://api.gocd.org/%s/#plugin-info", v.Version), plugins.Links.Get("Doc").URL.String())
 			assert.Equal(t, "active", pi.Status.State)
 			assert.Equal(t, "Yum Plugin", pi.About.Name)
@@ -111,6 +124,16 @@ func testPluginAPIGet(t *testing.T) {
 			assert.Equal(t, "Package Spec", plugin.Extensions[0].PackageSettings.Configurations[0].Metadata.DisplayName)
 			assert.Equal(t, true, plugin.Extensions[0].PackageSettings.Configurations[0].Metadata.Required)
 		case apiV5:
+			v, _, err := intClient.ServerVersion.Get(ctx)
+			assert.NoError(t, err)
+			assert.Equal(t, fmt.Sprintf("https://api.gocd.org/%s/#plugin-info", v.Version), plugin.Links.Get("Doc").URL.String())
+			assert.Equal(t, "active", plugin.Status.State)
+			assert.Equal(t, "Yum Plugin", plugin.About.Name)
+			assert.Equal(t, "package-repository", plugin.Extensions[0].Type)
+			assert.Equal(t, "PACKAGE_SPEC", plugin.Extensions[0].PackageSettings.Configurations[0].Key)
+			assert.Equal(t, "Package Spec", plugin.Extensions[0].PackageSettings.Configurations[0].Metadata.DisplayName)
+			assert.Equal(t, true, plugin.Extensions[0].PackageSettings.Configurations[0].Metadata.Required)
+		case apiV6:
 			v, _, err := intClient.ServerVersion.Get(ctx)
 			assert.NoError(t, err)
 			assert.Equal(t, fmt.Sprintf("https://api.gocd.org/%s/#plugin-info", v.Version), plugin.Links.Get("Doc").URL.String())

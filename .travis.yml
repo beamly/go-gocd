@@ -13,12 +13,12 @@ env:
     - GO111MODULE=on
   matrix:
     - GOCD_VERSION=v17.10.0
-    - GOCD_VERSION=v19.5.0
+    - GOCD_VERSION=v19.9.0
 
 addons:
   apt:
     packages:
-    - rpm
+      - rpm
 
 matrix:
   fast_finish: true
@@ -26,7 +26,7 @@ matrix:
     - env: GOCD_VERSION=v17.10.0
 
 script:
-  - go generate -mod=readonly -x ./... && git diff --exit-code; code=$?; git checkout -- .; (exit	$code)
+  - go generate -mod=readonly -x ./... && git diff --exit-code; code=$?; git checkout -- .; (exit $code)
   - make testacc
 
 after_success:

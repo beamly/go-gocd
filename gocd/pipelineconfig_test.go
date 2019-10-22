@@ -143,7 +143,7 @@ func TestPipelineConfig(t *testing.T) {
 	apiVersion, err := intClient.getAPIVersion(ctx, "admin/pipelines/:pipeline_name")
 	assert.NoError(t, err)
 	switch apiVersion {
-	case apiV6:
+	case apiV6, apiV7, apiV8, apiV9:
 		expected.Origin = &PipelineConfigOrigin{Type: "gocd"}
 		fallthrough
 	case apiV5:
