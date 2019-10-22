@@ -58,6 +58,12 @@ func TestPipelineTemplateCreate(t *testing.T) {
 	setup()
 	defer teardown()
 
+	mux.HandleFunc("/api/version", func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, r.Method, "GET", "Unexpected HTTP method")
+		j, _ := ioutil.ReadFile("test/resources/version.1.json")
+		fmt.Fprint(w, string(j))
+	})
+
 	mux.HandleFunc("/api/admin/templates", func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, r.Method, "POST", "Unexpected HTTP method")
 		apiVersion, _ := client.getAPIVersion(context.Background(), "admin/templates")

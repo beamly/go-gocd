@@ -71,6 +71,7 @@ func intSetup() {
 // teardown closes the test HTTP server.
 func teardown() {
 	server.Close()
+	cachedServerVersion = nil
 }
 
 func runIntegrationTest(t *testing.T) bool {

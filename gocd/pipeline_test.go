@@ -25,6 +25,159 @@ func TestPipelineService(t *testing.T) {
 	t.Run("ConfirmHeader", testChoosePipelineConfirmHeader)
 }
 
+func TestPipelineServiceSchedule(t *testing.T) {
+	for _, tt := range []struct {
+		name        string
+		versionFile string
+	}{
+		{
+			name:        "unversionned",
+			versionFile: "test/resources/version.0.json",
+		},
+		{
+			name:        "18.2.0",
+			versionFile: "test/resources/version.2.json",
+		},
+	} {
+
+		t.Run(tt.name, func(t *testing.T) {
+			setup()
+			defer teardown()
+
+			mux.HandleFunc("/api/version", func(w http.ResponseWriter, r *http.Request) {
+				assert.Equal(t, r.Method, "GET", "Unexpected HTTP method")
+				j, _ := ioutil.ReadFile(tt.versionFile)
+				fmt.Fprint(w, string(j))
+			})
+
+			mux.HandleFunc("/api/pipelines/test-pipeline/schedule", func(w http.ResponseWriter, r *http.Request) {
+				assert.Equal(t, r.Method, "POST", "Unexpected HTTP method")
+				fmt.Fprint(w, string([]byte(`{"message" : "Request to schedule pipeline test-pipeline accepted"}`)))
+			})
+
+			result, _, err := client.Pipelines.Schedule(context.Background(), "test-pipeline", nil)
+			if err != nil {
+				t.Error(err)
+			}
+
+			assert.True(t, result)
+		})
+	}
+
+}
+
+func TestPipelineServiceScheduleWithBody(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/api/version", func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, r.Method, "GET", "Unexpected HTTP method")
+		j, _ := ioutil.ReadFile("test/resources/version.2.json")
+		fmt.Fprint(w, string(j))
+	})
+
+	mux.HandleFunc("/api/pipelines/test-pipeline/schedule", func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, r.Method, "POST", "Unexpected HTTP method")
+		expReqBody, _ := ioutil.ReadFile("test/request/schedule-pipeline.0.json")
+		reqBody, _ := ioutil.ReadAll(r.Body)
+		assert.Equal(t, string(expReqBody), string(reqBody))
+		fmt.Fprint(w, string([]byte(`{"message" : "Request to schedule pipeline test-pipeline accepted"}`)))
+	})
+
+	body := &ScheduleRequestBody{
+		Materials: []*ScheduleMaterial{
+			{
+				Revision:    "123",
+				Fingerprint: "45",
+			},
+			{
+				Revision:    "67",
+				Fingerprint: "89",
+			},
+		},
+		EnvironmentVariables: []*EnvironmentVariable{
+			{
+				Name:   "USERNAME",
+				Value:  "gocd",
+				Secure: false,
+			},
+			{
+				Name:   "SSH_PASSPHRASE",
+				Value:  "some passphrase",
+				Secure: true,
+			},
+			{
+				Name:           "PASSWORD",
+				EncryptedValue: "YEepp1G0C05SpP0fcp4Jh",
+				Secure:         true,
+			},
+		},
+	}
+
+	result, _, err := client.Pipelines.Schedule(context.Background(), "test-pipeline", body)
+	if err != nil {
+		t.Error(err)
+	}
+
+	assert.True(t, result)
+}
+
+func TestPipelineServiceScheduleWithBodyForUnversionnedAPI(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/api/version", func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, "GET", r.Method, "Unexpected HTTP method")
+		j, _ := ioutil.ReadFile("test/resources/version.0.json")
+		fmt.Fprint(w, string(j))
+	})
+
+	mux.HandleFunc("/api/pipelines/test-pipeline/schedule", func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, "POST", r.Method, "Unexpected HTTP method")
+		err := r.ParseForm()
+		if err != nil {
+			t.Error(err)
+		}
+		assert.Equal(t, []string{"test"}, r.Form["materials[svn]"])
+		assert.Equal(t, []string{"123"}, r.Form["materials[pkg-name]"])
+		assert.Equal(t, []string{"gocd"}, r.Form["variables[USERNAME]"])
+		assert.Equal(t, []string{"some passphrase"}, r.Form["secure_variables[SSH_PASSPHRASE]"])
+		fmt.Fprint(w, string([]byte(`{"message" : "Request to schedule pipeline test-pipeline accepted"}`)))
+	})
+
+	body := &ScheduleRequestBody{
+		Materials: []*ScheduleMaterial{
+			{
+				Name:     "svn",
+				Revision: "test",
+			},
+			{
+				Name:     "pkg-name",
+				Revision: "123",
+			},
+		},
+		EnvironmentVariables: []*EnvironmentVariable{
+			{
+				Name:   "USERNAME",
+				Value:  "gocd",
+				Secure: false,
+			},
+			{
+				Name:   "SSH_PASSPHRASE",
+				Value:  "some passphrase",
+				Secure: true,
+			},
+		},
+	}
+
+	result, _, err := client.Pipelines.Schedule(context.Background(), "test-pipeline", body)
+	if err != nil {
+		t.Error(err)
+	}
+
+	assert.True(t, result)
+}
+
 func testPipelineStageContainer(t *testing.T) {
 
 	p := &Pipeline{
@@ -148,13 +301,13 @@ func testPipelineServiceCreateDelete(t *testing.T) {
 }
 
 func testPipelineServiceGet(t *testing.T) {
-	mux.HandleFunc("/api/admin/pipelines/test-pipeline/instance", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/api/pipelines/test-pipeline/instance/1", func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, r.Method, "GET", "Unexpected HTTP method")
 		j, _ := ioutil.ReadFile("test/resources/pipeline.0.json")
 		fmt.Fprint(w, string(j))
 	})
 
-	p, _, err := client.Pipelines.GetInstance(context.Background(), "test-pipeline", 0)
+	p, _, err := client.Pipelines.GetInstance(context.Background(), "test-pipeline", 1)
 	if err != nil {
 		t.Error(err)
 	}

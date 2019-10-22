@@ -3,6 +3,7 @@ package gocd
 import (
 	"context"
 	"fmt"
+	"net/url"
 )
 
 // PipelinesService describes the HAL _link resource for the api response object for a pipelineconfig
@@ -141,6 +142,28 @@ type PipelineStatus struct {
 	Schedulable bool `json:"schedulable"`
 }
 
+// ScheduleMaterial describes a material that must be used to trigger a new instance of the pipeline.
+type ScheduleMaterial struct {
+	Name        string `json:"name,omitempty"` // Name is used to build a post query for GoCD version < 18.2.0
+	Fingerprint string `json:"fingerprint"`
+	Revision    string `json:"revision"`
+}
+
+// ScheduleRequestBody describes properties to trigger a new instance of the pipeline.
+type ScheduleRequestBody struct {
+	EnvironmentVariables            []*EnvironmentVariable `json:"environment_variables,omitempty"`
+	Materials                       []*ScheduleMaterial    `json:"materials,omitempty"`
+	UpdateMaterialsBeforeScheduling bool                   `json:"update_materials_before_scheduling"`
+}
+
+// pipelineActionRequest describes pipeline action details
+type pipelineActionRequest struct {
+	Action   string
+	Pipeline string
+	Body     interface{}
+	RawQuery string
+}
+
 // GetStatus returns a list of pipeline instanves describing the pipeline history.
 func (pgs *PipelinesService) GetStatus(ctx context.Context, name string, offset int) (ps *PipelineStatus, resp *APIResponse, err error) {
 	ps = &PipelineStatus{}
@@ -154,25 +177,50 @@ func (pgs *PipelinesService) GetStatus(ctx context.Context, name string, offset 
 
 // Pause allows a pipeline to handle new build events
 func (pgs *PipelinesService) Pause(ctx context.Context, name string) (bool, *APIResponse, error) {
-	return pgs.pipelineAction(ctx, name, "pause")
+	return pgs.pipelineAction(ctx, &pipelineActionRequest{
+		Action:   "pause",
+		Pipeline: name,
+	})
 }
 
 // Unpause allows a pipeline to handle new build events
 func (pgs *PipelinesService) Unpause(ctx context.Context, name string) (bool, *APIResponse, error) {
-	return pgs.pipelineAction(ctx, name, "unpause")
+	return pgs.pipelineAction(ctx, &pipelineActionRequest{
+		Action:   "unpause",
+		Pipeline: name,
+	})
 }
 
 // ReleaseLock frees a pipeline to handle new build events
 func (pgs *PipelinesService) ReleaseLock(ctx context.Context, name string) (bool, *APIResponse, error) {
-	return pgs.pipelineAction(ctx, name, "releaseLock")
+	return pgs.pipelineAction(ctx, &pipelineActionRequest{
+		Action:   "releaseLock",
+		Pipeline: name,
+	})
+}
+
+// Schedule allows to trigger a specific pipeline.
+func (pgs *PipelinesService) Schedule(ctx context.Context, name string, body *ScheduleRequestBody) (bool, *APIResponse, error) {
+
+	request := pipelineActionRequest{
+		Pipeline: name,
+		Action:   "schedule",
+		RawQuery: buildScheduleQuery(body),
+	}
+
+	if body != nil {
+		request.Body = body
+	}
+
+	return pgs.pipelineAction(ctx, &request)
 }
 
 // GetInstance of a pipeline run.
-func (pgs *PipelinesService) GetInstance(ctx context.Context, name string, offset int) (pt *PipelineInstance, resp *APIResponse, err error) {
+func (pgs *PipelinesService) GetInstance(ctx context.Context, name string, counter int) (pt *PipelineInstance, resp *APIResponse, err error) {
 
 	pt = &PipelineInstance{}
 	_, resp, err = pgs.client.getAction(ctx, &APIClientRequest{
-		Path:         pgs.buildPaginatedStub("admin/pipelines/%s/instance", name, offset),
+		Path:         fmt.Sprintf("pipelines/%s/instance/%d", name, counter),
 		ResponseBody: &pt,
 	})
 
@@ -191,20 +239,24 @@ func (pgs *PipelinesService) GetHistory(ctx context.Context, name string, offset
 	return
 }
 
-func (pgs *PipelinesService) pipelineAction(ctx context.Context, name string, action string) (bool, *APIResponse, error) {
+func (pgs *PipelinesService) pipelineAction(ctx context.Context, request *pipelineActionRequest) (bool, *APIResponse, error) {
 
-	apiVersion, err := pgs.client.getAPIVersion(ctx, fmt.Sprintf("pipelines/:pipeline_name/%s", action))
+	apiVersion, err := pgs.client.getAPIVersion(ctx, fmt.Sprintf("pipelines/:pipeline_name/%s", request.Action))
 	if err != nil {
 		return false, nil, err
 	}
 
-	request := &APIClientRequest{
-		Path:       fmt.Sprintf("pipelines/%s/%s", name, action),
-		APIVersion: apiVersion,
+	apiRequest := &APIClientRequest{
+		Path:        fmt.Sprintf("pipelines/%s/%s", request.Pipeline, request.Action),
+		APIVersion:  apiVersion,
+		RequestBody: request.Body,
 	}
-	choosePipelineConfirmHeader(request, apiVersion)
 
-	_, resp, err := pgs.client.postAction(ctx, request)
+	setPostData(apiRequest, request.RawQuery, apiVersion)
+
+	choosePipelineConfirmHeader(apiRequest, apiVersion)
+
+	_, resp, err := pgs.client.postAction(ctx, apiRequest)
 
 	return resp.HTTP.StatusCode == 200, resp, err
 }
@@ -226,4 +278,33 @@ func choosePipelineConfirmHeader(request *APIClientRequest, apiVersion string) {
 		request.ResponseBody = &map[string]interface{}{}
 	}
 
+}
+
+func setPostData(request *APIClientRequest, query string, apiVersion string) {
+	if query != "" && apiVersion == apiV0 {
+		request.Path = fmt.Sprintf("%s?%s", request.Path, query)
+		request.RequestBody = nil
+	}
+}
+
+func buildScheduleQuery(body *ScheduleRequestBody) string {
+	if body == nil {
+		return ""
+	}
+
+	params := url.Values{}
+
+	for _, m := range body.Materials {
+		params.Add(fmt.Sprintf("materials[%s]", m.Name), m.Revision)
+	}
+
+	for _, v := range body.EnvironmentVariables {
+		if v.Secure {
+			params.Add(fmt.Sprintf("secure_variables[%s]", v.Name), v.Value)
+		} else {
+			params.Add(fmt.Sprintf("variables[%s]", v.Name), v.Value)
+		}
+	}
+
+	return params.Encode()
 }
