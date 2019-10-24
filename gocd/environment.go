@@ -49,11 +49,16 @@ type PatchStringAction struct {
 
 // List all environments
 func (es *EnvironmentsService) List(ctx context.Context) (e *EnvironmentsResponse, resp *APIResponse, err error) {
+	apiVersion, err := es.client.getAPIVersion(ctx, "admin/environments")
+	if err != nil {
+		return nil, nil, err
+	}
+
 	e = &EnvironmentsResponse{}
 	_, resp, err = es.client.getAction(ctx, &APIClientRequest{
 		Path:         "admin/environments",
 		ResponseBody: e,
-		APIVersion:   apiV2,
+		APIVersion:   apiVersion,
 	})
 
 	return
@@ -61,18 +66,28 @@ func (es *EnvironmentsService) List(ctx context.Context) (e *EnvironmentsRespons
 
 // Delete an environment
 func (es *EnvironmentsService) Delete(ctx context.Context, name string) (string, *APIResponse, error) {
-	return es.client.deleteAction(ctx, "admin/environments/"+name, apiV2)
+	apiVersion, err := es.client.getAPIVersion(ctx, "admin/environments/:environment_name")
+	if err != nil {
+		return "", nil, err
+	}
+
+	return es.client.deleteAction(ctx, "admin/environments/"+name, apiVersion)
 }
 
 // Create an environment
 func (es *EnvironmentsService) Create(ctx context.Context, name string) (e *Environment, resp *APIResponse, err error) {
+	apiVersion, err := es.client.getAPIVersion(ctx, "admin/environments")
+	if err != nil {
+		return nil, nil, err
+	}
+
 	_, resp, err = es.client.postAction(ctx, &APIClientRequest{
 		Path: "admin/environments/",
 		RequestBody: Environment{
 			Name: name,
 		},
 		ResponseBody: &e,
-		APIVersion:   apiV2,
+		APIVersion:   apiVersion,
 	})
 
 	return
@@ -80,11 +95,16 @@ func (es *EnvironmentsService) Create(ctx context.Context, name string) (e *Envi
 
 // Get a single environment by name
 func (es *EnvironmentsService) Get(ctx context.Context, name string) (e *Environment, resp *APIResponse, err error) {
+	apiVersion, err := es.client.getAPIVersion(ctx, "admin/environments/:environment_name")
+	if err != nil {
+		return nil, nil, err
+	}
+
 	e = &Environment{}
 	_, resp, err = es.client.getAction(ctx, &APIClientRequest{
 		Path:         "admin/environments/" + name,
 		ResponseBody: e,
-		APIVersion:   apiV2,
+		APIVersion:   apiVersion,
 	})
 
 	return
@@ -92,12 +112,17 @@ func (es *EnvironmentsService) Get(ctx context.Context, name string) (e *Environ
 
 // Patch an environments configuration by adding or removing pipelines, agents, environment variables
 func (es *EnvironmentsService) Patch(ctx context.Context, name string, patch *EnvironmentPatchRequest) (e *Environment, resp *APIResponse, err error) {
+	apiVersion, err := es.client.getAPIVersion(ctx, "admin/environments/:environment_name")
+	if err != nil {
+		return nil, nil, err
+	}
+
 	e = &Environment{}
 	_, resp, err = es.client.patchAction(ctx, &APIClientRequest{
 		Path:         "admin/environments/" + name,
 		RequestBody:  patch,
 		ResponseBody: e,
-		APIVersion:   apiV2,
+		APIVersion:   apiVersion,
 	})
 
 	return

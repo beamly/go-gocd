@@ -10,8 +10,16 @@ import (
 )
 
 func TestEnvironment(t *testing.T) {
+	t.Run("Integration", testEnvironmentIntegration)
+
 	setup()
 	defer teardown()
+
+	mux.HandleFunc("/api/version", func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, r.Method, "GET", "Unexpected HTTP method")
+		j, _ := ioutil.ReadFile("test/resources/version.3.json")
+		fmt.Fprint(w, string(j))
+	})
 
 	t.Run("List", testEnvironmentList)
 	t.Run("Delete", testEnvironmentDelete)
@@ -19,10 +27,103 @@ func TestEnvironment(t *testing.T) {
 	t.Run("Patch", testEnvironmentPatch)
 }
 
+func testEnvironmentIntegration(t *testing.T) {
+	if !runIntegrationTest(t) {
+		t.Skip("Skipping acceptance tests as GOCD_ACC not set to 1")
+	}
+
+	ctx := context.Background()
+
+	env, _, err := intClient.Environments.Create(ctx, "test")
+	if err != nil {
+		t.Error(err)
+	}
+
+	p := &Pipeline{
+		Name: "environment-pipeline",
+		Materials: []Material{{
+			Type: "git",
+			Attributes: MaterialAttributesGit{
+				URL:         "git@github.com:sample_repo/example.git",
+				Destination: "dest",
+				Branch:      "master",
+			},
+		}},
+		Stages: buildUpstreamPipelineStages(),
+	}
+
+	_, _, err = intClient.PipelineConfigs.Create(ctx, "test-group", p)
+	if err != nil {
+		t.Error(err)
+	}
+
+	patch := EnvironmentPatchRequest{
+		Pipelines: &PatchStringAction{
+			Add:    []string{"environment-pipeline"},
+			Remove: []string{},
+		},
+		EnvironmentVariables: &EnvironmentVariablesAction{
+			Add: []*EnvironmentVariable{
+				{
+					Name:  "GO_SERVER_URL",
+					Value: "https://ci.example.com/go",
+				},
+			},
+			Remove: []string{},
+		},
+	}
+	_, _, err = intClient.Environments.Patch(context.Background(), "test", &patch)
+	if err != nil {
+		t.Error(err)
+	}
+
+	envs, _, err := intClient.Environments.List(ctx)
+	if err != nil {
+		t.Error(err)
+	}
+
+	assert.NotNil(t, envs)
+
+	assert.NotNil(t, envs.Links.Get("Self"))
+	assert.Equal(t, "http://127.0.0.1:8153/go/api/admin/environments", envs.Links.Get("Self").URL.String())
+	assert.NotNil(t, envs.Links.Get("Doc"))
+	assert.Equal(t, "https://api.go.cd/current/#environment-config", envs.Links.Get("Doc").URL.String())
+
+	assert.NotNil(t, envs.Embedded)
+	assert.NotNil(t, envs.Embedded.Environments)
+	assert.Len(t, envs.Embedded.Environments, 1)
+
+	env = envs.Embedded.Environments[0]
+	assert.NotNil(t, env.Links)
+	assert.Equal(t, "http://127.0.0.1:8153/go/api/admin/environments/test", env.Links.Get("Self").URL.String())
+	assert.Equal(t, "https://api.go.cd/current/#environment-config", env.Links.Get("Doc").URL.String())
+	assert.Equal(t, "http://127.0.0.1:8153/go/api/admin/environments/:name", env.Links.Get("Find").URL.String())
+
+	assert.Equal(t, "test", env.Name)
+
+	assert.NotNil(t, env.Pipelines)
+	assert.Len(t, env.Pipelines, 1)
+
+	p = env.Pipelines[0]
+	assert.NotNil(t, p.Links)
+	assert.Equal(t, "http://127.0.0.1:8153/go/api/pipelines/environment-pipeline/history", p.Links.Get("Self").URL.String())
+	assert.Equal(t, "https://api.go.cd/current/#pipelines", p.Links.Get("Doc").URL.String())
+	assert.Equal(t, "/api/admin/pipelines/:pipeline_name", p.Links.Get("Find").URL.String())
+	assert.Equal(t, "environment-pipeline", p.Name)
+
+	assert.NotNil(t, env.EnvironmentVariables)
+	assert.Len(t, env.EnvironmentVariables, 1)
+
+	ev1 := env.EnvironmentVariables[0]
+	assert.Equal(t, "GO_SERVER_URL", ev1.Name)
+	assert.False(t, ev1.Secure)
+	assert.Equal(t, "https://ci.example.com/go", ev1.Value)
+}
+
 func testEnvironmentList(t *testing.T) {
 	mux.HandleFunc("/api/admin/environments", func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, r.Method, "GET", "Unexpected HTTP method")
-		assert.Contains(t, r.Header["Accept"], "application/vnd.go.cd.v2+json")
+		assert.Contains(t, r.Header["Accept"], "application/vnd.go.cd.v3+json")
 
 		j, _ := ioutil.ReadFile("test/resources/environment.0.json")
 		fmt.Fprint(w, string(j))
@@ -89,7 +190,7 @@ func testEnvironmentList(t *testing.T) {
 func testEnvironmentDelete(t *testing.T) {
 	mux.HandleFunc("/api/admin/environments/my_environment_1", func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, r.Method, "DELETE", "Unexpected HTTP method")
-		assert.Contains(t, r.Header["Accept"], "application/vnd.go.cd.v2+json")
+		assert.Contains(t, r.Header["Accept"], "application/vnd.go.cd.v3+json")
 
 		fmt.Fprint(w, `{
   "message": "Environment 'my_environment_1' was deleted successfully."
@@ -107,7 +208,7 @@ func testEnvironmentDelete(t *testing.T) {
 func testEnvironmentGet(t *testing.T) {
 	mux.HandleFunc("/api/admin/environments/my_environment", func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, r.Method, "GET", "Unexpected HTTP method")
-		assert.Contains(t, r.Header["Accept"], "application/vnd.go.cd.v2+json")
+		assert.Contains(t, r.Header["Accept"], "application/vnd.go.cd.v3+json")
 
 		j, _ := ioutil.ReadFile("test/resources/environment.1.json")
 		fmt.Fprint(w, string(j))
@@ -164,7 +265,7 @@ func testEnvironmentGet(t *testing.T) {
 func testEnvironmentPatch(t *testing.T) {
 	mux.HandleFunc("/api/admin/environments/my_environment_2", func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, r.Method, "PATCH", "Unexpected HTTP method")
-		assert.Contains(t, r.Header["Accept"], "application/vnd.go.cd.v2+json")
+		assert.Contains(t, r.Header["Accept"], "application/vnd.go.cd.v3+json")
 
 		j, _ := ioutil.ReadFile("test/resources/environment.2.json")
 		fmt.Fprint(w, string(j))
