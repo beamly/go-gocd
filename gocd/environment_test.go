@@ -142,9 +142,12 @@ func testEnvironmentIntegration(t *testing.T) {
 }
 
 func testEnvironmentList(t *testing.T) {
+	apiVersion, err := client.getAPIVersion(context.Background(), "admin/environments")
+	assert.NoError(t, err)
+
 	mux.HandleFunc("/api/admin/environments", func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, r.Method, "GET", "Unexpected HTTP method")
-		assert.Contains(t, r.Header["Accept"], "application/vnd.go.cd.v3+json")
+		assert.Contains(t, r.Header["Accept"], apiVersion)
 
 		j, _ := ioutil.ReadFile("test/resources/environment.0.json")
 		fmt.Fprint(w, string(j))
@@ -209,9 +212,12 @@ func testEnvironmentList(t *testing.T) {
 }
 
 func testEnvironmentDelete(t *testing.T) {
+	apiVersion, err := client.getAPIVersion(context.Background(), "admin/environments/:environment_name")
+	assert.NoError(t, err)
+
 	mux.HandleFunc("/api/admin/environments/my_environment_1", func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, r.Method, "DELETE", "Unexpected HTTP method")
-		assert.Contains(t, r.Header["Accept"], "application/vnd.go.cd.v3+json")
+		assert.Contains(t, r.Header["Accept"], apiVersion)
 
 		fmt.Fprint(w, `{
   "message": "Environment 'my_environment_1' was deleted successfully."
@@ -227,9 +233,12 @@ func testEnvironmentDelete(t *testing.T) {
 }
 
 func testEnvironmentGet(t *testing.T) {
+	apiVersion, err := client.getAPIVersion(context.Background(), "admin/environments/:environment_name")
+	assert.NoError(t, err)
+
 	mux.HandleFunc("/api/admin/environments/my_environment", func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, r.Method, "GET", "Unexpected HTTP method")
-		assert.Contains(t, r.Header["Accept"], "application/vnd.go.cd.v3+json")
+		assert.Contains(t, r.Header["Accept"], apiVersion)
 
 		j, _ := ioutil.ReadFile("test/resources/environment.1.json")
 		fmt.Fprint(w, string(j))
@@ -284,9 +293,12 @@ func testEnvironmentGet(t *testing.T) {
 }
 
 func testEnvironmentPatch(t *testing.T) {
+	apiVersion, err := client.getAPIVersion(context.Background(), "admin/environments/:environment_name")
+	assert.NoError(t, err)
+
 	mux.HandleFunc("/api/admin/environments/my_environment_2", func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, r.Method, "PATCH", "Unexpected HTTP method")
-		assert.Contains(t, r.Header["Accept"], "application/vnd.go.cd.v3+json")
+		assert.Contains(t, r.Header["Accept"], apiVersion)
 
 		j, _ := ioutil.ReadFile("test/resources/environment.2.json")
 		fmt.Fprint(w, string(j))
