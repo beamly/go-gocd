@@ -84,10 +84,31 @@ func testEnvironmentIntegration(t *testing.T) {
 
 	assert.NotNil(t, envs)
 
+	// Make sure version-specific expected values are set
+	apiVersion, err := intClient.getAPIVersion(ctx, "admin/environments")
+	assert.NoError(t, err)
+
+	var envDoc, envFind, pipelineDoc, pipelineFind, pipelineSelf string
+
+	switch apiVersion {
+	case apiV3:
+		envDoc = "https://api.go.cd/current/#environment-config"
+		envFind = "http://127.0.0.1:8153/go/api/admin/environments/:name"
+		pipelineDoc = "https://api.go.cd/current/#pipelines"
+		pipelineFind = "/api/admin/pipelines/:pipeline_name"
+		pipelineSelf = "http://127.0.0.1:8153/go/api/pipelines/environment-pipeline/history"
+	case apiV2:
+		envDoc = "https://api.gocd.org/#environment-config"
+		envFind = "http://127.0.0.1:8153/go/api/admin/environments/:environment_name"
+		pipelineDoc = "https://api.gocd.org/#pipeline-config"
+		pipelineFind = "http://127.0.0.1:8153/go/api/admin/pipelines/:pipeline_name"
+		pipelineSelf = "http://127.0.0.1:8153/go/api/admin/pipelines/environment-pipeline"
+	}
+
 	assert.NotNil(t, envs.Links.Get("Self"))
 	assert.Equal(t, "http://127.0.0.1:8153/go/api/admin/environments", envs.Links.Get("Self").URL.String())
 	assert.NotNil(t, envs.Links.Get("Doc"))
-	assert.Equal(t, "https://api.go.cd/current/#environment-config", envs.Links.Get("Doc").URL.String())
+	assert.Equal(t, envDoc, envs.Links.Get("Doc").URL.String())
 
 	assert.NotNil(t, envs.Embedded)
 	assert.NotNil(t, envs.Embedded.Environments)
@@ -96,8 +117,8 @@ func testEnvironmentIntegration(t *testing.T) {
 	env = envs.Embedded.Environments[0]
 	assert.NotNil(t, env.Links)
 	assert.Equal(t, "http://127.0.0.1:8153/go/api/admin/environments/test", env.Links.Get("Self").URL.String())
-	assert.Equal(t, "https://api.go.cd/current/#environment-config", env.Links.Get("Doc").URL.String())
-	assert.Equal(t, "http://127.0.0.1:8153/go/api/admin/environments/:name", env.Links.Get("Find").URL.String())
+	assert.Equal(t, envDoc, env.Links.Get("Doc").URL.String())
+	assert.Equal(t, envFind, env.Links.Get("Find").URL.String())
 
 	assert.Equal(t, "test", env.Name)
 
@@ -106,9 +127,9 @@ func testEnvironmentIntegration(t *testing.T) {
 
 	p = env.Pipelines[0]
 	assert.NotNil(t, p.Links)
-	assert.Equal(t, "http://127.0.0.1:8153/go/api/pipelines/environment-pipeline/history", p.Links.Get("Self").URL.String())
-	assert.Equal(t, "https://api.go.cd/current/#pipelines", p.Links.Get("Doc").URL.String())
-	assert.Equal(t, "/api/admin/pipelines/:pipeline_name", p.Links.Get("Find").URL.String())
+	assert.Equal(t, pipelineSelf, p.Links.Get("Self").URL.String())
+	assert.Equal(t, pipelineDoc, p.Links.Get("Doc").URL.String())
+	assert.Equal(t, pipelineFind, p.Links.Get("Find").URL.String())
 	assert.Equal(t, "environment-pipeline", p.Name)
 
 	assert.NotNil(t, env.EnvironmentVariables)
