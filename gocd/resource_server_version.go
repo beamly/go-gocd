@@ -59,6 +59,12 @@ func init() {
 			"/api/admin/security/roles/:role_name": newVersionCollection(
 				newServerAPI("17.5.0", apiV1),
 				newServerAPI("19.2.0", apiV2)),
+			"/api/admin/environments": newVersionCollection(
+				newServerAPI("16.7.0", apiV2),
+				newServerAPI("19.9.0", apiV3)),
+			"/api/admin/environments/:environment_name": newVersionCollection(
+				newServerAPI("16.7.0", apiV2),
+				newServerAPI("19.9.0", apiV3)),
 		},
 	}
 }
