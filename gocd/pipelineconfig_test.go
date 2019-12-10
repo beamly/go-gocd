@@ -53,8 +53,16 @@ func TestPipelineConfig(t *testing.T) {
 
 	p, _, err := intClient.PipelineConfigs.Create(ctx, "test-group", input)
 	assert.NoError(t, err)
-	assert.Regexp(t, regexp.MustCompile("^[a-f0-9]{32}--gzip$"), p.Version)
 
+	// Make sure version-specific defaults are properly set
+	apiVersion, err := intClient.getAPIVersion(ctx, "admin/pipelines/:pipeline_name")
+	assert.NoError(t, err)
+
+	if apiVersion < apiV10 {
+		assert.Regexp(t, regexp.MustCompile("^[a-f0-9]{32}--gzip$"), p.Version)
+	} else {
+		assert.Regexp(t, regexp.MustCompile("^[a-f0-9]{32}$"), p.Version)
+	}
 	v, _, err := client.ServerVersion.Get(ctx)
 
 	var ta TaskAttributes
@@ -139,11 +147,8 @@ func TestPipelineConfig(t *testing.T) {
 		Version: p.Version,
 	}
 
-	// Make sure version-specific defaults are properly set
-	apiVersion, err := intClient.getAPIVersion(ctx, "admin/pipelines/:pipeline_name")
-	assert.NoError(t, err)
 	switch apiVersion {
-	case apiV6, apiV7, apiV8, apiV9:
+	case apiV6, apiV7, apiV8, apiV9, apiV10:
 		expected.Origin = &PipelineConfigOrigin{Type: "gocd"}
 		fallthrough
 	case apiV5:
@@ -155,7 +160,12 @@ func TestPipelineConfig(t *testing.T) {
 	getP, _, err := intClient.PipelineConfigs.Get(ctx, input.Name)
 
 	getP.RemoveLinks()
-	expected.Group = ""
+
+	if apiVersion < apiV10 {
+		// Group name is returned in PipelineConfig V10 and above - https://github.com/gocd/gocd/issues/7113
+		expected.Group = ""
+	}
+
 	assert.Equal(t, expected, getP)
 
 	// The tests on the update have been commented as it seems there's a problem on 18.7.0 about it

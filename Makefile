@@ -3,7 +3,7 @@ SHELL:=/bin/bash
 TEST?=$$(go list ./... |grep -v 'vendor')
 
 GO_TARGETS= ./cli ./gocd ./gocd-*generator
-GOCD_VERSION?= v19.9.0
+GOCD_VERSION?= v19.11.0
 
 ifeq ($(GOCD_VERSION),v17.10.0)
 	ENTRYPOINT_USER=root
