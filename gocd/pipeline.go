@@ -3,6 +3,7 @@ package gocd
 import (
 	"context"
 	"fmt"
+	"github.com/hashicorp/go-version"
 	"net/url"
 )
 
@@ -193,10 +194,23 @@ func (pgs *PipelinesService) Unpause(ctx context.Context, name string) (bool, *A
 
 // ReleaseLock frees a pipeline to handle new build events
 func (pgs *PipelinesService) ReleaseLock(ctx context.Context, name string) (bool, *APIResponse, error) {
-	return pgs.pipelineAction(ctx, &pipelineActionRequest{
-		Action:   "releaseLock",
+	request := &pipelineActionRequest{
+		Action:   "unlock",
 		Pipeline: name,
-	})
+	}
+
+	// if version is >= 18.2.0 use "unlock"
+	releaseLockBeforeVersion, _ := version.NewVersion("18.2.0")
+	v, _, err := pgs.client.ServerVersion.Get(context.Background())
+	if err != nil {
+		return false, nil, err
+	}
+
+	if v.VersionParts.LessThan(releaseLockBeforeVersion) {
+		request.Action = "releaseLock"
+	}
+
+	return pgs.pipelineAction(ctx, request)
 }
 
 // Schedule allows to trigger a specific pipeline.
@@ -257,6 +271,9 @@ func (pgs *PipelinesService) pipelineAction(ctx context.Context, request *pipeli
 	choosePipelineConfirmHeader(apiRequest, apiVersion)
 
 	_, resp, err := pgs.client.postAction(ctx, apiRequest)
+	if err != nil {
+		return false, nil, err
+	}
 
 	return resp.HTTP.StatusCode == 200, resp, err
 }
