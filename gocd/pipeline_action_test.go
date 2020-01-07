@@ -40,14 +40,20 @@ func testPipelineServiceUnPause(t *testing.T) {
 		// Make sure version-specific defaults are properly set
 		apiVersion, err := client.getAPIVersion(ctx, "admin/pipelines/:pipeline_name")
 		assert.NoError(t, err)
-		releaseLockErrorMessage := "Received HTTP Status '406 Not Acceptable'"
 		switch apiVersion {
 		case apiV6, apiV7, apiV8, apiV9, apiV10:
 			mockPipeline.Origin = &PipelineConfigOrigin{Type: "gocd"}
 			fallthrough
 		case apiV5:
 			mockPipeline.LockBehavior = "none"
-			releaseLockErrorMessage = "Received HTTP Status '404 Not Found': {\n  \"message\": \"The resource you requested was not found!\"\n}"
+		}
+
+		apiVersion, err = client.getAPIVersion(ctx, "pipelines/:pipeline_name/unlock")
+		assert.NoError(t, err)
+		releaseLockErrorMessage := "Received HTTP Status '406 Not Acceptable'"
+		switch apiVersion {
+		case apiV1:
+			releaseLockErrorMessage = "Received HTTP Status '409 Conflict': {\n  \"message\": \"No lock exists within the pipeline configuration for test-pipeline-un-pause { No lock exists within the pipeline configuration for test-pipeline-un-pause }\"\n}"
 		}
 
 		assert.Equal(t, mockPipeline, pausePipeline)

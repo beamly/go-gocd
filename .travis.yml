@@ -13,7 +13,7 @@ env:
     - GO111MODULE=on
   matrix:
     - GOCD_VERSION=v17.10.0
-    - GOCD_VERSION=v19.11.0
+    - GOCD_VERSION=v19.12.0
 
 addons:
   apt:
