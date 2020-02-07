@@ -9,6 +9,7 @@ type MaterialAttribute interface {
 }
 
 // MaterialAttributesGit describes a git material
+// codebeat:disable[TOO_MANY_IVARS]
 type MaterialAttributesGit struct {
 	Name   string `json:"name,omitempty"`
 	URL    string `json:"url,omitempty"`
@@ -23,7 +24,10 @@ type MaterialAttributesGit struct {
 	AutoUpdate   bool            `json:"auto_update,omitempty"`
 }
 
+// codebeat:enable[TOO_MANY_IVARS]
+
 // MaterialAttributesSvn describes a material type
+// codebeat:disable[TOO_MANY_IVARS]
 type MaterialAttributesSvn struct {
 	Name              string `json:"name,omitempty"`
 	URL               string `json:"url,omitempty"`
@@ -39,6 +43,8 @@ type MaterialAttributesSvn struct {
 	AutoUpdate   bool            `json:"auto_update,omitempty"`
 }
 
+// codebeat:enable[TOO_MANY_IVARS]
+
 // MaterialAttributesHg describes a Mercurial material type
 type MaterialAttributesHg struct {
 	Name string `json:"name,omitempty"`
@@ -51,6 +57,7 @@ type MaterialAttributesHg struct {
 }
 
 // MaterialAttributesP4 describes a Perforce material type
+// codebeat:disable[TOO_MANY_IVARS]
 type MaterialAttributesP4 struct {
 	Name       string `json:"name,omitempty"`
 	Port       string `json:"port"`
@@ -67,7 +74,10 @@ type MaterialAttributesP4 struct {
 	AutoUpdate   bool            `json:"auto_update,omitempty"`
 }
 
+// codebeat:enable[TOO_MANY_IVARS]
+
 // MaterialAttributesTfs describes a Team Foundation Server material
+// codebeat:disable[TOO_MANY_IVARS]
 type MaterialAttributesTfs struct {
 	Name string `json:"name,omitempty"`
 
@@ -84,6 +94,8 @@ type MaterialAttributesTfs struct {
 	InvertFilter bool            `json:"invert_filter"`
 	AutoUpdate   bool            `json:"auto_update,omitempty"`
 }
+
+// codebeat:enable[TOO_MANY_IVARS]
 
 // MaterialAttributesDependency describes a Pipeline dependency material
 type MaterialAttributesDependency struct {

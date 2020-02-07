@@ -3,7 +3,13 @@ SHELL:=/bin/bash
 TEST?=$$(go list ./... |grep -v 'vendor')
 
 GO_TARGETS= ./cli ./gocd ./gocd-*generator
-GOCD_VERSION?= v18.7.0
+GOCD_VERSION?= v19.12.0
+
+ifeq ($(GOCD_VERSION),v17.10.0)
+	ENTRYPOINT_USER=root
+else
+	ENTRYPOINT_USER=go
+endif
 
 format:
 	gofmt -w -s .
@@ -13,31 +19,28 @@ format:
 
 lint:
 	diff -u <(echo -n) <(gofmt -d -s main.go $(GO_TARGETS))
-	golint -set_exit_status . $(glide novendor)
+	@go get -mod=readonly golang.org/x/lint/golint
+	golint -set_exit_status .
 
 vet:
-	go tool vet $(GO_TARGETS)
-	go tool vet main.go
+	go get -mod=readonly ./...
+	go vet ./...
 
 test: vet lint
-	bash scripts/go-test.sh
-
-before_install:
-	@go get github.com/golang/lint/golint
-	@go install github.com/golang/lint/golint
-	curl https://glide.sh/get | sh
-	glide install
+	go test -mod=readonly -v -coverprofile=coverage.out -covermode=atomic ./...
 
 build: deploy_on_develop
 
 deploy_on_tag:
 	git clean -df
-	go get
+	go get -mod=readonly
+	git checkout -- go.mod go.sum
 	goreleaser --debug
 
 deploy_on_develop:
 	git clean -df
-	go get
+	go get -mod=readonly
+	git checkout -- go.mod go.sum
 	goreleaser --debug --rm-dist --snapshot
 
 testacc: provision-test-gocd
@@ -47,5 +50,5 @@ testacc: provision-test-gocd
 provision-test-gocd:
 	cp godata/default.gocd.config.xml godata/server/config/cruise-config.xml
 	docker rm -f gocd-server-test || true
-	docker build -t gocd-server --build-arg UID=$(shell id -u) --build-arg GOCD_VERSION=${GOCD_VERSION} .
+	docker build -t gocd-server --build-arg UID=$(shell id -u) --build-arg GOCD_VERSION=${GOCD_VERSION}  --build-arg ENTRYPOINT_USER=${ENTRYPOINT_USER} .
 	docker run -p 8153:8153 -p 8154:8154 -d --name gocd-server-test gocd-server

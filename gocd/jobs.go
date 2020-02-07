@@ -2,6 +2,7 @@ package gocd
 
 import (
 	"context"
+	"encoding/json"
 )
 
 const (
@@ -15,6 +16,7 @@ const (
 type JobsService service
 
 // Job describes a job which can be performed in GoCD
+// codebeat:disable[TOO_MANY_IVARS]
 type Job struct {
 	AgentUUID            string                 `json:"agent_uuid,omitempty"`
 	Name                 string                 `json:"name"`
@@ -39,6 +41,8 @@ type Job struct {
 	Artifacts            []*Artifact            `json:"artifacts,omitempty"`
 	ElasticProfileID     string                 `json:"elastic_profile_id,omitempty"`
 }
+
+// codebeat:enable[TOO_MANY_IVARS]
 
 // Artifact describes the result of a job
 type Artifact struct {
@@ -68,6 +72,35 @@ type EnvironmentVariable struct {
 	Secure         bool   `json:"secure"`
 }
 
+type unencryptedEnvironmentVariable struct {
+	Name   string `json:"name"`
+	Value  string `json:"value"`
+	Secure bool   `json:"secure"`
+}
+
+type encryptedEnvironmentVariable struct {
+	Name           string `json:"name"`
+	EncryptedValue string `json:"encrypted_value"`
+	Secure         bool   `json:"secure"`
+}
+
+// MarshalJSON is a custom JSON Marhsaller for EnvironmentVariables to handle empty values
+func (v *EnvironmentVariable) MarshalJSON() ([]byte, error) {
+	if v.EncryptedValue != "" {
+		return json.Marshal(&encryptedEnvironmentVariable{
+			Name:           v.Name,
+			Secure:         v.Secure,
+			EncryptedValue: v.EncryptedValue,
+		})
+	}
+
+	return json.Marshal(&unencryptedEnvironmentVariable{
+		Name:   v.Name,
+		Secure: v.Secure,
+		Value:  v.Value,
+	})
+}
+
 // PluginConfigurationKVPair describes a key/value pair of plugin configurations.
 type PluginConfigurationKVPair struct {
 	Key   string `json:"key"`
@@ -81,6 +114,7 @@ type Task struct {
 }
 
 // TaskAttributes describes all the properties for a Task.
+// codebeat:disable[TOO_MANY_IVARS]
 type TaskAttributes struct {
 	RunIf               []string                    `json:"run_if,omitempty"`
 	Command             string                      `json:"command,omitempty"`
@@ -99,6 +133,8 @@ type TaskAttributes struct {
 	Configuration       []PluginConfigurationKVPair `json:"configuration,omitempty"`
 	ArtifactOrigin      string                      `json:"artifact_origin,omitempty"`
 }
+
+// codebeat:enable[TOO_MANY_IVARS]
 
 // TaskPluginConfiguration is for specifying options for pluggable task
 type TaskPluginConfiguration struct {

@@ -11,7 +11,18 @@ func (s *Stage) JSONString() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	s.Clean()
+
+	if s.Approval.Authorization == nil {
+		s.Approval.Authorization = &Authorization{}
+	}
+
+	if s.Approval.Authorization.Users == nil {
+		s.Approval.Authorization.Users = []string{}
+	}
+	if s.Approval.Authorization.Roles == nil {
+		s.Approval.Authorization.Roles = []string{}
+	}
+
 	bdy, err := json.MarshalIndent(s, "", "  ")
 	return string(bdy), err
 }
@@ -33,9 +44,4 @@ func (s *Stage) Validate() error {
 	}
 
 	return nil
-}
-
-// Clean the approvel step.
-func (s *Stage) Clean() {
-	s.Approval.Clean()
 }

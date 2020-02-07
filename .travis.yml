@@ -1,7 +1,7 @@
 language: go
 go:
-  - 1.9.x
-  - 1.10.x
+  - "1.11.x"
+  - "1.x"
 
 services:
   - docker
@@ -10,30 +10,29 @@ env:
   global:
     - CODECLIMATE_API_HOST=https://codebeat.co/webhooks/code_coverage
     - GOCD_LOG_LEVEL=DEBUG
+    - GO111MODULE=on
   matrix:
     - GOCD_VERSION=v17.10.0
-    - GOCD_VERSION=v18.7.0
+    - GOCD_VERSION=v19.12.0
 
 addons:
   apt:
     packages:
-    - rpm
+      - rpm
 
 matrix:
   fast_finish: true
   allow_failures:
     - env: GOCD_VERSION=v17.10.0
 
-before_install:
-  - make before_install
-
 script:
-  - go generate -x $(glide novendor) && git diff --exit-code; code=$?; git checkout -- .; (exit	$code)
+  - go generate -mod=readonly -x ./... && git diff --exit-code; code=$?; git checkout -- .; (exit $code)
   - make testacc
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-  - go get github.com/goreleaser/goreleaser
+  - go get -mod=readonly github.com/goreleaser/goreleaser
+  - go get -mod=readonly github.com/goreleaser/goreleaser@v0.120.8
   - npm install -g codeclimate-test-reporter
   - codeclimate-test-reporter < coverage.out
 
@@ -46,10 +45,10 @@ deploy:
     script: make deploy_on_tag
     on:
       tags: true
-      condition: $TRAVIS_GO_VERSION =~ ^1\.10\.([0-9]+|x)?$ && $GOCD_VERSION =~ ^v18\.[0-9]+\.[0-9]+$
+      condition: $TRAVIS_GO_VERSION =~ ^1\.11\.([0-9]+|x)?$ && $GOCD_VERSION =~ ^v19\.[0-9]+\.[0-9]+$
   - provider: script
     skip_cleanup: true
     script: make deploy_on_develop
     on:
       branch: develop
-      condition: $TRAVIS_GO_VERSION =~ ^1\.10\.([0-9]+|x)?$ && $GOCD_VERSION =~ ^v18\.[0-9]+\.[0-9]+$
+      condition: $TRAVIS_GO_VERSION =~ ^1\.11\.([0-9]+|x)?$ && $GOCD_VERSION =~ ^v19\.[0-9]+\.[0-9]+$

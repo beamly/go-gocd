@@ -1,0 +1,15 @@
+{
+  "_links" : {
+    "self" : {
+      "href" : "http://localhost:8153/go/api/version"
+    },
+    "doc" : {
+      "href" : "https://api.gocd.org/19.9.0/#version"
+    }
+  },
+  "version" : "19.9.0",
+  "build_number" : "10194",
+  "git_sha" : "34fca8f7682a65ef5fbd6726d51fd52b0c041bc6",
+  "full_version" : "19.9.0 (10194-34fca8f7682a65ef5fbd6726d51fd52b0c041bc6)",
+  "commit_url" : "https://github.com/gocd/gocd/commit/34fca8f7682a65ef5fbd6726d51fd52b0c041bc6"
+}

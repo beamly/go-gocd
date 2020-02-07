@@ -15,6 +15,10 @@ func init() {
 			"/api/version": newVersionCollection(
 				newServerAPI("16.6.0", apiV1)),
 			"/api/admin/pipelines/:pipeline_name": newVersionCollection(
+				newServerAPI("19.10.0", apiV10),
+				newServerAPI("19.8.0", apiV9),
+				newServerAPI("19.6.0", apiV8),
+				newServerAPI("19.4.0", apiV7),
 				newServerAPI("18.7.0", apiV6),
 				newServerAPI("17.12.0", apiV5),
 				newServerAPI("17.4.0", apiV4),
@@ -28,13 +32,43 @@ func init() {
 				newServerAPI("14.3.0", apiV0),
 				newServerAPI("18.2.0", apiV1)),
 			"/api/pipelines/:pipeline_name/releaseLock": newVersionCollection(
+				newServerAPI("14.3.0", apiV0)),
+			"/api/pipelines/:pipeline_name/unlock": newVersionCollection(
+				newServerAPI("18.2.0", apiV1)),
+			"/api/pipelines/:pipeline_name/schedule": newVersionCollection(
 				newServerAPI("14.3.0", apiV0),
 				newServerAPI("18.2.0", apiV1)),
 			"/api/admin/plugin_info": newVersionCollection(
 				newServerAPI("16.7.0", apiV1),
 				newServerAPI("16.12.0", apiV2),
 				newServerAPI("17.9.0", apiV3),
-				newServerAPI("18.3.0", apiV4)),
+				newServerAPI("18.3.0", apiV4),
+				newServerAPI("19.3.0", apiV5),
+				newServerAPI("19.6.0", apiV6)),
+			"/api/admin/templates": newVersionCollection(
+				newServerAPI("16.10.0", apiV1),
+				newServerAPI("16.11.0", apiV2),
+				newServerAPI("17.1.0", apiV3),
+				newServerAPI("18.7.0", apiV4),
+				newServerAPI("19.10.0", apiV5)),
+			"/api/admin/templates/:template_name": newVersionCollection(
+				newServerAPI("16.10.0", apiV1),
+				newServerAPI("16.11.0", apiV2),
+				newServerAPI("17.1.0", apiV3),
+				newServerAPI("18.7.0", apiV4),
+				newServerAPI("19.10.0", apiV5)),
+			"/api/admin/security/roles": newVersionCollection(
+				newServerAPI("17.5.0", apiV1),
+				newServerAPI("19.2.0", apiV2)),
+			"/api/admin/security/roles/:role_name": newVersionCollection(
+				newServerAPI("17.5.0", apiV1),
+				newServerAPI("19.2.0", apiV2)),
+			"/api/admin/environments": newVersionCollection(
+				newServerAPI("16.7.0", apiV2),
+				newServerAPI("19.9.0", apiV3)),
+			"/api/admin/environments/:environment_name": newVersionCollection(
+				newServerAPI("16.7.0", apiV2),
+				newServerAPI("19.9.0", apiV3)),
 			"/api/elastic/profiles": newVersionCollection(
 				newServerAPI("16.11.0", apiV1)),
 		},

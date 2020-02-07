@@ -13,6 +13,4 @@ func TestApproval(t *testing.T) {
 		},
 	}
 	assert.NotNil(t, approval.Authorization)
-	approval.Clean()
-	assert.Nil(t, approval.Authorization)
 }

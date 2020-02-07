@@ -9,6 +9,7 @@ import (
 )
 
 // GetCliCommands returns a list of all CLI Command structs
+// codebeat:disable[ABC]
 func GetCliCommands() []cli.Command {
 	return []cli.Command{
 		*configureCommand(),
@@ -54,6 +55,8 @@ func GetCliCommands() []cli.Command {
 		*deleteRoleCommand(),
 	}
 }
+
+// codebeat:disable[ABC]
 
 // NewCliClient creates a new gocd client for use by cli actions.
 func NewCliClient(c *cli.Context) (cl *gocd.Client, err error) {

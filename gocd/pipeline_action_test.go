@@ -2,6 +2,7 @@ package gocd
 
 import (
 	"context"
+	"github.com/hashicorp/go-version"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -39,23 +40,39 @@ func testPipelineServiceUnPause(t *testing.T) {
 		// Make sure version-specific defaults are properly set
 		apiVersion, err := client.getAPIVersion(ctx, "admin/pipelines/:pipeline_name")
 		assert.NoError(t, err)
-		releaseLockErrorMessage := "Received HTTP Status '406 Not Acceptable'"
 		switch apiVersion {
-		case apiV6:
+		case apiV6, apiV7, apiV8, apiV9, apiV10:
 			mockPipeline.Origin = &PipelineConfigOrigin{Type: "gocd"}
 			fallthrough
 		case apiV5:
 			mockPipeline.LockBehavior = "none"
-			releaseLockErrorMessage = "Received HTTP Status '404 Not Found': {\n  \"message\": \"The resource you requested was not found!\"\n}"
+		}
+
+		apiVersion, err = client.getAPIVersion(ctx, "pipelines/:pipeline_name/unlock")
+		assert.NoError(t, err)
+		releaseLockErrorMessage := "Received HTTP Status '406 Not Acceptable'"
+		switch apiVersion {
+		case apiV1:
+			releaseLockErrorMessage = "Received HTTP Status '409 Conflict': {\n  \"message\": \"No lock exists within the pipeline configuration for test-pipeline-un-pause { No lock exists within the pipeline configuration for test-pipeline-un-pause }\"\n}"
 		}
 
 		assert.Equal(t, mockPipeline, pausePipeline)
 
-		pp, _, err := intClient.Pipelines.Unpause(ctx, pipelineName)
+		// From 18.8.0 onwards pipelines are no-longer created paused
+		v, _, err := client.ServerVersion.Get(context.Background())
+
+		pausedBeforeVersion, _ := version.NewVersion("18.8.0")
+		if v.VersionParts.LessThan(pausedBeforeVersion) {
+			pp, _, err := intClient.Pipelines.Unpause(ctx, pipelineName)
+			assert.NoError(t, err)
+			assert.True(t, pp)
+		}
+
+		pp, _, err := intClient.Pipelines.Pause(ctx, pipelineName)
 		assert.NoError(t, err)
 		assert.True(t, pp)
 
-		pp, _, err = intClient.Pipelines.Pause(ctx, pipelineName)
+		pp, _, err = intClient.Pipelines.Unpause(ctx, pipelineName)
 		assert.NoError(t, err)
 		assert.True(t, pp)
 
@@ -64,7 +81,7 @@ func testPipelineServiceUnPause(t *testing.T) {
 		assert.False(t, pp)
 
 		deleteResponse, _, err := intClient.PipelineConfigs.Delete(ctx, pipelineName)
-		assert.Equal(t, "The pipeline 'test-pipeline-un-pause' was deleted successfully.", deleteResponse)
+		assert.Contains(t, deleteResponse, "'test-pipeline-un-pause' was deleted successfully")
 	}
 
 }

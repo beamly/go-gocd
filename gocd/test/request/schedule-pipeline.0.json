@@ -1,0 +1,30 @@
+{
+  "environment_variables": [
+    {
+      "name": "USERNAME",
+      "value": "gocd",
+      "secure": false
+    },
+    {
+      "name": "SSH_PASSPHRASE",
+      "value": "some passphrase",
+      "secure": true
+    },
+    {
+      "name": "PASSWORD",
+      "encrypted_value": "YEepp1G0C05SpP0fcp4Jh",
+      "secure": true
+    }
+  ],
+  "materials": [
+    {
+      "fingerprint": "45",
+      "revision": "123"
+    },
+    {
+      "fingerprint": "89",
+      "revision": "67"
+    }
+  ],
+  "update_materials_before_scheduling": false
+}

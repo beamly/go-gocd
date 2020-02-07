@@ -7,7 +7,6 @@ import (
 )
 
 func TestStages(t *testing.T) {
-	t.Run("Clean", testStagesClean)
 	t.Run("Validate", testStageValidate)
 	t.Run("JSONStringFail", testStageJSONStringFail)
 	t.Run("JSONString", testStageJSONString)
@@ -36,7 +35,11 @@ func testStageJSONString(t *testing.T) {
   "clean_working_directory": false,
   "never_cleanup_artifacts": false,
   "approval": {
-    "type": "success"
+    "type": "success",
+    "authorization": {
+      "users": [],
+      "roles": []
+    }
   },
   "jobs": [
     {
@@ -63,15 +66,4 @@ func testStageValidate(t *testing.T) {
 	s.Jobs[0].Name = "test-job"
 	err = s.Validate()
 	assert.Nil(t, err)
-}
-
-func testStagesClean(t *testing.T) {
-	s := Stage{Approval: &Approval{
-		Type:          "success",
-		Authorization: &Authorization{},
-	}}
-
-	assert.NotNil(t, s.Approval.Authorization)
-	s.Clean()
-	assert.Nil(t, s.Approval.Authorization)
 }

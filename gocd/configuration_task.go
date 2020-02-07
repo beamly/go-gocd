@@ -10,6 +10,7 @@ type ConfigTasks struct {
 }
 
 // ConfigTask part of cruise-control.xml. @TODO better documentation
+// codebeat:disable[TOO_MANY_IVARS]
 type ConfigTask struct {
 	// Because we need to preserve the order of tasks, and we have an array of elements with mixed types,
 	// we need to use this generic xml type for tasks.
@@ -24,6 +25,8 @@ type ConfigTask struct {
 	SrcFile  string          `xml:"srcfile,attr,omitempty"  json:",omitempty"`
 	SrcDir   string          `xml:"srcdir,attr,omitempty"  json:",omitempty"`
 }
+
+// codebeat:enable[TOO_MANY_IVARS]
 
 // ConfigTaskRunIf part of cruise-control.xml. @TODO better documentation
 type ConfigTaskRunIf struct {

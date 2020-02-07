@@ -17,9 +17,8 @@
 
 ## Running Tests
 
-    go get github.com/beamly/go-gocd
-    cd $GOPATH/src/github.com/beamly/go-gocd
-    make before_install
+    git clone https://github.com/beamly/go-gocd.git
+    cd go-gocd
     make test
 
 ## Opening PR's

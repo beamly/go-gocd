@@ -23,6 +23,7 @@ type ConfigPipelineGroup struct {
 }
 
 // ConfigPipeline part of cruise-control.xml. @TODO better documentation
+// codebeat:disable[TOO_MANY_IVARS]
 type ConfigPipeline struct {
 	Name                 string                      `xml:"name,attr"`
 	LabelTemplate        string                      `xml:"labeltemplate,attr"`
@@ -33,6 +34,8 @@ type ConfigPipeline struct {
 	EnvironmentVariables []ConfigEnvironmentVariable `xml:"environmentvariables>variable"`
 	Stages               []ConfigStage               `xml:"stage"`
 }
+
+// codebeat:enable[TOO_MANY_IVARS]
 
 // ConfigStage part of cruise-control.xml. @TODO better documentation
 type ConfigStage struct {
@@ -134,6 +137,7 @@ type ConfigPluginConfiguration struct {
 }
 
 // ConfigServer part of cruise-control.xml. @TODO better documentation
+// codebeat:disable[TOO_MANY_IVARS]
 type ConfigServer struct {
 	MailHost                  MailHost       `xml:"mailhost"`
 	Security                  ConfigSecurity `xml:"security"`
@@ -149,6 +153,8 @@ type ConfigServer struct {
 	CommandRepositoryLocation string         `xml:"commandRepositoryLocation,attr"`
 	ServerID                  string         `xml:"serverId,attr"`
 }
+
+// codebeat:enable[TOO_MANY_IVARS]
 
 // MailHost part of cruise-control.xml. @TODO better documentation
 type MailHost struct {

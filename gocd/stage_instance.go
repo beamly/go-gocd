@@ -1,6 +1,7 @@
 package gocd
 
 // StageInstance represents the stage from the result from a pipeline run
+// codebeat:disable[TOO_MANY_IVARS]
 type StageInstance struct {
 	Name              string `json:"name"`
 	ID                int    `json:"id"`
@@ -12,5 +13,7 @@ type StageInstance struct {
 	Counter           string `json:"counter,omitempty"`
 	OperatePermission bool   `json:"operate_permission,omitempty"`
 	Result            string `json:"result,omitempty"`
-	RerunOfCounter    string `json:"rerun_of_counter,omitempty"`
+	RerunOfCounter    *int   `json:"rerun_of_counter,omitempty"`
 }
+
+// codebeat:enable[TOO_MANY_IVARS]

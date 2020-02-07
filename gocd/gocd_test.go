@@ -71,6 +71,7 @@ func intSetup() {
 // teardown closes the test HTTP server.
 func teardown() {
 	server.Close()
+	cachedServerVersion = nil
 }
 
 func runIntegrationTest(t *testing.T) bool {
@@ -132,8 +133,10 @@ func (cb *closingbuffer) Close() error {
 func testNewRequestWithCookie(t *testing.T) {
 	mockCookie := "MockCookie"
 	c := Client{
-		BaseURL: &url.URL{},
-		cookie:  mockCookie,
+		params: &ClientParameters{
+			BaseURL: &url.URL{},
+		},
+		cookie: mockCookie,
 	}
 	r, err := c.NewRequest("GET", "mock", nil, "")
 	assert.Nil(t, err)
@@ -144,7 +147,9 @@ func testNewRequestWithCookie(t *testing.T) {
 
 func testNewRequestFailBadMethod(t *testing.T) {
 	c := Client{
-		BaseURL: &url.URL{},
+		params: &ClientParameters{
+			BaseURL: &url.URL{},
+		},
 	}
 	_, err := c.NewRequest("GET/W", "mock", nil, "")
 	assert.Error(t, err)
@@ -153,7 +158,9 @@ func testNewRequestFailBadMethod(t *testing.T) {
 
 func testNewRequestFailDecode(t *testing.T) {
 	c := Client{
-		BaseURL: &url.URL{},
+		params: &ClientParameters{
+			BaseURL: &url.URL{},
+		},
 	}
 	i := map[interface{}]string{}
 	_, err := c.NewRequest("GET", "mock", i, "")
@@ -225,8 +232,8 @@ func testNewClient(t *testing.T) {
 
 	// Make sure expected values are present.
 	for _, attribute := range []EqualityTest{
-		{c.BaseURL.String(), server.URL},
-		{c.UserAgent, userAgent},
+		{c.BaseURL().String(), server.URL},
+		{c.params.UserAgent, userAgent},
 	} {
 		assert.Equal(t, attribute.got, attribute.wanted)
 	}
