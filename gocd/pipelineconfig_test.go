@@ -59,9 +59,9 @@ func TestPipelineConfig(t *testing.T) {
 	assert.NoError(t, err)
 
 	if apiVersion < apiV10 {
-		assert.Regexp(t, regexp.MustCompile("^[a-f0-9]{32}--gzip$"), p.Version)
+		assert.Regexp(t, regexp.MustCompile("^([a-f0-9]{32}--gzip|[a-f0-9]{64}--gzip)$"), p.Version)
 	} else {
-		assert.Regexp(t, regexp.MustCompile("^[a-f0-9]{32}$"), p.Version)
+		assert.Regexp(t, regexp.MustCompile("^([a-f0-9]{32}|[a-f0-9]{64})$"), p.Version)
 	}
 	v, _, err := client.ServerVersion.Get(ctx)
 
