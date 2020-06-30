@@ -59,7 +59,7 @@ func testRoleGoCD(t *testing.T) {
 			roleResponse, _, err := intClient.Roles.Create(ctx, role)
 			assert.NoError(t, err)
 
-			assert.Regexp(t, regexp.MustCompile("^[a-f0-9]{32}--gzip$"), roleResponse.Version)
+			assert.Regexp(t, regexp.MustCompile("^([a-f0-9]{32}--gzip|[a-f0-9]{64}--gzip)$"), roleResponse.Version)
 			role.Version = roleResponse.Version
 			role.Links = roleResponse.Links
 
@@ -71,7 +71,7 @@ func testRoleGoCD(t *testing.T) {
 		assert.NoError(t, err)
 
 		for i, roleResponse := range rolesResponses {
-			assert.Regexp(t, regexp.MustCompile("^[a-f0-9]{32}--gzip$"), roles[i].Version)
+			assert.Regexp(t, regexp.MustCompile("^([a-f0-9]{32}--gzip|[a-f0-9]{64}--gzip)$"), roles[i].Version)
 			roleResponse.Version = roles[i].Version
 
 			roles[i].Links = roleResponse.Links
@@ -84,7 +84,7 @@ func testRoleGoCD(t *testing.T) {
 		assert.NoError(t, err)
 		updatedRole, _, err := intClient.Roles.Get(ctx, roleUpdateResponse.Name)
 		assert.NoError(t, err)
-		assert.Regexp(t, regexp.MustCompile("^[a-f0-9]{32}--gzip$"), updatedRole.Version)
+		assert.Regexp(t, regexp.MustCompile("^([a-f0-9]{32}--gzip|[a-f0-9]{64}--gzip)$"), updatedRole.Version)
 		roles[0].Version = updatedRole.Version
 		roles[0].Links = updatedRole.Links
 		assert.Equal(t, updatedRole, roles[0])
