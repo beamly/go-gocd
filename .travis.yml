@@ -1,8 +1,6 @@
 language: go
 go:
   - "1.11.x"
-  - "1.12.x"
-  - "1.13.x"
   - "1.x"
 
 services:
@@ -14,8 +12,9 @@ env:
     - GOCD_LOG_LEVEL=DEBUG
     - GO111MODULE=on
   matrix:
-    - GOCD_VERSION=v17.10.0
     - GOCD_VERSION=v20.2.0
+    - GOCD_VERSION=v20.3.0
+    - GOCD_VERSION=v20.4.0
     - GOCD_VERSION=v20.5.0
 
 addons:
