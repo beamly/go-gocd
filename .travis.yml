@@ -13,7 +13,6 @@ env:
     - GO111MODULE=on
   matrix:
     - GOCD_VERSION=v20.2.0
-    - GOCD_VERSION=v20.3.0
     - GOCD_VERSION=v20.4.0
     - GOCD_VERSION=v20.5.0
 
