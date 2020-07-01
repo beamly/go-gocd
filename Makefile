@@ -35,7 +35,7 @@ deploy_on_tag:
 	git clean -df
 	go get -mod=readonly
 	git checkout -- go.mod go.sum
-	goreleaser --debug
+	curl -sL https://git.io/goreleaser | bash
 
 deploy_on_develop:
 	git clean -df
