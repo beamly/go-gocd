@@ -15,40 +15,40 @@ builds:
     goarch:
       - amd64
 
-archive:
-  name_template: "gocd-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
-  replacements:
-    amd64: x86_64
+archives:
+  - name_template: "gocd-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+    replacements:
+      amd64: x86_64
+  
+    format_overrides:
+      - goos: windows
+        format: zip
+      - goos: darwin
+        format: zip
+    files:
+      - LICENSE
+      - README.md
+      - CHANGELOG.md
 
-  format_overrides:
-    - goos: windows
-      format: zip
-    - goos: darwin
-      format: zip
-  files:
-    - LICENSE
-    - README.md
-    - CHANGELOG.md
+nfpms:
+  - homepage: https://github.com/beamly/go-gocd
+    maintainer: Drew J. Sonne <drew.sonne@beamly.com>
+    license: Apache2
+    formats:
+      - deb
+      - rpm
+    dependencies:
+      - git
 
-nfpm:
-  homepage: https://github.com/beamly/go-gocd
-  maintainer: Drew J. Sonne <drew.sonne@beamly.com>
-  license: Apache2
-  formats:
-    - deb
-    - rpm
-  dependencies:
-    - git
-
-brew:
-  github:
-    owner: beamly
-    name: homebrew-tap
-  homepage: https://github.com/beamly/terraform-provider-gocd
-  description: CLI interface for ThoughtWorks GoCD
-  dependencies:
-    - drewsonne/homebrew-tap/tf-install-provider
-  test: |
-    system "#{bin}/gocd --version"
-  install: |
-    bin.install "gocd"
+brews:
+  - github:
+      owner: beamly
+      name: homebrew-tap
+    homepage: https://github.com/beamly/terraform-provider-gocd
+    description: CLI interface for ThoughtWorks GoCD
+    dependencies:
+      - drewsonne/homebrew-tap/tf-install-provider
+    test: |
+      system "#{bin}/gocd --version"
+    install: |
+      bin.install "gocd"
