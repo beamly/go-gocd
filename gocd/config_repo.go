@@ -20,20 +20,13 @@ type ConfigReposListResponse struct {
 
 // ConfigRepo represents a config repo object in GoCD
 type ConfigRepo struct {
-	ID            string                `json:"id"`
-	PluginID      string                `json:"plugin_id"`
-	Material      Material              `json:"material"`
-	Configuration []*ConfigRepoProperty `json:"configuration,omitempty"`
-	Links         *HALLinks             `json:"_links,omitempty,omitempty"`
-	Version       string                `json:"version,omitempty"`
+	ID            string            `json:"id"`
+	PluginID      string            `json:"plugin_id"`
+	Material      Material          `json:"material"`
+	Configuration []*ConfigProperty `json:"configuration,omitempty"`
+	Links         *HALLinks         `json:"_links,omitempty,omitempty"`
+	Version       string            `json:"version,omitempty"`
 	client        *Client
-}
-
-// ConfigRepoProperty represents a configuration related to a ConfigRepo
-type ConfigRepoProperty struct {
-	Key            string `json:"key"`
-	Value          string `json:"value,omitempty"`
-	EncryptedValue string `json:"encrypted_value,omitempty"`
 }
 
 // List returns all available config repos, these are config repositories that

@@ -73,6 +73,8 @@ func init() {
 			"/api/admin/environments/:environment_name": newVersionCollection(
 				newServerAPI("16.7.0", apiV2),
 				newServerAPI("19.9.0", apiV3)),
+			"/api/elastic/profiles": newVersionCollection(
+				newServerAPI("16.11.0", apiV1)),
 		},
 	}
 }

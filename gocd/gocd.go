@@ -88,21 +88,22 @@ type Client struct {
 
 	Log *logrus.Logger
 
-	Agents            *AgentsService
-	PipelineGroups    *PipelineGroupsService
-	Stages            *StagesService
-	Jobs              *JobsService
-	PipelineTemplates *PipelineTemplatesService
-	Pipelines         *PipelinesService
-	PipelineConfigs   *PipelineConfigsService
-	Configuration     *ConfigurationService
-	ConfigRepos       *ConfigRepoService
-	Encryption        *EncryptionService
-	Plugins           *PluginsService
-	Environments      *EnvironmentsService
-	Properties        *PropertiesService
-	Roles             *RoleService
-	ServerVersion     *ServerVersionService
+	Agents               *AgentsService
+	PipelineGroups       *PipelineGroupsService
+	Stages               *StagesService
+	Jobs                 *JobsService
+	PipelineTemplates    *PipelineTemplatesService
+	Pipelines            *PipelinesService
+	PipelineConfigs      *PipelineConfigsService
+	Configuration        *ConfigurationService
+	ConfigRepos          *ConfigRepoService
+	Encryption           *EncryptionService
+	Plugins              *PluginsService
+	Environments         *EnvironmentsService
+	Properties           *PropertiesService
+	Roles                *RoleService
+	ServerVersion        *ServerVersionService
+	ElasticAgentProfiles *ElasticAgentService
 
 	common service
 	cookie string
@@ -216,6 +217,7 @@ func attachServices(c *Client) {
 	c.Properties = (*PropertiesService)(&c.common)
 	c.Roles = (*RoleService)(&c.common)
 	c.ServerVersion = (*ServerVersionService)(&c.common)
+	c.ElasticAgentProfiles = (*ElasticAgentService)(&c.common)
 }
 
 // codebeat:enable[ABC]

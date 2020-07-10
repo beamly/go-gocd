@@ -30,6 +30,8 @@ func testPluginAPIList(t *testing.T) {
 
 		assert.NotNil(t, plugins.Embedded)
 		assert.NotNil(t, plugins.Embedded.PluginInfo)
+		assert.Len(t, plugins.Embedded.PluginInfo, 7)
+		pi := plugins.Embedded.PluginInfo[0]
 
 		for _, pInfo := range plugins.Embedded.PluginInfo {
 			if pInfo.ID == "yum" {
